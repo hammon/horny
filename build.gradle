@@ -9,4 +9,40 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile 'com.beust:jcommander:1.47'
+
+    compile 'org.slf4j:slf4j-api:1.7.12'
+
+    //compile 'org.slf4j:slf4j-jdk14:1.7.12'
+
+    compile 'org.slf4j:slf4j-log4j12:1.7.12'
+    compile 'log4j:log4j:1.2.17'
+
+
+
+}
+
+task buildJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': 1.0,
+                'Main-Class': 'core.Runner'
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+
+    copy{
+        from 'src/main/resources/conf'
+        into 'build/libs/conf'
+    }
+
+//    copy{
+//        from 'src/main/resources/scripts'
+//        into 'build/libs/scripts'
+//    }
+
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    with jar
 }
