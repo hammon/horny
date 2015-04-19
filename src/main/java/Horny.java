@@ -1,8 +1,11 @@
 import com.beust.jcommander.JCommander;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.PropertyConfigurator;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -32,5 +35,19 @@ public class Horny {
             //System.out.println(param);
             log.info(param);
         });
+
+        if(!cmd.file.isEmpty()){
+            try {
+                JSExecutor js = new JSExecutor();
+                js.eval(FileUtils.readFileToString(new File(cmd.file)));
+            } catch (IOException e) {
+                log.error("Failed to eval " + cmd.file,e);
+            }
+        }
+        else if(!cmd.eval.isEmpty()){
+            JSExecutor js = new JSExecutor();
+            js.eval(cmd.eval);
+        }
+
     }
 }

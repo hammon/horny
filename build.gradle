@@ -20,6 +20,14 @@ dependencies {
     compile 'log4j:log4j:1.2.17'
 
 
+    compile 'org.eclipse.jetty:jetty-server:9.2.5.v20141112'
+    compile 'org.eclipse.jetty:jetty-servlet:9.2.5.v20141112'
+
+    compile 'org.json:json:20141113'
+
+    compile 'commons-io:commons-io:2.4'
+
+
 
 }
 
@@ -27,7 +35,7 @@ task buildJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Gradle Jar File Example',
                 'Implementation-Version': 1.0,
-                'Main-Class': 'core.Runner'
+                'Main-Class': 'Horny'
     }
     baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -37,10 +45,10 @@ task buildJar(type: Jar) {
         into 'build/libs/conf'
     }
 
-//    copy{
-//        from 'src/main/resources/scripts'
-//        into 'build/libs/scripts'
-//    }
+    copy{
+        from 'src/main/resources/scripts'
+        into 'build/libs/scripts'
+    }
 
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'

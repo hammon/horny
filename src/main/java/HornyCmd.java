@@ -11,4 +11,10 @@ import java.util.List;
 public class HornyCmd {
     @Parameter
     public List<String> parameters = Lists.newArrayList();
+
+    @Parameter(names = { "-f", "-file" }, description = "js file")
+    public String file = "";
+
+    @Parameter(names = { "-e", "-eval" }, description = "js script")
+    public String eval = "";
 }
