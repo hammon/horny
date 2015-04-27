@@ -1,0 +1,17 @@
+
+
+.icon-add {
+    background-image: url(http://cdn.sencha.com/ext/gpl/4.2.0/resources/ext-theme-classic/images/tree/drop-add.gif) !important;
+}
+
+.icon-jsonObject {
+    background-image: url(object.gif) !important;
+}
+
+.icon-jsonArray {
+    background-image: url(array.gif) !important;
+}
+
+.icon-jsonValue {
+    background-image: url(green.gif) !important;
+}
