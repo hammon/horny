@@ -131,7 +131,7 @@ Ext.define('Ouroboros.JsonTree', {
                 var treeStore = this.getStore();
                 var root = treeStore.getRootNode();
 
-                root.childNodes = [];
+                root.removeAll();
                 //this.store.removeAll();
 
                 var jsonObj = JSON.parse(json);
