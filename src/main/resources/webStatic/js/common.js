@@ -32,6 +32,22 @@ var http = {
                 console.log("Request took: " + total + 'server-side failure with status code ' + response.status);
             }
         });
+    },
+
+    post: function(url,json,callback){
+        Ext.Ajax.request({
+        	   	url: url,
+        	   	method: 'POST',
+
+        	   	jsonData: json,
+
+        	   	success: function(transport){
+                          // do something
+        	   	},
+        	   	failure: function(transport){
+        	   			alert("Error: " - transport.responseText);
+        	   	}
+        	});
     }
 };
 

@@ -6,7 +6,8 @@ Ext.define('Ouroboros.PropertiesEditorGrid', {
        alias: 'widget.propertieseditorgrid',
 
        initComponent : function(){
-            console.log("EnvConfig.PropertiesEditorGrid initComponent");
+            console.log("Ouroboros.PropertiesEditorGrid initComponent");
+
             this.store = Ext.create('Ext.data.JsonStore',{
                                            fields:[{'name': 'name','type':'string'},{'name': 'value','type':'string'}]
                                       });
@@ -49,14 +50,34 @@ Ext.define('Ouroboros.PropertiesEditorGrid', {
 
                               this.up().up().store.insert(0, {
                                                                                 name: 'prop name',
-                                                                                value: 'prop value'
+                                                                                value: 'prop value',
+                                                                                dirty: true
+
                                                                             });
                               //cellEditing.startEditByPosition({row: 0, column: 0});
                           }
                       },
                       {
-                            text: 'Apply',
+                            text: 'Save',
                              handler : function(){
+
+                                var propsView = this.up().up();
+
+                                var store = propsView.getStore();
+
+                                var propsArr = [];
+
+                                store.each(function(record){
+                                    console.log(record.data.name + ' : ' + record.data.value);
+                                    propsArr.push(record.data);
+
+//                                    record.phantom = false;
+//                                    record.modified = {};
+
+                                });
+
+                                http.post('/api/props?op=save&path=' + propsView.propsPath,propsArr);
+                                store.commitChanges( );
 
                              }
                       }

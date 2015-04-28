@@ -120,11 +120,11 @@ Ext.define('Ouroboros.JsonTree', {
     title: 'JSON',
     rootVisible: false,
 
-//    plugins:[
-//        Ext.create('Ext.grid.plugin.CellEditing', {
-//          clicksToEdit:2
-//        })
-//      ],
+    plugins:[
+        Ext.create('Ext.grid.plugin.CellEditing', {
+          clicksToEdit:2
+        })
+      ],
 
     update : function(json){
 

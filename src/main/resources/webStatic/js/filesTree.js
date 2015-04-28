@@ -181,6 +181,7 @@ Ext.define('Ouroboros.FilesTree', {
                                 //console.log(res);
 
                                 var propsView = Ext.getCmp('propsView');
+                                propsView.propsPath = path;
                                 propsView.update(res);
                             });
                         }

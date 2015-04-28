@@ -10,7 +10,7 @@ Ext.onReady(function(){
            padding: 5
        },
        defaults: {
-          collapsible: true,
+         // collapsible: true,
           split: true
        },
        items: [
@@ -34,7 +34,8 @@ Ext.onReady(function(){
                                 }),
                                 Ext.create('Ouroboros.NgramsGrid',{
                                     region:'south',
-                                    id:'ngramsGrid'
+                                    id:'ngramsGrid'//,
+                                    //collapsible: true
                                 })
                             ]
                          }),
@@ -43,7 +44,8 @@ Ext.onReady(function(){
                             items: [
                             Ext.create('Ouroboros.SnippetsGrid',{
                                 region:'center',
-                                id: 'snippetsGrid'
+                                id: 'snippetsGrid'//,
+                                //collapsible: true
                             }),
                             Ext.createWidget('tabpanel', {
                                         id: 'contentTabs',

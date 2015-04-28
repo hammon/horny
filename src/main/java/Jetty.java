@@ -1,3 +1,4 @@
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -12,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import web.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * Created by michael on 4/20/15.
  */
@@ -20,6 +25,19 @@ public class Jetty {
     int _port = 8081;
 
     public static void main(String[] args) {
+
+        Properties p = new Properties();
+
+        try {
+            p.load(new FileInputStream("./conf/log4j.properties"));
+            PropertyConfigurator.configure(p);
+            log.info("Wow! I'm configured!");
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+
         Jetty jetty = new Jetty();
         jetty.start();
     }
@@ -73,7 +91,7 @@ public class Jetty {
 
             System.err.println(server.dump());
 
-            apiContext.setAttribute("rootPath", "/");
+            apiContext.setAttribute("rootPath", "/home/michael/");
 
             server.start();
             server.join();
