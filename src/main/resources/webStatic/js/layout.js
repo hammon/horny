@@ -28,6 +28,7 @@ Ext.onReady(function(){
                             region:'west',
                             width: 325,
                             items: [
+
                                 Ext.create('Ouroboros.FilesTree',{
                                     region:'center',
                                     minWidth: 100,
@@ -54,11 +55,7 @@ Ext.onReady(function(){
                                         activeTab: 0,
                                         items: [
 
-                                            Ext.create('Ouroboros.TextView',{
-                                             region:'south',
-                                             id:'textView',
-                                             title: 'Text',
-                                            }),//textView
+
                                             Ext.create('Ouroboros.JsonTree',{
                                                 id: 'jsonView'
                                             //    region:'center',
@@ -70,7 +67,12 @@ Ext.onReady(function(){
 
                                             //    region:'center',
                                             //    minWidth: 100,
-                                            })
+                                            }),
+                                            Ext.create('Ouroboros.TextView',{
+                                             region:'south',
+                                             id:'textView',
+                                             title: 'Text',
+                                            })//textView
 
                                         ]
                                     }

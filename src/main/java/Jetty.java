@@ -76,7 +76,7 @@ public class Jetty {
             ServletHolder charGramHolder = new ServletHolder(CharGramServlet.class);
             apiContext.addServlet(charGramHolder, "/api/chargram");
 
-            ServletHolder getTextHolder = new ServletHolder(GetTextServlet.class);
+            ServletHolder getTextHolder = new ServletHolder(TextServlet.class);
             apiContext.addServlet(getTextHolder, "/api/text");
 
 
@@ -91,7 +91,7 @@ public class Jetty {
 
             System.err.println(server.dump());
 
-            apiContext.setAttribute("rootPath", "/home/michael/");
+            apiContext.setAttribute("rootPath", "/home/michael/Documents");
 
             server.start();
             server.join();

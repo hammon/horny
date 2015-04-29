@@ -196,9 +196,18 @@ Ext.define('Ouroboros.JsonTree', {
         {
             text: 'Save',
              handler : function(){
-                var json = treeToJson(this.up().up().store.getRootNode(),{});
+
+                var jsonView = this.up().up();
+
+                var store = jsonView.getStore();
+
+                var json = treeToJson(store.getRootNode(),{});
 
                 console.log("json from tree: " + JSON.stringify(json));
+
+                http.post('/api/text?op=save&path=' + jsonView.filePath,json);
+                store.commitChanges( );
+                //jsonView.show();
              }
         }
     ],

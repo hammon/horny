@@ -173,6 +173,14 @@ Ext.define('Ouroboros.FilesTree', {
 
                 var itemText = record.data.text;
                 var namePartsArr = itemText.split('.');
+
+                var propsView = Ext.getCmp('propsView');
+                var jsonView = Ext.getCmp('jsonView');
+
+                propsView.tab.hide();
+                jsonView.tab.hide();
+
+
                 if(namePartsArr.length > 0){
                     var fileExt = namePartsArr[namePartsArr.length - 1];
                     if( fileExt ){
@@ -180,15 +188,20 @@ Ext.define('Ouroboros.FilesTree', {
                             http.get("/api/props?op=get&path=" + path,function(res){
                                 //console.log(res);
 
-                                var propsView = Ext.getCmp('propsView');
+
                                 propsView.propsPath = path;
                                 propsView.update(res);
+                                propsView.tab.show();
+                                propsView.show();
                             });
                         }
                         else if(fileExt === 'json'){
                             http.get('/api/text?path=' + path,function(res){
-                                var jsonView = Ext.getCmp('jsonView');
+
+                                jsonView.filePath = path;
                                 jsonView.update(res);
+                                jsonView.tab.show();
+                                jsonView.show();
                             });
                         }
                     }
