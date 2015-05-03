@@ -112,6 +112,70 @@ function castTreeValue(treeNode){
 }
 
 
+Ext.define('Ouroboros.JsonTreeAddMenu', {
+    extend: 'Ext.menu.Menu',
+    items: [
+        {
+           text: 'String',
+           "iconCls" : 'icon-jsonValue',
+           handler: function(item){
+                console.log(item);
+                var selectedNode = null;
+
+                //conext menu
+                if(this.parentMenu
+                    && this.parentMenu.parentMenu
+                    && this.parentMenu.parentMenu.selectedRecord){
+                    selectedNode = this.parentMenu.parentMenu.selectedRecord;
+                }
+                //toolbar menu
+                else{
+                    var tree = this.up('treepanel');//.up().up().up();
+
+                    if (tree.getSelectionModel().hasSelection()) {
+                        selectedNode = tree.getSelectionModel().getSelection()[0];
+                    } else {
+                        selectedNode = tree.store.getRootNode();
+                    }
+                }
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                selectedNode.appendChild({
+                    "name":"new string",
+                    "type":"[object String]",
+                    "value": "new string value",
+                    "leaf":true,
+                    "iconCls" : 'icon-jsonValue'
+               });
+           }
+        },
+        {
+           text: 'Number',
+           "iconCls" : 'icon-jsonValue',
+           handler: function(item){
+
+           }
+        },
+        {
+           text: 'Object',
+           "iconCls" : 'icon-jsonObject',
+           handler: function(item){
+
+           }
+        },
+        {
+           text: 'Array',
+           "iconCls" : 'icon-jsonArray',
+           handler: function(item){
+
+           }
+        }
+    ]
+});
+
 Ext.define('Ouroboros.JsonTree', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.jsontree',
@@ -144,54 +208,7 @@ Ext.define('Ouroboros.JsonTree', {
     tbar:[
         {
            text: 'Add',
-           menu:{
-               xtype : 'menu',
-               items: [
-                    {
-                       text: 'String',
-                       handler: function(item){
-                            console.log(item);
-                            var tree = this.up().up().up().up();
-                            var selectedNode = null;
-                            if (tree.getSelectionModel().hasSelection()) {
-                                selectedNode = tree.getSelectionModel().getSelection()[0];
-                            } else {
-                                selectedNode = tree.store.getRootNode();
-                            }
-
-                            if(selectedNode.data.leaf){
-                                selectedNode = selectedNode.parentNode;
-                            }
-
-                            selectedNode.appendChild({
-                                "name":"new string",
-                                "type":"[object String]",
-                                "value": "new string value",
-                                "leaf":true,
-                                "iconCls" : 'icon-jsonValue'
-                           });
-                       }
-                    },
-                    {
-                       text: 'Number',
-                       handler: function(item){
-
-                       }
-                    },
-                    {
-                       text: 'Object',
-                       handler: function(item){
-
-                       }
-                    },
-                    {
-                       text: 'Array',
-                       handler: function(item){
-
-                       }
-                    }
-               ]
-               }// Add menu
+           menu: Ext.create('Ouroboros.JsonTreeAddMenu')
         },
         {
             text: 'Save',
@@ -275,24 +292,29 @@ Ext.define('Ouroboros.JsonTree', {
                      //your menu code here
                     // alert("beforecellcontextmenu");
 
-                     var menu = new Ext.menu.Menu({
-                         items: [
-                             {
-                                 text: 'Add',
-                                 handler: function(item,e){
-                                    alert("Add");
-                                 }
-                             },
-                             {text: 'Edit'},
-                             {text: 'Delete'}
-                         ]
-                     });
 
-                     menu.showAt(e.getXY());
 
                  },
                  itemcontextmenu: function(view,record,item,index,e,eOpts){
                      e.stopEvent();
+
+                     var menu = new Ext.menu.Menu({
+                          items: [
+                              {
+                                  text: 'Add',
+                                  menu: Ext.create('Ouroboros.JsonTreeAddMenu')
+//                                  handler: function(item,e){
+//                                     alert("Add");
+//                                  }
+                              },
+                              {text: 'Edit'},
+                              {text: 'Delete'}
+                          ]
+                      });
+
+                      menu.selectedRecord = record;
+
+                      menu.showAt(e.getXY());
                  }
              }
          };

@@ -1,3 +1,40 @@
+
+
+Ext.define('Ouroboros.FilesTreeToolbar',{
+    extend: 'Ext.toolbar.Toolbar',
+    alias: 'widget.filestreetoolbar',
+
+    items: [
+        {
+            boxLabel: 'Show hidden',
+            xtype: 'checkbox',
+            listeners: {
+                change: {
+                    fn: function( that, newValue, oldValue, eOpts ) {
+                        console.log('new val: ' + newValue);
+
+                        var tree = that.up().up();
+
+                        var store = tree.getStore();
+
+                        store.filter([
+                            {
+                                filterFn:function(item){
+                                    console.log('item.raw.hidden: ' + item.raw.hidden);
+                                    return item.raw.hidden;
+                                }
+                            }
+                        ]);
+                    }
+                }
+            }
+        }
+    ]
+
+});
+
+
+
 Ext.define('Ouroboros.FilesTree', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.filestree',
@@ -5,6 +42,8 @@ Ext.define('Ouroboros.FilesTree', {
     id: 'filesTree',
     title: 'Files',
     rootVisible: false,
+
+    tbar:Ext.create('Ouroboros.FilesTreeToolbar'),
 
 //    requires: [
 //            'Ext.data.*',
@@ -23,57 +62,57 @@ Ext.define('Ouroboros.FilesTree', {
                     sortable: true,
                     dataIndex: 'text'
                 },
-                {
-                   // xtype: 'treecolumn', //this is so we know which column will show the tree
-                    text: 'Size',
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'length'
-                },
-                {
-                    xtype: 'datecolumn',
-                    format: 'Y-m-d H:i:s',
-                    text: 'lastModified',
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'lastModified'
-                },
-                {
-                    xtype: 'checkcolumn',
-                    header: 'selected',
-                    dataIndex: 'selected',
-                    width: 55,
-                    stopSelection: false,
-                    menuDisabled: true,
-                    listeners: {
-                        checkchange: function( that, rowIndex, checked, eOpts ) {
-                            //Ext.Msg.alert('Editing' + (record.get('selected') ? ' completed task' : '') , record.get('text'));
-                            console.log("checkchange" + rowIndex + " checked " + checked);
+        {
+           // xtype: 'treecolumn', //this is so we know which column will show the tree
+            text: 'Size',
+            flex: 1,
+            sortable: true,
+            dataIndex: 'length'
+        },
+        {
+            xtype: 'datecolumn',
+            format: 'Y-m-d H:i:s',
+            text: 'lastModified',
+            flex: 1,
+            sortable: true,
+            dataIndex: 'lastModified'
+        },
+        {
+            xtype: 'checkcolumn',
+            header: 'selected',
+            dataIndex: 'selected',
+            width: 55,
+            stopSelection: false,
+            menuDisabled: true,
+            listeners: {
+                checkchange: function( that, rowIndex, checked, eOpts ) {
+                    //Ext.Msg.alert('Editing' + (record.get('selected') ? ' completed task' : '') , record.get('text'));
+                    console.log("checkchange" + rowIndex + " checked " + checked);
 
-                            var arrSelected = [];
+                    var arrSelected = [];
 
-                            var findSelected = function(node){
-                                node.eachChild(function(n){
-                                    //console.log(n.data.text + " " + n.data.selected);
-                                    if(n.data['selected'] == true){
-                                        console.log(">>>> " + n.data.text + " " + n.data.selected);
-                                        arrSelected.push(n.getPath('text'));
-                                    }
-                                });
-
-                                if(node.childNodes.length > 0){
-                                    node.eachChild(findSelected);
-                                }
+                    var findSelected = function(node){
+                        node.eachChild(function(n){
+                            //console.log(n.data.text + " " + n.data.selected);
+                            if(n.data['selected'] == true){
+                                console.log(">>>> " + n.data.text + " " + n.data.selected);
+                                arrSelected.push(n.getPath('text'));
                             }
+                        });
 
-                           findSelected( that.up().up().getStore().getRootNode());
-
-                           console.log("arrSelected: " + JSON.stringify(arrSelected));
-
+                        if(node.childNodes.length > 0){
+                            node.eachChild(findSelected);
                         }
                     }
+
+                   findSelected( that.up().up().getStore().getRootNode());
+
+                   console.log("arrSelected: " + JSON.stringify(arrSelected));
+
                 }
-                ],
+            }
+        }
+    ],
     initComponent : function(){
 
 
