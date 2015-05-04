@@ -208,10 +208,12 @@ Ext.define('Ouroboros.JsonTree', {
     tbar:[
         {
            text: 'Add',
+           "iconCls" : 'icon-add',
            menu: Ext.create('Ouroboros.JsonTreeAddMenu')
         },
         {
             text: 'Save',
+            "iconCls" : 'icon-save',
              handler : function(){
 
                 var jsonView = this.up().up();
@@ -302,13 +304,17 @@ Ext.define('Ouroboros.JsonTree', {
                           items: [
                               {
                                   text: 'Add',
+                                  "iconCls" : 'icon-add',
                                   menu: Ext.create('Ouroboros.JsonTreeAddMenu')
 //                                  handler: function(item,e){
 //                                     alert("Add");
 //                                  }
                               },
                               {text: 'Edit'},
-                              {text: 'Delete'}
+                              {text: 'Delete',
+                              "iconCls" : 'icon-erase',
+
+                              }
                           ]
                       });
 
