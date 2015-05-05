@@ -310,9 +310,17 @@ Ext.define('Ouroboros.JsonTree', {
 //                                     alert("Add");
 //                                  }
                               },
-                              {text: 'Edit'},
+                        //      {text: 'Edit'},
                               {text: 'Delete',
                               "iconCls" : 'icon-erase',
+                              handler: function(item,e){
+                                   //alert("Delete");
+                                   var store = this.parentMenu.selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
+
+                                   this.parentMenu.selectedRecord.remove(true);
+
+                                   store.sync();
+                                }
 
                               }
                           ]
