@@ -19,10 +19,12 @@ function addJsonTreeNode(treeNode,jsonNode){
             if(t === "[object Object]"){
                 treeObj.leaf = false;
                 treeObj.iconCls = 'icon-jsonObject';
+                treeObj.value = "...";
             }
             else if( t === "[object Array]" ){
                 treeObj.leaf = false;
                 treeObj.iconCls = 'icon-jsonArray';
+                treeObj.value = "...";
             }
 
 
@@ -47,10 +49,12 @@ function addJsonTreeNode(treeNode,jsonNode){
             if(t === "[object Object]"){
                 treeObj.leaf = false;
                 treeObj.iconCls = 'icon-jsonObject';
+                treeObj.value = "...";
             }
             else if( t === "[object Array]" ){
                 treeObj.leaf = false;
                 treeObj.iconCls = 'icon-jsonArray';
+                treeObj.value = "...";
             }
 
             var childTreeNode = treeNode.appendChild(treeObj);
@@ -114,37 +118,48 @@ function castTreeValue(treeNode){
 
 Ext.define('Ouroboros.JsonTreeAddMenu', {
     extend: 'Ext.menu.Menu',
+
+    getSelectedNode: function(that){
+        var selectedNode = null;
+
+            //conext menu
+            if(that.parentMenu
+                && that.parentMenu.parentMenu
+                && that.parentMenu.parentMenu.selectedRecord){
+                selectedNode = that.parentMenu.parentMenu.selectedRecord;
+            }
+            //toolbar menu
+            else{
+                var tree = that.up('treepanel');//.up().up().up();
+
+                if (tree.getSelectionModel().hasSelection()) {
+                    selectedNode = tree.getSelectionModel().getSelection()[0];
+                } else {
+                    selectedNode = tree.store.getRootNode();
+                }
+            }
+            return selectedNode;
+    },
     items: [
         {
            text: 'String',
            "iconCls" : 'icon-jsonValue',
            handler: function(item){
                 console.log(item);
-                var selectedNode = null;
 
-                //conext menu
-                if(this.parentMenu
-                    && this.parentMenu.parentMenu
-                    && this.parentMenu.parentMenu.selectedRecord){
-                    selectedNode = this.parentMenu.parentMenu.selectedRecord;
-                }
-                //toolbar menu
-                else{
-                    var tree = this.up('treepanel');//.up().up().up();
-
-                    if (tree.getSelectionModel().hasSelection()) {
-                        selectedNode = tree.getSelectionModel().getSelection()[0];
-                    } else {
-                        selectedNode = tree.store.getRootNode();
-                    }
-                }
+                var selectedNode = this.parentMenu.getSelectedNode(this);
 
                 if(selectedNode.data.leaf){
                     selectedNode = selectedNode.parentNode;
                 }
 
+                var newName = "new string";
+                if(selectedNode.raw.type === "[object Array]"){
+                    newName = selectedNode.childNodes.length;
+                }
+
                 selectedNode.appendChild({
-                    "name":"new string",
+                    "name": newName,
                     "type":"[object String]",
                     "value": "new string value",
                     "leaf":true,
@@ -156,21 +171,105 @@ Ext.define('Ouroboros.JsonTreeAddMenu', {
            text: 'Number',
            "iconCls" : 'icon-jsonValue',
            handler: function(item){
+                console.log(item);
 
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                var newName = "new number";
+                if(selectedNode.raw.type === "[object Array]"){
+                    newName = selectedNode.childNodes.length;
+                }
+
+                selectedNode.appendChild({
+                    "name": newName,
+                    "type":"[object Number]",
+                    "value": 1,
+                    "leaf":true,
+                    "iconCls" : 'icon-jsonValue'
+               });
+           }
+        },
+        {
+           text: 'Boolean',
+           "iconCls" : 'icon-jsonValue',
+           handler: function(item){
+                console.log(item);
+
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                var newName = "new boolean";
+                if(selectedNode.raw.type === "[object Array]"){
+                    newName = selectedNode.childNodes.length;
+                }
+
+                selectedNode.appendChild({
+                    "name": newName,
+                    "type":"[object Boolean]",
+                    "value": true,
+                    "leaf":true,
+                    "iconCls" : 'icon-jsonValue'
+               });
            }
         },
         {
            text: 'Object',
            "iconCls" : 'icon-jsonObject',
            handler: function(item){
+                console.log(item);
 
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                var newName = "new object";
+                if(selectedNode.raw.type === "[object Array]"){
+                    newName = selectedNode.childNodes.length;
+                }
+
+                selectedNode.appendChild({
+                    "name": newName,
+                    "type":"[object Object]",
+                    "value": "...",
+                    "leaf":false,
+                    "iconCls" : 'icon-jsonObject'
+               });
            }
         },
         {
            text: 'Array',
            "iconCls" : 'icon-jsonArray',
            handler: function(item){
+                console.log(item);
 
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                var newName = "new array";
+                if(selectedNode.raw.type === "[object Array]"){
+                    newName = selectedNode.childNodes.length;
+                }
+
+                selectedNode.appendChild({
+                    "name": newName,
+                    "type": "[object Array]",
+                    "value": "...",
+                    "leaf": false,
+                    "iconCls" : 'icon-jsonArray'
+               });
            }
         }
     ]
