@@ -1,8 +1,11 @@
 package web;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +24,8 @@ import java.util.Enumeration;
  * Created by michael on 08/02/15.
  */
 public class FilesServlet extends HttpServlet {
+
+    final static Logger log = LoggerFactory.getLogger(FilesServlet.class);
     //File root = new File("/home/michael/");
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,6 +42,35 @@ public class FilesServlet extends HttpServlet {
         if(op.equalsIgnoreCase("list")){
             listDir(request,response);
         }
+        else if(op.equalsIgnoreCase("mkdir")){
+            mkdir(request,response);
+        }
+
+    }
+
+    void mkdir(HttpServletRequest request, HttpServletResponse response){
+        String path = request.getParameter("path");
+
+        File root = new File(getServletContext().getAttribute("rootPath").toString());
+        File currDir = new File(root,path);
+        File newDir = new File(currDir,request.getParameter("name"));
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        try {
+            FileUtils.forceMkdir(newDir);
+        } catch (IOException e) {
+
+            log.error("Failed to create directory " + newDir.getAbsolutePath(),e);
+            out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
+        }
+
+        out.write(newDir.getAbsolutePath() + " OK.");
 
     }
 

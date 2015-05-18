@@ -1,10 +1,105 @@
 
 
+Ext.define('Ouroboros.FilesTreeAddMenu', {
+    extend: 'Ext.menu.Menu',
+
+    getSelectedNode: function(that){
+        var selectedNode = null;
+
+            //conext menu
+            if(that.parentMenu
+                && that.parentMenu.parentMenu
+                && that.parentMenu.parentMenu.selectedRecord){
+                selectedNode = that.parentMenu.parentMenu.selectedRecord;
+            }
+            //toolbar menu
+            else{
+                var tree = that.up('treepanel');//.up().up().up();
+
+                if (tree.getSelectionModel().hasSelection()) {
+                    selectedNode = tree.getSelectionModel().getSelection()[0];
+                } else {
+                    selectedNode = tree.store.getRootNode();
+                }
+            }
+            return selectedNode;
+    },
+    items: [
+        {
+           text: 'Folder',
+        //   "iconCls" : 'icon-jsonValue',
+           handler: function(item){
+                console.log(item);
+
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                Ext.MessageBox.prompt('New folder', 'Please enter folder name:', function (btn, text){
+                    console.log("btn: " + btn + " text: " + text);
+
+                    var path = selectedNode.getPath('text','/').replace('/Root/','');
+
+                     http.get("/api/files?op=mkdir&path=" + path + "&name=" + text,function(res){
+                        console.log(res);
+                     });
+                });
+
+//                var newName = "new folder";
+//
+//
+//                selectedNode.appendChild({
+//                    "text": newName,
+//                  //  "type":"[object String]",
+//                    "value": "new string value",
+//                    "leaf":false,
+//                   // "iconCls" : 'icon-jsonValue'
+//               });
+           }
+        },
+        {
+           text: 'Json',
+           "iconCls" : 'icon-jsonValue',
+           handler: function(item){
+                console.log(item);
+
+                var selectedNode = this.parentMenu.getSelectedNode(this);
+
+
+                if(selectedNode.data.leaf){
+                    selectedNode = selectedNode.parentNode;
+                }
+
+                var newName = "new Json";
+
+
+                selectedNode.appendChild({
+                    "text": newName,
+                 //   "type":"[object Number]",
+                    "value": 1,
+                    "leaf":true,
+                 //   "iconCls" : 'icon-jsonValue'
+               });
+           }
+        }
+
+
+
+    ]
+});
+
 Ext.define('Ouroboros.FilesTreeToolbar',{
     extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.filestreetoolbar',
 
     items: [
+        {
+           text: 'New',
+           "iconCls" : 'icon-add',
+           menu: Ext.create('Ouroboros.FilesTreeAddMenu')
+        },
         {
             boxLabel: 'Show hidden',
             xtype: 'checkbox',
