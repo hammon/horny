@@ -12,6 +12,11 @@ Ext.define('Ouroboros.FilesTreeAddMenu', {
                 && that.parentMenu.parentMenu.selectedRecord){
                 selectedNode = that.parentMenu.parentMenu.selectedRecord;
             }
+            //containercontextmenu
+            else if(that.parentMenu
+                    && that.parentMenu.selectedRecord){
+                selectedNode = that.parentMenu.selectedRecord;
+            }
             //toolbar menu
             else{
                 var tree = that.up('treepanel');//.up().up().up();
@@ -250,7 +255,13 @@ Ext.define('Ouroboros.FilesTree', {
 //                    alert("containerclick");
                  },
                  containercontextmenu: function( that, e, eOpts ){
+                    e.stopEvent();
 //                     alert("containercontextmenu");
+                    var menu = Ext.create('Ouroboros.FilesTreeAddMenu');
+
+                    menu.selectedRecord = that.getTreeStore().getRootNode();
+
+                    menu.showAt(e.getXY());
                  },
                  itemcontextmenu: function(view,record,item,index,e,eOpts){
                      e.stopEvent();

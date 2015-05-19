@@ -91,7 +91,7 @@ public class Jetty {
 
             System.err.println(server.dump());
 
-            apiContext.setAttribute("rootPath", "C:\\dev\\au-runner");
+            apiContext.setAttribute("rootPath", "/home/michael/Documents");
 
             server.start();
             server.join();
