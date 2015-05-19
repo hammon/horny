@@ -11,7 +11,7 @@ public class NGram {
 
     public NGram(String text){
         txt = text;
-        separators = new ArrayList<Character>(Arrays.asList(' ','.',',',':',';','`','\'',' ','\\','/','?','@','$','#','<','>','|','"','�','�','�','�','\n','\r','\t','=','(',')','{','}','[',']','!','-'));
+        separators = new ArrayList<Character>(Arrays.asList(' ','.',',',':',';','`','\'',' ','\\','/','?','@','$','#','<','>','|','"','\n','\r','\t','=','(',')','{','}','[',']','!','-'));
         tokenize();
     }
 
