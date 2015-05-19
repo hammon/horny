@@ -1,6 +1,6 @@
 
 var http = {
-    get : function (url,callback){
+    get : function (url,callback,onError){
 
     var start = Date.now();
 
@@ -30,6 +30,10 @@ var http = {
                 var total = end - start;
 
                 console.log("Request took: " + total + 'server-side failure with status code ' + response.status);
+
+                if(onError){
+                    onError(response, opts);
+                }
             }
         });
     },

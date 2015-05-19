@@ -23,3 +23,11 @@
 .icon-erase {
     background-image: url(/images/erase.png) !important;
 }
+
+.icon-folder {
+    background-image: url(images/tree/folder.gif) !important;
+}
+
+.icon-file {
+    background-image: url(images/tree/leaf.gif) !important;
+}

@@ -27,7 +27,7 @@ Ext.define('Ouroboros.FilesTreeAddMenu', {
     items: [
         {
            text: 'Folder',
-        //   "iconCls" : 'icon-jsonValue',
+           "iconCls" : 'icon-folder',
            handler: function(item){
                 console.log(item);
 
@@ -40,40 +40,49 @@ Ext.define('Ouroboros.FilesTreeAddMenu', {
                 Ext.MessageBox.prompt('New folder', 'Please enter folder name:', function (btn, text){
                     console.log("btn: " + btn + " text: " + text);
 
-                    var path = selectedNode.getPath('text','/').replace('/Root/','');
+                    if(btn === 'ok'){
+                        var path = selectedNode.getPath('text','/').replace('/Root/','');
 
-                     http.get("/api/files?op=mkdir&path=" + path + "&name=" + text,function(res){
-                        console.log(res);
-                     });
+                        if(selectedNode.internalId === 'root'){
+                            path = '';
+                        }
+
+                        http.get("/api/files?op=mkdir&path=" + path + "&name=" + text,function(res){
+                            console.log(res);
+                                selectedNode.appendChild({
+                                    "text": text,
+                                  //  "type":"[object String]",
+                                  //  "value": "new string value",
+                                    "leaf":false,
+                                   // "iconCls" : 'icon-jsonValue'
+                               });
+                        },
+                        function(response, opts){
+                            var obj = JSON.parse(response.responseText);
+                            Ext.MessageBox.show({
+                                       title: 'Error creating folder',
+                                       msg: obj.message,
+                                       buttons: Ext.MessageBox.OK
+                                     //  icon: Ext.get('icons').dom.value
+                                   });
+                        });
+                    }
                 });
-
-//                var newName = "new folder";
-//
-//
-//                selectedNode.appendChild({
-//                    "text": newName,
-//                  //  "type":"[object String]",
-//                    "value": "new string value",
-//                    "leaf":false,
-//                   // "iconCls" : 'icon-jsonValue'
-//               });
            }
         },
         {
-           text: 'Json',
-           "iconCls" : 'icon-jsonValue',
+           text: 'File',
+           "iconCls" : 'icon-file',
            handler: function(item){
                 console.log(item);
 
                 var selectedNode = this.parentMenu.getSelectedNode(this);
-
 
                 if(selectedNode.data.leaf){
                     selectedNode = selectedNode.parentNode;
                 }
 
                 var newName = "new Json";
-
 
                 selectedNode.appendChild({
                     "text": newName,
@@ -84,9 +93,6 @@ Ext.define('Ouroboros.FilesTreeAddMenu', {
                });
            }
         }
-
-
-
     ]
 });
 
@@ -125,7 +131,6 @@ Ext.define('Ouroboros.FilesTreeToolbar',{
             }
         }
     ]
-
 });
 
 
@@ -235,6 +240,51 @@ Ext.define('Ouroboros.FilesTree', {
              plugins: {
                  ptype: 'treeviewdragdrop',
                  containerScroll: true
+             },
+             listeners:{
+                 beforecellcontextmenu: function(vthis, td, cellIndex, record, tr, rowIndex, e, eOpts ){
+                     //your menu code here
+                    // alert("beforecellcontextmenu");
+                 },
+                 containerclick: function( that, e, eOpts ){
+//                    alert("containerclick");
+                 },
+                 containercontextmenu: function( that, e, eOpts ){
+//                     alert("containercontextmenu");
+                 },
+                 itemcontextmenu: function(view,record,item,index,e,eOpts){
+                     e.stopEvent();
+
+                     var menu = new Ext.menu.Menu({
+                          items: [
+                              {
+                                  text: 'Add',
+                                  "iconCls" : 'icon-add',
+                                  menu: Ext.create('Ouroboros.FilesTreeAddMenu')
+//                                  handler: function(item,e){
+//                                     alert("Add");
+//                                  }
+                              },
+                        //      {text: 'Edit'},
+                              {text: 'Delete',
+                              "iconCls" : 'icon-erase',
+                              handler: function(item,e){
+                                   //alert("Delete");
+                                   var store = this.parentMenu.selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
+
+                                   this.parentMenu.selectedRecord.remove(true);
+
+                                   store.sync();
+                                }
+
+                              }
+                          ]
+                      });
+
+                      menu.selectedRecord = record;
+
+                      menu.showAt(e.getXY());
+                 }
              }
          };
 

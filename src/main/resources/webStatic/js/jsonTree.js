@@ -396,6 +396,7 @@ Ext.define('Ouroboros.JsonTree', {
 
 
                  },
+
                  itemcontextmenu: function(view,record,item,index,e,eOpts){
                      e.stopEvent();
 

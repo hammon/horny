@@ -49,6 +49,11 @@ public class FilesServlet extends HttpServlet {
     }
 
     void mkdir(HttpServletRequest request, HttpServletResponse response){
+
+        JSONObject jsonRes = new JSONObject();
+
+        jsonRes.put("result","SUCCESS");
+
         String path = request.getParameter("path");
 
         File root = new File(getServletContext().getAttribute("rootPath").toString());
@@ -64,13 +69,18 @@ public class FilesServlet extends HttpServlet {
 
         try {
             FileUtils.forceMkdir(newDir);
+            jsonRes.put("message",newDir.getAbsolutePath());
         } catch (IOException e) {
 
             log.error("Failed to create directory " + newDir.getAbsolutePath(),e);
-            out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            //"Failed to create directory " + newDir.getAbsolutePath() +
+            jsonRes.put("message",e.getMessage());
+            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
         }
 
-        out.write(newDir.getAbsolutePath() + " OK.");
+        out.write(jsonRes.toString());
 
     }
 
