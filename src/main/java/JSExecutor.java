@@ -12,7 +12,7 @@ public class JSExecutor {
     Bindings _bindings = _engine.getBindings(ScriptContext.ENGINE_SCOPE);
 
     public JSExecutor(){
-
+        _bindings.put("horny",new utils.BasicUtils(_engine));
     }
 
     Object eval(String script){
