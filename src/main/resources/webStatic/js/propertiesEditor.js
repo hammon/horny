@@ -46,6 +46,7 @@ Ext.define('Ouroboros.PropertiesEditorGrid', {
               ],
               tbar: [{
                           text: 'Add Property',
+                          'iconCls' : 'icon-add',
                           handler : function(){
 
                               this.up().up().store.insert(0, {
@@ -59,6 +60,7 @@ Ext.define('Ouroboros.PropertiesEditorGrid', {
                       },
                       {
                             text: 'Save',
+                            "iconCls" : 'icon-save',
                              handler : function(){
 
                                 var propsView = this.up().up();

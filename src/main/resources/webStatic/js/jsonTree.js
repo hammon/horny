@@ -307,7 +307,7 @@ Ext.define('Ouroboros.JsonTree', {
     tbar:[
         {
            text: 'Add',
-           "iconCls" : 'icon-add',
+           'iconCls' : 'icon-add',
            menu: Ext.create('Ouroboros.JsonTreeAddMenu')
         },
         {
@@ -392,9 +392,6 @@ Ext.define('Ouroboros.JsonTree', {
                  beforecellcontextmenu: function(vthis, td, cellIndex, record, tr, rowIndex, e, eOpts ){
                      //your menu code here
                     // alert("beforecellcontextmenu");
-
-
-
                  },
 
                  itemcontextmenu: function(view,record,item,index,e,eOpts){
