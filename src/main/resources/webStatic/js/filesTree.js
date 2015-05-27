@@ -287,7 +287,6 @@ Ext.define('Ouroboros.FilesTree', {
 
                                    store.sync();
                                 }
-
                               }
                           ]
                       });

@@ -48,6 +48,14 @@ public class Horny {
             JSExecutor js = new JSExecutor();
             js.eval(cmd.eval);
         }
-
+        else if(cmd.port != 0){
+            Jetty jetty = new Jetty();
+            if(!cmd.rootPath.isEmpty()){
+                jetty.start(cmd.port,cmd.rootPath);
+            }
+            else{
+                jetty.start(cmd.port);
+            }
+        }
     }
 }

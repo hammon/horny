@@ -56,4 +56,8 @@ public class BasicUtils {
             e.printStackTrace();
         }
     }
+
+    public void printToLog(String msg){
+        log.info(msg);
+    }
 }

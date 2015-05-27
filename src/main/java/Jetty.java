@@ -22,7 +22,8 @@ import java.util.Properties;
  */
 public class Jetty {
     final static Logger log = LoggerFactory.getLogger(Jetty.class);
-    int _port = 8081;
+    int _port = 8080;
+    String _rootPath = "/";
 
     public static void main(String[] args) {
 
@@ -39,11 +40,17 @@ public class Jetty {
 
 
         Jetty jetty = new Jetty();
-        jetty.start();
+        jetty.start(8081,"C:\\test");
     }
 
     public void start(int port){
         _port = port;
+        start();
+    }
+
+    public void start(int port,String rootPath){
+        _port = port;
+        _rootPath = rootPath;
         start();
     }
 
@@ -91,7 +98,7 @@ public class Jetty {
 
             System.err.println(server.dump());
 
-            apiContext.setAttribute("rootPath", "/home/michael/Documents");
+            apiContext.setAttribute("rootPath", _rootPath);
 
             server.start();
             server.join();

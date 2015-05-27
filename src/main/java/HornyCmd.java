@@ -17,4 +17,10 @@ public class HornyCmd {
 
     @Parameter(names = { "-e", "-eval" }, description = "js script")
     public String eval = "";
+
+    @Parameter(names = { "-p", "-port" }, description = "jetty port")
+    public int port = 0;
+
+    @Parameter(names = { "-r", "-rootPath" }, description = "file serving root path")
+    public String rootPath = "";
 }
