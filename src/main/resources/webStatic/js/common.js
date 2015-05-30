@@ -55,7 +55,10 @@ var http = {
     }
 };
 
+
 // fix hide submenu (in chrome 43)
+//http://stackoverflow.com/questions/30399433/extjs-submenus-disappear-on-chrome-43
+
 Ext.override(Ext.menu.Menu, {
     onMouseLeave: function(e) {
     var me = this;
