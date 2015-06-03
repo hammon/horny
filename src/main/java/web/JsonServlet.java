@@ -26,6 +26,18 @@ public class JsonServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
 
+        //just in case ...
+        /*
+        * deal with the nasty first char
+        * http://stackoverflow.com/questions/4773663/jsonobject-text-must-begin-with
+        * objectString.substring(objectString.indexOf('{'))
+        * */
+//        if((int)data.trim().charAt(0) == 65279){
+//            data = data.trim().substring(1);
+//        }
+
+//        data = data.substring(data.indexOf('{'));
+
         File root = new File(getServletContext().getAttribute("rootPath").toString());
 
         response.setCharacterEncoding("UTF-8");
