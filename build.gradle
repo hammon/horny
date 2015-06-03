@@ -30,7 +30,7 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-server:9.2.5.v20141112'
     compile 'org.eclipse.jetty:jetty-servlet:9.2.5.v20141112'
 
-
+    compile 'org.apache.shiro:shiro-core:1.2.3'
 
 }
 

@@ -50,6 +50,7 @@ public class FilesServlet extends HttpServlet {
 
     void mkdir(HttpServletRequest request, HttpServletResponse response){
 
+
         JSONObject jsonRes = new JSONObject();
 
         jsonRes.put("result","SUCCESS");

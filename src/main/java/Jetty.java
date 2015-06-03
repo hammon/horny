@@ -1,4 +1,6 @@
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -26,6 +28,15 @@ public class Jetty {
     String _rootPath = "/";
 
     public static void main(String[] args) {
+
+        //1.
+        IniSecurityManagerFactory factory = new IniSecurityManagerFactory("./conf/shiro.ini");
+
+        //2.
+        org.apache.shiro.mgt.SecurityManager securityManager = factory.getInstance();
+
+        //3.
+        SecurityUtils.setSecurityManager(securityManager);
 
         Properties p = new Properties();
 
