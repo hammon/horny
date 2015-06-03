@@ -79,8 +79,6 @@ public class PropertiesSerlvet extends HttpServlet {
 
             log.info("props save json data: " + jb.toString());
 
-
-
             try {
                 Properties props = new Properties();
                 JSONArray jsonArr = new JSONArray(jb.toString());
@@ -89,7 +87,6 @@ public class PropertiesSerlvet extends HttpServlet {
                     JSONObject obj = jsonArr.getJSONObject(i);
                     props.setProperty(obj.getString("name"),obj.getString("value"));
                 }
-
                 props.store(new FileOutputStream(new File(root,path)),null);
 
             } catch (Exception e) {
@@ -97,14 +94,6 @@ public class PropertiesSerlvet extends HttpServlet {
                 // crash and burn
                log.error("Failed to parse json :(",e);
             }
-
-
-
-
-
-
-
-
         }
 
         resp.setStatus(HttpServletResponse.SC_OK);

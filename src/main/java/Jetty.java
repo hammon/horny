@@ -38,9 +38,8 @@ public class Jetty {
 
         }
 
-
         Jetty jetty = new Jetty();
-        jetty.start(8081,"/home/michael/Documents");
+        jetty.start(8081,"C:\\test");
     }
 
     public void start(int port){
@@ -89,6 +88,9 @@ public class Jetty {
 
             ServletHolder propsHolder = new ServletHolder(PropertiesSerlvet.class);
             apiContext.addServlet(propsHolder, "/api/props");
+
+            ServletHolder jsonHolder = new ServletHolder(JsonServlet.class);
+            apiContext.addServlet(jsonHolder, "/api/json");
 
 
             ContextHandlerCollection contexts = new ContextHandlerCollection();

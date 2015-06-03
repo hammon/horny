@@ -323,7 +323,7 @@ Ext.define('Ouroboros.JsonTree', {
 
                 console.log("json from tree: " + JSON.stringify(json));
 
-                http.post('/api/text?op=save&path=' + jsonView.filePath,json);
+                http.post('/api/json?op=save&path=' + jsonView.filePath,json);
                 store.sync( );
                 //jsonView.show();
              }

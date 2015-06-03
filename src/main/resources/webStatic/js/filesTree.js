@@ -220,8 +220,6 @@ Ext.define('Ouroboros.FilesTree', {
     ],
     initComponent : function(){
 
-
-
         this.store = Ext.create('Ext.data.TreeStore', {
              root: {
                  text: 'Root',
@@ -390,7 +388,7 @@ Ext.define('Ouroboros.FilesTree', {
                             });
                         }
                         else if(fileExt === 'json'){
-                            http.get('/api/text?path=' + path,function(res){
+                            http.get('/api/json?path=' + path,function(res){
 
                                 jsonView.filePath = path;
                                 jsonView.update(res);
