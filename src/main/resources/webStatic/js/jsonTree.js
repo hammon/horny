@@ -316,9 +316,7 @@ Ext.define('Ouroboros.JsonTree', {
              handler : function(){
 
                 var jsonView = this.up().up();
-
                 var store = jsonView.getStore();
-
                 var json = treeToJson(store.getRootNode(),{});
 
                 console.log("json from tree: " + JSON.stringify(json));
