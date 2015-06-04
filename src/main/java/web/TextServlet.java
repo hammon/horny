@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 
 /**
  * Created by michael on 12/02/15.
@@ -49,7 +51,11 @@ public class TextServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            out.print(FileUtils.readFileToString(file));
+            String text = FileUtils.readFileToString(file);
+
+            text = StringEscapeUtils.escapeHtml4(text);
+
+            out.print(text);
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
