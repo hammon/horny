@@ -39,7 +39,7 @@ public class Jetty {
         }
 
         Jetty jetty = new Jetty();
-        jetty.start(8081,"C:\\test");
+        jetty.start(8081,"/home/michael/Documents");
     }
 
     public void start(int port){
