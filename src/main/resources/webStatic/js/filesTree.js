@@ -86,16 +86,46 @@ Ext.define('Ouroboros.FilesTreeAddMenu', {
                 if(selectedNode.data.leaf){
                     selectedNode = selectedNode.parentNode;
                 }
+                Ext.MessageBox.prompt('New file', 'Please enter file name:', function (btn, text){
+                    console.log("btn: " + btn + " text: " + text);
 
-                var newName = "new Json";
+                    if(btn === 'ok'){
+                        var path = selectedNode.getPath('text','/').replace('/Root/','');
 
-                selectedNode.appendChild({
-                    "text": newName,
-                 //   "type":"[object Number]",
-                    "value": 1,
-                    "leaf":true,
-                 //   "iconCls" : 'icon-jsonValue'
-               });
+                        if(selectedNode.internalId === 'root'){
+                            path = '';
+                        }
+
+                        http.get("/api/files?op=create&path=" + path + "&name=" + text,function(res){
+                            console.log(res);
+                                selectedNode.appendChild({
+                                    "text": text,
+                                  //  "type":"[object String]",
+                                  //  "value": "new string value",
+                                    "leaf":true,
+                                   // "iconCls" : 'icon-jsonValue'
+                               });
+                        },
+                        function(response, opts){
+                            var obj = JSON.parse(response.responseText);
+                            Ext.MessageBox.show({
+                                       title: 'Error creating file',
+                                       msg: obj.message,
+                                       buttons: Ext.MessageBox.OK
+                                     //  icon: Ext.get('icons').dom.value
+                                   });
+                        });
+                    }
+                });
+//                var newName = "new Json";
+
+//                selectedNode.appendChild({
+//                    "text": newName,
+//                 //   "type":"[object Number]",
+//                    "value": 1,
+//                    "leaf":true,
+//                 //   "iconCls" : 'icon-jsonValue'
+//               });
            }
         }
     ]
@@ -276,14 +306,33 @@ Ext.define('Ouroboros.FilesTree', {
                               },
                         //      {text: 'Edit'},
                               {text: 'Delete',
-                              "iconCls" : 'icon-erase',
+                              'iconCls' : 'icon-erase',
                               handler: function(item,e){
                                    //alert("Delete");
-                                   var store = this.parentMenu.selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
 
-                                   this.parentMenu.selectedRecord.remove(true);
+                                   var selectedRecord = this.parentMenu.selectedRecord;
 
-                                   store.sync();
+                                   var path = selectedRecord.getPath('text','/').replace('/Root/','');
+//+ "&name=" + text
+                                   http.get('/api/files?op=rm&path=' + path ,function(res){
+                                       console.log(res);
+
+                                       var store = selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
+
+                                       selectedRecord.remove();
+
+                                       store.sync();
+
+                                   },
+                                   function(response, opts){
+                                       var obj = JSON.parse(response.responseText);
+                                       Ext.MessageBox.show({
+                                            title: 'Error deleting',
+                                            msg: obj.message,
+                                            buttons: Ext.MessageBox.OK
+                                            //  icon: Ext.get('icons').dom.value
+                                       });
+                                   });
                                 }
                               }
                           ]

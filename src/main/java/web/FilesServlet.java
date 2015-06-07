@@ -45,6 +45,99 @@ public class FilesServlet extends HttpServlet {
         else if(op.equalsIgnoreCase("mkdir")){
             mkdir(request,response);
         }
+        else if(op.equalsIgnoreCase("create")){
+            createFile(request,response);
+        }
+        else if(op.equalsIgnoreCase("rm")){
+            delete(request,response);
+        }
+
+    }
+
+    void delete(HttpServletRequest request, HttpServletResponse response){
+
+        JSONObject jsonRes = new JSONObject();
+
+        jsonRes.put("result","SUCCESS");
+
+        String path = request.getParameter("path");
+
+        File root = new File(getServletContext().getAttribute("rootPath").toString());
+        File file = new File(root,path);
+
+
+        try {
+            FileUtils.forceDelete(file);
+        } catch (IOException e) {
+            log.error("Failed to delete " + file.getAbsolutePath(), e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message",e.getMessage());
+        }
+
+        //File newFile = new File(currDir,request.getParameter("name"));
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+//        try {
+//
+//                //jsonRes.put("message",newFile.getAbsolutePath());
+//
+//
+//        } catch (IOException e) {
+//
+//            //log.error("Failed to create directory " + newFile.getAbsolutePath(),e);
+//            response.setStatus(500);
+//            jsonRes.put("result","FAILURE");
+//            //"Failed to create directory " + newDir.getAbsolutePath() +
+//            jsonRes.put("message",e.getMessage());
+//            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
+//        }
+
+        out.write(jsonRes.toString());
+
+    }
+
+    void createFile(HttpServletRequest request, HttpServletResponse response){
+
+        JSONObject jsonRes = new JSONObject();
+
+        jsonRes.put("result","SUCCESS");
+
+        String path = request.getParameter("path");
+
+        File root = new File(getServletContext().getAttribute("rootPath").toString());
+        File currDir = new File(root,path);
+        File newFile = new File(currDir,request.getParameter("name"));
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        try {
+            if(newFile.createNewFile()){
+                jsonRes.put("message",newFile.getAbsolutePath());
+            }
+
+        } catch (IOException e) {
+
+            log.error("Failed to create directory " + newFile.getAbsolutePath(),e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            //"Failed to create directory " + newDir.getAbsolutePath() +
+            jsonRes.put("message",e.getMessage());
+            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
+        }
+
+        out.write(jsonRes.toString());
 
     }
 
