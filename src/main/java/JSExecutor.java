@@ -13,6 +13,7 @@ public class JSExecutor {
 
     public JSExecutor(){
         _bindings.put("horny",new utils.BasicUtils(_engine));
+        _bindings.put("proc",new utils.ProcessUtils());
     }
 
     Object eval(String script){
