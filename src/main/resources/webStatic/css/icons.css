@@ -31,3 +31,11 @@
 .icon-file {
     background-image: url(images/tree/leaf.gif) !important;
 }
+
+.icon-flow {
+    background-image: url(/images/flow.png) !important;
+}
+
+.icon-action {
+    background-image: url(/images/action.png) !important;
+}

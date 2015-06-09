@@ -154,10 +154,13 @@ public class FlowServlet extends HttpServlet {
 
                     if(f.isDirectory()){
                         obj.put("type", "directory");
+                        obj.put("iconCls", "icon-flow");
                     }
                     else if(extension.equalsIgnoreCase("json")){
                         name = FilenameUtils.getBaseName(f.getAbsolutePath());
                         obj.put("type", "flow");
+                        obj.put("iconCls", "icon-action");
+
                     }
 
                     obj.put("text", name);
