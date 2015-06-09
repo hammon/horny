@@ -1,5 +1,5 @@
 
-Ext.define('Ouroboros.NgramsGrid', {
+Ext.define('Horny.NgramsGrid', {
        extend: 'Ext.grid.Panel',
        alias: 'widget.ngramsgrid',
 

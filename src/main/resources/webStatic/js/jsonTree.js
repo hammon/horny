@@ -116,7 +116,7 @@ function castTreeValue(treeNode){
 }
 
 
-Ext.define('Ouroboros.JsonTreeAddMenu', {
+Ext.define('Horny.JsonTreeAddMenu', {
     extend: 'Ext.menu.Menu',
 
     getSelectedNode: function(that){
@@ -275,7 +275,7 @@ Ext.define('Ouroboros.JsonTreeAddMenu', {
     ]
 });
 
-Ext.define('Ouroboros.JsonTree', {
+Ext.define('Horny.JsonTree', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.jsontree',
 
@@ -291,24 +291,24 @@ Ext.define('Ouroboros.JsonTree', {
 
     update : function(json){
 
-                var treeStore = this.getStore();
-                var root = treeStore.getRootNode();
+        var treeStore = this.getStore();
+        var root = treeStore.getRootNode();
 
-                root.removeAll();
-                //this.store.removeAll();
+        root.removeAll();
+        //this.store.removeAll();
 
-                var jsonObj = JSON.parse(json);
+        var jsonObj = JSON.parse(json);
 
-                root.raw.type = Object.prototype.toString.call(jsonObj);
+        root.raw.type = Object.prototype.toString.call(jsonObj);
 
-                addJsonTreeNode(root,jsonObj);
-           },
+        addJsonTreeNode(root,jsonObj);
+    },
 
     tbar:[
         {
            text: 'Add',
            'iconCls' : 'icon-add',
-           menu: Ext.create('Ouroboros.JsonTreeAddMenu')
+           menu: Ext.create('Horny.JsonTreeAddMenu')
         },
         {
             text: 'Save',
@@ -400,7 +400,7 @@ Ext.define('Ouroboros.JsonTree', {
                               {
                                   text: 'Add',
                                   "iconCls" : 'icon-add',
-                                  menu: Ext.create('Ouroboros.JsonTreeAddMenu')
+                                  menu: Ext.create('Horny.JsonTreeAddMenu')
 //                                  handler: function(item,e){
 //                                     alert("Add");
 //                                  }

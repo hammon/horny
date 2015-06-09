@@ -1,6 +1,6 @@
 
 
-Ext.define('Horny.FilesTreeAddMenu', {
+Ext.define('Horny.FlowTreeAddMenu', {
     extend: 'Ext.menu.Menu',
 
     getSelectedNode: function(that){
@@ -76,7 +76,7 @@ Ext.define('Horny.FilesTreeAddMenu', {
            }
         },
         {
-           text: 'File',
+           text: 'Flow',
            "iconCls" : 'icon-file',
            handler: function(item){
                 console.log(item);
@@ -86,7 +86,7 @@ Ext.define('Horny.FilesTreeAddMenu', {
                 if(selectedNode.data.leaf){
                     selectedNode = selectedNode.parentNode;
                 }
-                Ext.MessageBox.prompt('New file', 'Please enter file name:', function (btn, text){
+                Ext.MessageBox.prompt('New flow', 'Please enter flow name:', function (btn, text){
                     console.log("btn: " + btn + " text: " + text);
 
                     if(btn === 'ok'){
@@ -96,7 +96,7 @@ Ext.define('Horny.FilesTreeAddMenu', {
                             path = '';
                         }
 
-                        http.get("/api/files?op=create&path=" + path + "&name=" + text,function(res){
+                        http.get("/flow?op=create&path=" + path + "&name=" + text,function(res){
                             console.log(res);
                                 selectedNode.appendChild({
                                     "text": text,
@@ -131,7 +131,7 @@ Ext.define('Horny.FilesTreeAddMenu', {
     ]
 });
 
-Ext.define('Horny.FilesTreeToolbar',{
+Ext.define('Horny.FlowTreeToolbar',{
     extend: 'Ext.toolbar.Toolbar',
     alias: 'widget.filestreetoolbar',
 
@@ -139,46 +139,46 @@ Ext.define('Horny.FilesTreeToolbar',{
         {
            text: 'New',
            "iconCls" : 'icon-add',
-           menu: Ext.create('Horny.FilesTreeAddMenu')
-        },
-        {
-            boxLabel: 'Show hidden',
-            xtype: 'checkbox',
-            listeners: {
-                change: {
-                    fn: function( that, newValue, oldValue, eOpts ) {
-                        console.log('new val: ' + newValue);
-
-                        var tree = that.up().up();
-
-                        var store = tree.getStore();
-
-                        store.filter([
-                            {
-                                filterFn:function(item){
-                                    console.log('item.raw.hidden: ' + item.raw.hidden);
-                                    return item.raw.hidden;
-                                }
-                            }
-                        ]);
-                    }
-                }
-            }
-        }
+           menu: Ext.create('Horny.FlowTreeAddMenu')
+        }//,
+//        {
+//            boxLabel: 'Show hidden',
+//            xtype: 'checkbox',
+//            listeners: {
+//                change: {
+//                    fn: function( that, newValue, oldValue, eOpts ) {
+//                        console.log('new val: ' + newValue);
+//
+//                        var tree = that.up().up();
+//
+//                        var store = tree.getStore();
+//
+//                        store.filter([
+//                            {
+//                                filterFn:function(item){
+//                                    console.log('item.raw.hidden: ' + item.raw.hidden);
+//                                    return item.raw.hidden;
+//                                }
+//                            }
+//                        ]);
+//                    }
+//                }
+//            }
+//        }
     ]
 });
 
 
 
-Ext.define('Horny.FilesTree', {
+Ext.define('Horny.FlowTree', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.filestree',
 
-    id: 'filesTree',
+    id: 'flowTree',
 //    title: 'Files',
     rootVisible: false,
 
-    tbar:Ext.create('Horny.FilesTreeToolbar'),
+    tbar:Ext.create('Horny.FlowTreeToolbar'),
 
 //    requires: [
 //            'Ext.data.*',
@@ -285,7 +285,7 @@ Ext.define('Horny.FilesTree', {
                  containercontextmenu: function( that, e, eOpts ){
                     e.stopEvent();
 //                     alert("containercontextmenu");
-                    var menu = Ext.create('Horny.FilesTreeAddMenu');
+                    var menu = Ext.create('Horny.FlowTreeAddMenu');
 
                     menu.selectedRecord = that.getTreeStore().getRootNode();
 
@@ -299,7 +299,7 @@ Ext.define('Horny.FilesTree', {
                               {
                                   text: 'Add',
                                   "iconCls" : 'icon-add',
-                                  menu: Ext.create('Horny.FilesTreeAddMenu')
+                                  menu: Ext.create('Horny.FlowTreeAddMenu')
 //                                  handler: function(item,e){
 //                                     alert("Add");
 //                                  }
@@ -348,7 +348,7 @@ Ext.define('Horny.FilesTree', {
         var treeStore = this.getStore();
         var root = treeStore.getRootNode();
 
-        http.get("/api/files?op=list&path=",function(res){
+        http.get('/flow?op=list&path=',function(res){
             console.log(res);
 
             var filesArr = JSON.parse(res);
@@ -377,9 +377,9 @@ Ext.define('Horny.FilesTree', {
 
             var path = record.getPath('text','/').replace('/Root/','');
 
-            if(record.data.leaf === false){
+            if(record.raw.type === 'directory'){
 
-                 http.get("/api/files?op=list&path=" + path,function(res){
+                 http.get("/flow?op=list&path=" + path,function(res){
                     console.log(res);
 
                     record.removeAll();
@@ -392,61 +392,19 @@ Ext.define('Horny.FilesTree', {
                     record.expand();
                 });
             }
-            else{
+            else if(record.raw.type === 'flow'){
 
-                http.get("/api/text?path=" + path,function(res){
-                    //console.log(res);
+                http.get('/api/json?path=' + path + '.json',function(res){
 
-                   Ext.getCmp('textView').update("<pre>" + res + "</pre>");
-                });
-
-                 http.get("/api/chargram?path=" + path,function(res){
-                    //console.log(res);
-
-                  //  var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-                 });
-
-                http.get("/api/ngram?path=" + path,function(res){
-                    //console.log(res);
-
-                    var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-                });
-
-                var itemText = record.data.text;
-                var namePartsArr = itemText.split('.');
-
-                var propsView = Ext.getCmp('propsView');
-                var jsonView = Ext.getCmp('jsonView');
-
-                propsView.tab.hide();
-                jsonView.tab.hide();
+                    console.log('flow: ' + res);
+//                                                jsonView.filePath = path;
+//                                                jsonView.update(res);
+//                                                jsonView.tab.show();
+//                                                jsonView.show();
+                                            });
 
 
-                if(namePartsArr.length > 0){
-                    var fileExt = namePartsArr[namePartsArr.length - 1];
-                    if( fileExt ){
-                        if(fileExt === 'properties'){
-                            http.get("/api/props?op=get&path=" + path,function(res){
-                                //console.log(res);
 
-
-                                propsView.propsPath = path;
-                                propsView.update(res);
-                                propsView.tab.show();
-                                propsView.show();
-                            });
-                        }
-                        else if(fileExt === 'json'){
-                            http.get('/api/json?path=' + path,function(res){
-
-                                jsonView.filePath = path;
-                                jsonView.update(res);
-                                jsonView.tab.show();
-                                jsonView.show();
-                            });
-                        }
-                    }
-                }
             }
         }
     }

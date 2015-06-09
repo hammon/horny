@@ -1,12 +1,12 @@
 
 
 
-Ext.define('Ouroboros.PropertiesEditorGrid', {
+Ext.define('Horny.PropertiesEditorGrid', {
        extend: 'Ext.grid.Panel',
        alias: 'widget.propertieseditorgrid',
 
        initComponent : function(){
-            console.log("Ouroboros.PropertiesEditorGrid initComponent");
+            console.log("Horny.PropertiesEditorGrid initComponent");
 
             this.store = Ext.create('Ext.data.JsonStore',{
                                            fields:[{'name': 'name','type':'string'},{'name': 'value','type':'string'}]

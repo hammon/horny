@@ -1,5 +1,5 @@
 
-Ext.define('Ouroboros.SnippetsGrid', {
+Ext.define('Horny.SnippetsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.snippetsgrid',
 

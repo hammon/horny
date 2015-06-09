@@ -1,4 +1,4 @@
-Ext.define('Ouroboros.TextView', {
+Ext.define('Horny.TextView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.textview',
 

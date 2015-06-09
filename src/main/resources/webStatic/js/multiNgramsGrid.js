@@ -4,7 +4,7 @@ function createMultiNgramsGrid(){
     var storeFields =  [];
     var gridColumns = [];
 
-    Ext.create('Ouroboros.MultiNgramsGrid',{
+    Ext.create('Horny.MultiNgramsGrid',{
                                        // region:'south',
                                         id:'ngramsGrid'
                                     //    floatable: false,
@@ -15,7 +15,7 @@ function createMultiNgramsGrid(){
 }
 
 
-Ext.define('Ouroboros.MultiNgramsGrid', {
+Ext.define('Horny.MultiNgramsGrid', {
        extend: 'Ext.grid.Panel',
        alias: 'widget.multiNgramsGrid',
 

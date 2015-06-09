@@ -55,6 +55,11 @@ task buildJar(type: Jar) {
         into 'build/libs/scripts'
     }
 
+    copy{
+        from 'src/main/resources/flow'
+        into 'build/libs/flow'
+    }
+
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     with jar

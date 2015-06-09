@@ -1,4 +1,4 @@
-Ext.define('Ouroboros.SplitView', {
+Ext.define('Horny.SplitView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.splitview',
 

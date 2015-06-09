@@ -39,7 +39,7 @@ public class Jetty {
         }
 
         Jetty jetty = new Jetty();
-        jetty.start(8081,"/home/michael/Documents");
+        jetty.start(8081,"flow");
     }
 
     public void start(int port){
@@ -91,6 +91,9 @@ public class Jetty {
 
             ServletHolder jsonHolder = new ServletHolder(JsonServlet.class);
             apiContext.addServlet(jsonHolder, "/api/json");
+
+            ServletHolder flowHolder = new ServletHolder(FlowServlet.class);
+            apiContext.addServlet(flowHolder, "/flow");
 
 
             ContextHandlerCollection contexts = new ContextHandlerCollection();
