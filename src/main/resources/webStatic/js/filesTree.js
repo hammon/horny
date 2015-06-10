@@ -429,7 +429,6 @@ Ext.define('Horny.FilesTree', {
                             http.get("/api/props?op=get&path=" + path,function(res){
                                 //console.log(res);
 
-
                                 propsView.propsPath = path;
                                 propsView.update(res);
                                 propsView.tab.show();

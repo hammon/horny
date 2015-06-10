@@ -95,6 +95,9 @@ public class Jetty {
             ServletHolder flowHolder = new ServletHolder(FlowServlet.class);
             apiContext.addServlet(flowHolder, "/flow");
 
+            ServletHolder flowActionsHolder = new ServletHolder(FlowActionServlet.class);
+            apiContext.addServlet(flowActionsHolder, "/flow/action");
+
 
             ContextHandlerCollection contexts = new ContextHandlerCollection();
 

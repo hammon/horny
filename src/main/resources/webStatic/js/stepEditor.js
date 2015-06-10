@@ -279,8 +279,8 @@ Ext.define('Horny.StepEditor', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.stepEditor',
 
-  //  id: 'stepEditor',
-    title: 'JSON',
+    id: 'stepEditor',
+//    title: 'JSON',
     rootVisible: false,
 
     plugins:[
@@ -305,11 +305,11 @@ Ext.define('Horny.StepEditor', {
     },
 
     tbar:[
-        {
-           text: 'Add',
-           'iconCls' : 'icon-add',
-           menu: Ext.create('Horny.StepEditorAddMenu')
-        },
+//        {
+//           text: 'Add',
+//           'iconCls' : 'icon-add',
+//           menu: Ext.create('Horny.StepEditorAddMenu')
+//        },
         {
             text: 'Save',
             "iconCls" : 'icon-save',
@@ -344,6 +344,7 @@ Ext.define('Horny.StepEditor', {
                 {
                    // xtype: 'treecolumn', //this is so we know which column will show the tree
                     text: 'Type',
+                    hidden: true,
                     flex: 1,
                     sortable: true,
                     dataIndex: 'type'

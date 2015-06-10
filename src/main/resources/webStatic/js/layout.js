@@ -30,12 +30,12 @@ Ext.onReady(function(){
                         Ext.create('Horny.FlowTree',{
                             region:'center',
                             minWidth: 150,
-                        }),
-                        Ext.create('Horny.NgramsGrid',{
-                            region:'east',
-                            id:'flowNgramsGrid'//,
-                            //collapsible: true
                         })
+//                        Ext.create('Horny.NgramsGrid',{
+//                            region:'east',
+//                            id:'flowNgramsGrid'//,
+//                            //collapsible: true
+//                        })
                     ]
                 }),
                 Ext.create('Horny.SplitView',{

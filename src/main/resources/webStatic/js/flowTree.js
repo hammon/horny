@@ -294,49 +294,82 @@ Ext.define('Horny.FlowTree', {
                  itemcontextmenu: function(view,record,item,index,e,eOpts){
                      e.stopEvent();
 
-                     var menu = new Ext.menu.Menu({
-                          items: [
-                              {
-                                  text: 'Add',
-                                  "iconCls" : 'icon-add',
-                                  menu: Ext.create('Horny.FlowTreeAddMenu')
-//                                  handler: function(item,e){
-//                                     alert("Add");
-//                                  }
-                              },
-                        //      {text: 'Edit'},
-                              {text: 'Delete',
-                              'iconCls' : 'icon-erase',
-                              handler: function(item,e){
-                                   //alert("Delete");
+                     var menu = null;
 
-                                   var selectedRecord = this.parentMenu.selectedRecord;
+                     if(record.raw.type === 'directory'){
+                            menu = new Ext.menu.Menu({
+                            items: [
+                               {
+                                   text: 'Add',
+                                   "iconCls" : 'icon-add',
+                                   menu: Ext.create('Horny.FlowTreeAddMenu')
+ //                                  handler: function(item,e){
+ //                                     alert("Add");
+ //                                  }
+                               },
+                         //      {text: 'Edit'},
+                               {text: 'Delete',
+                               'iconCls' : 'icon-erase',
+                               handler: function(item,e){
+                                    //alert("Delete");
 
-                                   var path = selectedRecord.getPath('text','/').replace('/Root/','');
-//+ "&name=" + text
-                                   http.get('/api/files?op=rm&path=' + path ,function(res){
-                                       console.log(res);
+                                    var selectedRecord = this.parentMenu.selectedRecord;
 
-                                       var store = selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
+                                    var path = selectedRecord.getPath('text','/').replace('/Root/','');
+ //+ "&name=" + text
+                                    http.get('/api/files?op=rm&path=' + path ,function(res){
+                                        console.log(res);
 
-                                       selectedRecord.remove();
+                                        var store = selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
 
-                                       store.sync();
+                                        selectedRecord.remove();
 
-                                   },
-                                   function(response, opts){
-                                       var obj = JSON.parse(response.responseText);
-                                       Ext.MessageBox.show({
-                                            title: 'Error deleting',
-                                            msg: obj.message,
-                                            buttons: Ext.MessageBox.OK
-                                            //  icon: Ext.get('icons').dom.value
-                                       });
-                                   });
-                                }
-                              }
-                          ]
-                      });
+                                        store.sync();
+
+                                    },
+                                    function(response, opts){
+                                        var obj = JSON.parse(response.responseText);
+                                        Ext.MessageBox.show({
+                                             title: 'Error deleting',
+                                             msg: obj.message,
+                                             buttons: Ext.MessageBox.OK
+                                             //  icon: Ext.get('icons').dom.value
+                                        });
+                                    });
+                                 }
+                               }
+                           ]
+                       });
+                     }
+                     else if(record.raw.type === 'flow'){
+                        menu = new Ext.menu.Menu();
+
+                        flowActions.forEach(function(act){
+                            menu.add({
+                                   text: act.actionType,
+                                   handler: function(item,e){
+                                        console.log(item.text);
+                                        var arr = flowActions.filter(function(obj){
+                                            return obj.actionType === item.text;
+                                        });
+
+                                        if(arr.length === 1){
+                                            var actNode = arr[0];
+                                            actNode.text = actNode.actionType;
+                                            actNode.iconCls = 'icon-action';
+                                            console.log(actNode);
+                                            record.appendChild(actNode);
+                                        }
+                                   }
+                             });
+                        });
+
+                     }
+                     else{
+                        return;
+                     }
+
+
 
                       menu.selectedRecord = record;
 
@@ -377,6 +410,13 @@ Ext.define('Horny.FlowTree', {
 
             var path = record.getPath('text','/').replace('/Root/','');
 
+            var spliview = this.up('splitview');
+
+            var stepEditor = Ext.getCmp('stepEditor');
+            if(stepEditor){
+                spliview.remove(stepEditor,true);
+            }
+
             if(record.raw.type === 'directory'){
 
                  http.get("/flow?op=list&path=" + path,function(res){
@@ -409,9 +449,19 @@ Ext.define('Horny.FlowTree', {
 
                     });
                 });
+            }
+            else if(record.raw.type === 'action'){
 
+                stepEditor = Ext.create('Horny.StepEditor',{
+                    region:'east',
+                    //minWidth: 150,
+                });
 
+                stepEditor.update(JSON.stringify(record.raw.params));
+                spliview.add(stepEditor);
+                spliview.doLayout();
 
+                var i = 0;
 
 
 

@@ -55,7 +55,12 @@ var http = {
     }
 };
 
+var flowActions = [];
 
+http.get('/flow/action?op=get',function(res){
+    console.log('flow: ' + res);
+    flowActions = JSON.parse(res);
+});
 // fix hide submenu (in chrome 43)
 //http://stackoverflow.com/questions/30399433/extjs-submenus-disappear-on-chrome-43
 

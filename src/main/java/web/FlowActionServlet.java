@@ -38,7 +38,7 @@ public class FlowActionServlet extends HttpServlet {
 
 //        data = data.substring(data.indexOf('{'));
 
-        File root = new File(getServletContext().getAttribute("rootPath").toString());
+        //File root = new File(getServletContext().getAttribute("rootPath").toString());
 
         response.setCharacterEncoding("UTF-8");
 
@@ -50,9 +50,9 @@ public class FlowActionServlet extends HttpServlet {
 
         //  long start = System.currentTimeMillis();
 
-        String path = request.getParameter("path");
+        //String path = request.getParameter("path");
 
-        File file = new File(root,path);
+        File file = new File("conf/actions.json");
 
 
         if(op.equalsIgnoreCase("get")){
