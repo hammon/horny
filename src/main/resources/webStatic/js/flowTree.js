@@ -188,66 +188,66 @@ Ext.define('Horny.FlowTree', {
 //
 //        ],
 
-    xtype: 'tree-grid',//'tree-reorder',
+//    xtype: 'tree-grid',//'tree-reorder',
 
-    columns: [{
-                    xtype: 'treecolumn', //this is so we know which column will show the tree
-                    text: 'Name',
-                    flex: 2,
-                    sortable: true,
-                    dataIndex: 'text'
-                },
-        {
-           // xtype: 'treecolumn', //this is so we know which column will show the tree
-            text: 'Size',
-            flex: 1,
-            sortable: true,
-            dataIndex: 'length'
-        },
-        {
-            xtype: 'datecolumn',
-            format: 'Y-m-d H:i:s',
-            text: 'lastModified',
-            flex: 1,
-            sortable: true,
-            dataIndex: 'lastModified'
-        },
-        {
-            xtype: 'checkcolumn',
-            header: 'selected',
-            dataIndex: 'selected',
-            width: 55,
-            stopSelection: false,
-            menuDisabled: true,
-            listeners: {
-                checkchange: function( that, rowIndex, checked, eOpts ) {
-                    //Ext.Msg.alert('Editing' + (record.get('selected') ? ' completed task' : '') , record.get('text'));
-                    console.log("checkchange" + rowIndex + " checked " + checked);
-
-                    var arrSelected = [];
-
-                    var findSelected = function(node){
-                        node.eachChild(function(n){
-                            //console.log(n.data.text + " " + n.data.selected);
-                            if(n.data['selected'] == true){
-                                console.log(">>>> " + n.data.text + " " + n.data.selected);
-                                arrSelected.push(n.getPath('text'));
-                            }
-                        });
-
-                        if(node.childNodes.length > 0){
-                            node.eachChild(findSelected);
-                        }
-                    }
-
-                   findSelected( that.up().up().getStore().getRootNode());
-
-                   console.log("arrSelected: " + JSON.stringify(arrSelected));
-
-                }
-            }
-        }
-    ],
+//    columns: [{
+//                    xtype: 'treecolumn', //this is so we know which column will show the tree
+//                    text: 'Name',
+//                    flex: 2,
+//                    sortable: true,
+//                    dataIndex: 'text'
+//                },
+//        {
+//           // xtype: 'treecolumn', //this is so we know which column will show the tree
+//            text: 'Size',
+//            flex: 1,
+//            sortable: true,
+//            dataIndex: 'length'
+//        },
+//        {
+//            xtype: 'datecolumn',
+//            format: 'Y-m-d H:i:s',
+//            text: 'lastModified',
+//            flex: 1,
+//            sortable: true,
+//            dataIndex: 'lastModified'
+//        },
+//        {
+//            xtype: 'checkcolumn',
+//            header: 'selected',
+//            dataIndex: 'selected',
+//            width: 55,
+//            stopSelection: false,
+//            menuDisabled: true,
+//            listeners: {
+//                checkchange: function( that, rowIndex, checked, eOpts ) {
+//                    //Ext.Msg.alert('Editing' + (record.get('selected') ? ' completed task' : '') , record.get('text'));
+//                    console.log("checkchange" + rowIndex + " checked " + checked);
+//
+//                    var arrSelected = [];
+//
+//                    var findSelected = function(node){
+//                        node.eachChild(function(n){
+//                            //console.log(n.data.text + " " + n.data.selected);
+//                            if(n.data['selected'] == true){
+//                                console.log(">>>> " + n.data.text + " " + n.data.selected);
+//                                arrSelected.push(n.getPath('text'));
+//                            }
+//                        });
+//
+//                        if(node.childNodes.length > 0){
+//                            node.eachChild(findSelected);
+//                        }
+//                    }
+//
+//                   findSelected( that.up().up().getStore().getRootNode());
+//
+//                   console.log("arrSelected: " + JSON.stringify(arrSelected));
+//
+//                }
+//            }
+//        }
+//    ],
     initComponent : function(){
 
         this.store = Ext.create('Ext.data.TreeStore', {
@@ -395,13 +395,23 @@ Ext.define('Horny.FlowTree', {
             else if(record.raw.type === 'flow'){
 
                 http.get('/api/json?path=' + path + '.json',function(res){
-
                     console.log('flow: ' + res);
-//                                                jsonView.filePath = path;
-//                                                jsonView.update(res);
-//                                                jsonView.tab.show();
-//                                                jsonView.show();
-                                            });
+                    var action = JSON.parse(res);
+                    var steps = action.steps;
+                    record.removeAll();
+                    steps.forEach(function(step){
+
+                        step.text = step.type;
+                        step.iconCls = 'icon-action';
+
+                        record.appendChild(step);
+                        record.expand();
+
+                    });
+                });
+
+
+
 
 
 

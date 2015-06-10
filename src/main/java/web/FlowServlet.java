@@ -154,22 +154,23 @@ public class FlowServlet extends HttpServlet {
 
                     if(f.isDirectory()){
                         obj.put("type", "directory");
-                        obj.put("iconCls", "icon-flow");
+                        //obj.put("iconCls", "icon-flow");
                     }
                     else if(extension.equalsIgnoreCase("json")){
                         name = FilenameUtils.getBaseName(f.getAbsolutePath());
                         obj.put("type", "flow");
-                        obj.put("iconCls", "icon-action");
+                        //obj.put("iconCls", "icon-action");
+                        obj.put("iconCls", "icon-flow");
 
                     }
 
                     obj.put("text", name);
-                    obj.put("leaf", f.isFile());
-                    obj.put("hidden", f.isHidden());
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                    obj.put("lastModified", df.format(new Date(f.lastModified())));
-                    obj.put("length", f.length());
+                    obj.put("leaf", false);
+//                    obj.put("hidden", f.isHidden());
+//                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+//                    obj.put("lastModified", df.format(new Date(f.lastModified())));
+//                    obj.put("length", f.length());
 
                     //obj.put("checked", true);
                 } catch (JSONException e) {
