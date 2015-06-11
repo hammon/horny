@@ -3,14 +3,14 @@
     "type": "action",
     "actionType": "execute",
     "params": {"cmd": ""},
-    "retCode": 0,
+    "exitCode": 0,
     "res": ""
   },
   {
     "type": "action",
     "actionType": "ssh",
     "params": {"hostname": "","username": "","password": "","cmd": ""},
-    "retCode": 0,
+    "exitCode": 0,
     "res": ""
   }
 ]

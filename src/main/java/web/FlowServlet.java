@@ -152,6 +152,8 @@ public class FlowServlet extends HttpServlet {
                     String extension = FilenameUtils.getExtension(f.getAbsolutePath());
                     String name = f.getName();
 
+                    obj.put("path",f.getAbsolutePath().replace(root.getAbsolutePath(),""));
+
                     if(f.isDirectory()){
                         obj.put("type", "directory");
                         //obj.put("iconCls", "icon-flow");

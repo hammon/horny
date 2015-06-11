@@ -100,10 +100,10 @@ Ext.define('Horny.FlowTreeAddMenu', {
                             console.log(res);
                                 selectedNode.appendChild({
                                     "text": text,
-                                  //  "type":"[object String]",
+                                    "type":'flow',
                                   //  "value": "new string value",
-                                    "leaf":true,
-                                   // "iconCls" : 'icon-jsonValue'
+                                  //  "leaf":true,
+                                    "iconCls" : 'icon-flow'
                                });
                         },
                         function(response, opts){
@@ -168,7 +168,14 @@ Ext.define('Horny.FlowTreeToolbar',{
     ]
 });
 
+function saveFlow(flowRecord){
+    if(flowRecord.raw.type !== 'flow'){
+        return;
+    }
 
+    var flowObj = flowRecord.raw;
+    delete flowObj.iconCls;
+}
 
 Ext.define('Horny.FlowTree', {
     extend: 'Ext.tree.Panel',
@@ -180,74 +187,6 @@ Ext.define('Horny.FlowTree', {
 
     tbar:Ext.create('Horny.FlowTreeToolbar'),
 
-//    requires: [
-//            'Ext.data.*',
-//            'Ext.grid.*',
-//            'Ext.tree.*',
-//            'Ext.ux.CheckColumn'
-//
-//        ],
-
-//    xtype: 'tree-grid',//'tree-reorder',
-
-//    columns: [{
-//                    xtype: 'treecolumn', //this is so we know which column will show the tree
-//                    text: 'Name',
-//                    flex: 2,
-//                    sortable: true,
-//                    dataIndex: 'text'
-//                },
-//        {
-//           // xtype: 'treecolumn', //this is so we know which column will show the tree
-//            text: 'Size',
-//            flex: 1,
-//            sortable: true,
-//            dataIndex: 'length'
-//        },
-//        {
-//            xtype: 'datecolumn',
-//            format: 'Y-m-d H:i:s',
-//            text: 'lastModified',
-//            flex: 1,
-//            sortable: true,
-//            dataIndex: 'lastModified'
-//        },
-//        {
-//            xtype: 'checkcolumn',
-//            header: 'selected',
-//            dataIndex: 'selected',
-//            width: 55,
-//            stopSelection: false,
-//            menuDisabled: true,
-//            listeners: {
-//                checkchange: function( that, rowIndex, checked, eOpts ) {
-//                    //Ext.Msg.alert('Editing' + (record.get('selected') ? ' completed task' : '') , record.get('text'));
-//                    console.log("checkchange" + rowIndex + " checked " + checked);
-//
-//                    var arrSelected = [];
-//
-//                    var findSelected = function(node){
-//                        node.eachChild(function(n){
-//                            //console.log(n.data.text + " " + n.data.selected);
-//                            if(n.data['selected'] == true){
-//                                console.log(">>>> " + n.data.text + " " + n.data.selected);
-//                                arrSelected.push(n.getPath('text'));
-//                            }
-//                        });
-//
-//                        if(node.childNodes.length > 0){
-//                            node.eachChild(findSelected);
-//                        }
-//                    }
-//
-//                   findSelected( that.up().up().getStore().getRootNode());
-//
-//                   console.log("arrSelected: " + JSON.stringify(arrSelected));
-//
-//                }
-//            }
-//        }
-//    ],
     initComponent : function(){
 
         this.store = Ext.create('Ext.data.TreeStore', {
@@ -346,21 +285,21 @@ Ext.define('Horny.FlowTree', {
 
                         flowActions.forEach(function(act){
                             menu.add({
-                                   text: act.actionType,
-                                   handler: function(item,e){
-                                        console.log(item.text);
-                                        var arr = flowActions.filter(function(obj){
-                                            return obj.actionType === item.text;
-                                        });
+                               text: act.actionType,
+                               handler: function(item,e){
+                                    console.log(item.text);
+                                    var arr = flowActions.filter(function(obj){
+                                        return obj.actionType === item.text;
+                                    });
 
-                                        if(arr.length === 1){
-                                            var actNode = arr[0];
-                                            actNode.text = actNode.actionType;
-                                            actNode.iconCls = 'icon-action';
-                                            console.log(actNode);
-                                            record.appendChild(actNode);
-                                        }
-                                   }
+                                    if(arr.length === 1){
+                                        var actNode = arr[0];
+                                        actNode.text = actNode.actionType;
+                                        actNode.iconCls = 'icon-action';
+                                        console.log(actNode);
+                                        record.appendChild(actNode);
+                                    }
+                               }
                              });
                         });
 
@@ -368,8 +307,6 @@ Ext.define('Horny.FlowTree', {
                      else{
                         return;
                      }
-
-
 
                       menu.selectedRecord = record;
 
