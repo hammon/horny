@@ -355,7 +355,12 @@ Ext.define('Horny.JsonTree', {
                     sortable: true,
                     dataIndex: 'value',
                     editor:{
-                      xtype:'textfield'
+                      xtype:'textfield',
+                      listeners : {
+                        blur: function( that, The, eOpts ){
+                            console.log('textfield blur');
+                        }
+                      }
                     }
                 }
 

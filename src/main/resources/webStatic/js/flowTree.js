@@ -175,6 +175,20 @@ function saveFlow(flowRecord){
 
     var flowObj = flowRecord.raw;
     delete flowObj.iconCls;
+
+    var steps = [];
+
+    flowObj.steps = steps;
+
+    for(var i = 0; i < flowRecord.childNodes.length;i++){
+        var action = flowRecord.childNodes[i].raw;
+        delete action.iconCls;
+        steps.push(flowRecord.childNodes[i].raw);
+    }
+
+    console.log('flowObj: ' + JSON.stringify(flowObj));
+
+    http.post('/api/json?op=save&path=' + flowObj.path,JSON.stringify(flowObj));
 }
 
 Ext.define('Horny.FlowTree', {
@@ -214,6 +228,9 @@ Ext.define('Horny.FlowTree', {
                  containerScroll: true
              },
              listeners:{
+                drop: function (node, data, overModel, dropPosition) {
+                      console.log('drop');
+                },
                  beforecellcontextmenu: function(vthis, td, cellIndex, record, tr, rowIndex, e, eOpts ){
                      //your menu code here
                     // alert("beforecellcontextmenu");
@@ -298,6 +315,7 @@ Ext.define('Horny.FlowTree', {
                                         actNode.iconCls = 'icon-action';
                                         console.log(actNode);
                                         record.appendChild(actNode);
+                                        saveFlow(record);
                                     }
                                }
                              });
@@ -334,7 +352,6 @@ Ext.define('Horny.FlowTree', {
                 }
             ]);
         });
-
 
          this.callParent(arguments);
     },
@@ -378,7 +395,7 @@ Ext.define('Horny.FlowTree', {
                     record.removeAll();
                     steps.forEach(function(step){
 
-                        step.text = step.type;
+                        step.text = step.actionType;
                         step.iconCls = 'icon-action';
 
                         record.appendChild(step);

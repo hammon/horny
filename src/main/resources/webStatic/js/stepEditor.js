@@ -336,10 +336,10 @@ Ext.define('Horny.StepEditor', {
                     text: 'Name',
                     flex: 1,
                     sortable: true,
-                    dataIndex: 'name',
-                    editor:{
-                      xtype:'textfield'
-                    }
+                    dataIndex: 'name'
+//                    editor:{
+//                      xtype:'textfield'
+//                    }
                 },
                 {
                    // xtype: 'treecolumn', //this is so we know which column will show the tree
@@ -356,7 +356,12 @@ Ext.define('Horny.StepEditor', {
                     sortable: true,
                     dataIndex: 'value',
                     editor:{
-                      xtype:'textfield'
+                      xtype:'textfield',
+                      listeners : {
+                          blur: function( that, The, eOpts ){
+                              console.log('textfield blur');
+                          }
+                        }
                     }
                 }
 
