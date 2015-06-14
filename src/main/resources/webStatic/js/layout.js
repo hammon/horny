@@ -61,38 +61,38 @@ Ext.onReady(function(){
                         Ext.create('Horny.SplitView',{
                             region:'center',
                             items: [
-                            Ext.create('Horny.SnippetsGrid',{
-                                region:'center',
-                                id: 'snippetsGrid'//,
-                                //collapsible: true
-                            }),
+
                             Ext.createWidget('tabpanel', {
-                                        id: 'contentTabs',
-                                        region: 'south',
-                                        collapsible: false,
-                                        activeTab: 0,
-                                        items: [
-                                            Ext.create('Horny.JsonTree',{
-                                                id: 'jsonView'
-                                            //    region:'center',
-                                            //    minWidth: 100,
-                                            }),
-                                            Ext.create('Horny.PropertiesEditorGrid',{
-                                                id:'propsView',
-                                                title: 'Properties'
+                                id: 'contentTabs',
+                                region: 'center',
+                                collapsible: false,
+                                activeTab: 0,
+                                items: [
+                                        Ext.create('Horny.JsonTree',{
+                                            id: 'jsonView'
+                                        //    region:'center',
+                                        //    minWidth: 100,
+                                        }),
+                                        Ext.create('Horny.PropertiesEditorGrid',{
+                                            id:'propsView',
+                                            title: 'Properties'
 
-                                            //    region:'center',
-                                            //    minWidth: 100,
-                                            }),
-                                            Ext.create('Horny.TextView',{
-                                             region:'south',
-                                             id:'textView',
-                                             title: 'Text',
-                                            })//textView
+                                        //    region:'center',
+                                        //    minWidth: 100,
+                                        }),
+                                        Ext.create('Horny.TextView',{
+                                         region:'south',
+                                         id:'textView',
+                                         title: 'Text',
+                                        })//textView
 
-                                        ]
-                                    }
-                                )
+                                    ]
+                                }),
+                                Ext.create('Horny.SnippetsGrid',{
+                                    region:'south',
+                                    id: 'snippetsGrid'//,
+                                    //collapsible: true
+                                })
                             ]
                         })
                     ]

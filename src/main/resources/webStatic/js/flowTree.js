@@ -77,7 +77,7 @@ Ext.define('Horny.FlowTreeAddMenu', {
         },
         {
            text: 'Flow',
-           "iconCls" : 'icon-file',
+           "iconCls" : 'icon-flow',
            handler: function(item){
                 console.log(item);
 
