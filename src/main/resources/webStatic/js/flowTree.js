@@ -320,14 +320,12 @@ Ext.define('Horny.FlowTree', {
                                }
                              });
                         });
-
                      }
                      else{
                         return;
                      }
 
                       menu.selectedRecord = record;
-
                       menu.showAt(e.getXY());
                  }
              }
@@ -363,6 +361,9 @@ Ext.define('Horny.FlowTree', {
         select : function( that, record, index, eOpts ){
 
             var path = record.getPath('text','/').replace('/Root/','');
+
+            console.log('record path: ' + path);
+            console.log('record raw path: ' + record.raw.path);
 
             var spliview = this.up('splitview');
 

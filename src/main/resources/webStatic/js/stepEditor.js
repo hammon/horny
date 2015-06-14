@@ -70,7 +70,7 @@ function addStepEditorNode(treeNode,jsonNode){
 }
 
 
-function treeToJson(treeNode){
+function editorNodeToJson(treeNode){
     var jsonNode = null;
     var type = treeNode.raw.type;
 
@@ -84,7 +84,7 @@ function treeToJson(treeNode){
                 jsonNode[treeNode.childNodes[i].data.name] = castTreeValue(treeNode.childNodes[i]);
             }
             else{
-                jsonNode[treeNode.childNodes[i].data.name] = treeToJson(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = editorNodeToJson(treeNode.childNodes[i]);
             }
         }
     }
@@ -95,7 +95,7 @@ function treeToJson(treeNode){
                 jsonNode[treeNode.childNodes[i].data.name] = castTreeValue(treeNode.childNodes[i]);
             }
             else{
-                jsonNode[treeNode.childNodes[i].data.name] = treeToJson(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = editorNodeToJson(treeNode.childNodes[i]);
             }
         }
     }
@@ -304,29 +304,29 @@ Ext.define('Horny.StepEditor', {
         addStepEditorNode(root,jsonObj);
     },
 
-    tbar:[
+//    tbar:[
+////        {
+////           text: 'Add',
+////           'iconCls' : 'icon-add',
+////           menu: Ext.create('Horny.StepEditorAddMenu')
+////        },
 //        {
-//           text: 'Add',
-//           'iconCls' : 'icon-add',
-//           menu: Ext.create('Horny.StepEditorAddMenu')
-//        },
-        {
-            text: 'Save',
-            "iconCls" : 'icon-save',
-             handler : function(){
-
-                var jsonView = this.up().up();
-                var store = jsonView.getStore();
-                var json = treeToJson(store.getRootNode(),{});
-
-                console.log("json from tree: " + JSON.stringify(json));
-
-                http.post('/api/json?op=save&path=' + jsonView.filePath,json);
-                store.sync( );
-                //jsonView.show();
-             }
-        }
-    ],
+//            text: 'Save',
+//            "iconCls" : 'icon-save',
+//             handler : function(){
+//
+//                var jsonView = this.up().up();
+//                var store = jsonView.getStore();
+//                var json = editorNodeToJson(store.getRootNode(),{});
+//
+//                console.log("json from tree: " + JSON.stringify(json));
+//
+//                http.post('/api/json?op=save&path=' + jsonView.filePath,json);
+//                store.sync( );
+//                //jsonView.show();
+//             }
+//        }
+//    ],
 
 
     xtype: 'tree-grid',//'tree-reorder',
@@ -360,11 +360,46 @@ Ext.define('Horny.StepEditor', {
                       listeners : {
                           blur: function( that, The, eOpts ){
                               console.log('textfield blur');
+
+                              var stepEditor = that.up('stepEditor');
+                              var editedRecord = null;
+
+                              if (stepEditor.getSelectionModel().hasSelection()) {
+                                  editedRecord = stepEditor.getSelectionModel().getSelection()[0];
+                              }
+
+                              if(editedRecord){
+                                  console.log('textfield blur editedRecord.raw' + JSON.stringify(editedRecord.raw));
+                              }
+                              else{
+                                    return;
+                              }
+
+                              var flowTree = Ext.getCmp('flowTree');
+                              var selectedTreeNode = null;
+
+                              if (flowTree.getSelectionModel().hasSelection()) {
+                                  selectedTreeNode = flowTree.getSelectionModel().getSelection()[0];
+                              }
+
+                              if(selectedTreeNode){
+                                selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
+                                console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
+
+                                var flowNode = selectedTreeNode.parentNode;
+                                if(flowNode.raw.type === 'flow'){
+                                    saveFlow(flowNode);
+                                    stepEditor.getStore().sync();
+                                }
+                                else{
+                                    console.error('Unexpected node type ' + flowNode.raw.type);
+                                }
+
+                              }
                           }
                         }
                     }
                 }
-
         ],
     initComponent : function(){
 
@@ -485,43 +520,7 @@ Ext.define('Horny.StepEditor', {
         //itemclick: function( that, record, item, index, e, eOpts) {
         select : function( that, record, index, eOpts ){
 
-//            var path = "task.json";//record.getPath('text','/').replace('/Root/','');
-//
-//            if(record.data.leaf === false){
-//
-//                 http.get("/api/files?op=list&path=" + path,function(res){
-//                    console.log(res);
-//
-//                    record.removeAll();
-//                    var filesArr = JSON.parse(res);
-//
-//                    filesArr.forEach(function(file){
-//                        record.appendChild(file);
-//                    });
-//
-//                    record.expand();
-//                });
-//            }
-//            else{
-//
-//                http.get("/api/text?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                   Ext.getCmp('textView').update("<pre>" + res + "</pre>");
-//                });
-//
-//                 http.get("/api/chargram?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                  //  var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-//                 });
-//
-//                http.get("/api/ngram?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                    var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-//                });
-//            }
+            console.log('stepEditor select: ' + index);
 
 
 
