@@ -13,12 +13,18 @@ import java.util.logging.Logger;
 /**
  * Created by michael on 19/10/2014.
  */
+
+
 public class BasicUtils {
     private static final Logger log = Logger.getLogger(BasicUtils.class.getName());
     ScriptEngine _engine = null;
     public BasicUtils(ScriptEngine engine){
         _engine = engine;
     }
+
+//    public void call(Map map){
+//        JSONObject json = new JSONObject(map); // convert map to an json Object
+//    }
 
     public void load(String path) throws FileNotFoundException {
 
