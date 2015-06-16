@@ -15,7 +15,8 @@
                 "body":""
     },
     "exitCode": 0,
-    "res": ""
+    "res": "",
+    "context":{"headers":["aaa","bbb","ccc","ddd"]}
   },
   {
     "type": "action",

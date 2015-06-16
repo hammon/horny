@@ -74,9 +74,12 @@ function editorNodeToJson(treeNode){
     var jsonNode = null;
     var type = treeNode.raw.type;
 
-    console.log(treeNode.raw.name + " - " + type + " : " + treeNode.data.value);
+    console.log('editorNodeToJson: ' + treeNode.raw.name + " - " + type + " : " + treeNode.data.value);
 
-    if(type === "[object Object]"){
+    if(type === "[object String]"){
+        jsonNode = treeNode.data.value;
+    }
+    else if(type === "[object Object]"){
         jsonNode = {};
         for(var i = 0; i < treeNode.childNodes.length;i++){
 
@@ -115,6 +118,30 @@ function castTreeValue(treeNode){
     }
 }
 
+function getStepParamContextMenu(selectedRecord){
+
+    console.log('getStepParamContextMenu selectedRecord.data.name: ' + selectedRecord.data.name);
+
+    var menu = Ext.create('Horny.StepEditorAddMenu');
+
+    var actionContext = flowActions[1].context;
+
+    if(actionContext[selectedRecord.data.name]){
+        actionContext[selectedRecord.data.name].forEach(function(ctxVal){
+            menu.add({text: ctxVal});
+        });
+    }
+
+//    var arr = flowActions.filter(function(obj){
+//        return obj.actionType === item.text;
+//    });
+
+//    if(arr.length === 1){
+//    }
+
+
+    return menu;
+}
 
 Ext.define('Horny.StepEditorAddMenu', {
     extend: 'Ext.menu.Menu',
@@ -141,111 +168,7 @@ Ext.define('Horny.StepEditorAddMenu', {
             return selectedNode;
     },
     items: [
-        {
-           text: 'String',
-           "iconCls" : 'icon-jsonValue',
-           handler: function(item){
-                console.log(item);
 
-                var selectedNode = this.parentMenu.getSelectedNode(this);
-
-                if(selectedNode.data.leaf){
-                    selectedNode = selectedNode.parentNode;
-                }
-
-                var newName = "new string";
-                if(selectedNode.raw.type === "[object Array]"){
-                    newName = selectedNode.childNodes.length;
-                }
-
-                selectedNode.appendChild({
-                    "name": newName,
-                    "type":"[object String]",
-                    "value": "new string value",
-                    "leaf":true,
-                    "iconCls" : 'icon-jsonValue'
-               });
-           }
-        },
-        {
-           text: 'Number',
-           "iconCls" : 'icon-jsonValue',
-           handler: function(item){
-                console.log(item);
-
-                var selectedNode = this.parentMenu.getSelectedNode(this);
-
-
-                if(selectedNode.data.leaf){
-                    selectedNode = selectedNode.parentNode;
-                }
-
-                var newName = "new number";
-                if(selectedNode.raw.type === "[object Array]"){
-                    newName = selectedNode.childNodes.length;
-                }
-
-                selectedNode.appendChild({
-                    "name": newName,
-                    "type":"[object Number]",
-                    "value": 1,
-                    "leaf":true,
-                    "iconCls" : 'icon-jsonValue'
-               });
-           }
-        },
-        {
-           text: 'Boolean',
-           "iconCls" : 'icon-jsonValue',
-           handler: function(item){
-                console.log(item);
-
-                var selectedNode = this.parentMenu.getSelectedNode(this);
-
-                if(selectedNode.data.leaf){
-                    selectedNode = selectedNode.parentNode;
-                }
-
-                var newName = "new boolean";
-                if(selectedNode.raw.type === "[object Array]"){
-                    newName = selectedNode.childNodes.length;
-                }
-
-                selectedNode.appendChild({
-                    "name": newName,
-                    "type":"[object Boolean]",
-                    "value": true,
-                    "leaf":true,
-                    "iconCls" : 'icon-jsonValue'
-               });
-           }
-        },
-        {
-           text: 'Object',
-           "iconCls" : 'icon-jsonObject',
-           handler: function(item){
-                console.log(item);
-
-                var selectedNode = this.parentMenu.getSelectedNode(this);
-
-                if(selectedNode.data.leaf){
-                    selectedNode = selectedNode.parentNode;
-                }
-
-                var newName = "new object";
-                if(selectedNode.raw.type === "[object Array]"){
-                    newName = selectedNode.childNodes.length;
-                }
-
-                selectedNode.appendChild({
-                    "name": newName,
-                    "type":"[object Object]",
-                    "value": "...",
-                    "leaf":false,
-                    "iconCls" : 'icon-jsonObject'
-               });
-           }
-        },
         {
            text: 'Array',
            "iconCls" : 'icon-jsonArray',
@@ -383,6 +306,7 @@ Ext.define('Horny.StepEditor', {
                               }
 
                               if(selectedTreeNode){
+                                //editorNodeToJson(editedRecord);//
                                 selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
                                 console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
 
@@ -441,7 +365,7 @@ Ext.define('Horny.StepEditor', {
                               {
                                   text: 'Add',
                                   "iconCls" : 'icon-add',
-                                  menu: Ext.create('Horny.StepEditorAddMenu')
+                                  menu: getStepParamContextMenu(record)//Ext.create('Horny.StepEditorAddMenu')
 //                                  handler: function(item,e){
 //                                     alert("Add");
 //                                  }
