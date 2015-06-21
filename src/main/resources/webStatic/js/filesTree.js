@@ -175,6 +175,7 @@ Ext.define('Horny.FilesTree', {
     alias: 'widget.filestree',
 
     id: 'filesTree',
+//    floatable: false,
 //    title: 'Files',
     rootVisible: false,
 

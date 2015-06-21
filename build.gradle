@@ -32,6 +32,9 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-server:9.2.5.v20141112'
     compile 'org.eclipse.jetty:jetty-servlet:9.2.5.v20141112'
 
+    compile 'net.sourceforge.htmlunit:htmlunit:2.17'
+
+
 
 
 }

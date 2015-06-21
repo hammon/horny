@@ -1,7 +1,7 @@
 horny.load('scripts/lib/common.js');
 horny.load('scripts/lib/esprima.js');
 
-var jsFile = "/home/michael/dev/horny/src/main/resources/scripts/esprimaTest.js";
+var jsFile = "/home/michael/dev/horny/src/main/resources/scripts/lib/esprima.js";
 
 
 var ast = esprima.parse(horny.readFile(jsFile), {range: true, loc: true});
