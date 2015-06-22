@@ -124,7 +124,7 @@ function getStepParamContextMenu(selectedRecord){
 
     var menu = Ext.create('Horny.StepEditorAddMenu');
 
-    var actionContext = flowActions[1].context;
+    var actionContext = flowActions['testAction'].context;
 
     if(actionContext[selectedRecord.data.name]){
         actionContext[selectedRecord.data.name].forEach(function(ctxVal){

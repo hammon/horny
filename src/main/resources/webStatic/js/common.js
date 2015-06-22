@@ -41,7 +41,7 @@ var http = {
     }
 };
 
-var flowActions = [];
+var flowActions = {};
 
 http.get('/flow/action?op=get',function(res){
     console.log('flow: ' + res);

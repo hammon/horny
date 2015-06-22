@@ -22,7 +22,6 @@ public class HtmlUnitUtils {
         String pageAsText = page.asText();
 
 
-
         System.out.println(pageAsText);
     }
 }

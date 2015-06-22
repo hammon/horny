@@ -268,20 +268,15 @@ Ext.define('Horny.FlowTree', {
                                'iconCls' : 'icon-erase',
                                handler: function(item,e){
                                     //alert("Delete");
-
                                     var selectedRecord = this.parentMenu.selectedRecord;
-
                                     var path = selectedRecord.getPath('text','/').replace('/Root/','');
  //+ "&name=" + text
                                     http.get('/api/files?op=rm&path=' + path ,function(res){
                                         console.log(res);
 
                                         var store = selectedRecord.store;//.remove(this.parentMenu.selectedRecord);
-
                                         selectedRecord.remove();
-
                                         store.sync();
-
                                     },
                                     function(response, opts){
                                         var obj = JSON.parse(response.responseText);
@@ -300,31 +295,26 @@ Ext.define('Horny.FlowTree', {
                      else if(record.raw.type === 'flow'){
                         menu = new Ext.menu.Menu();
 
-                        flowActions.forEach(function(act){
+                        for(var actionType in flowActions){
+                            var act = flowActions[actionType];
                             menu.add({
-                               text: act.actionType,
-                               handler: function(item,e){
+                            text: act.actionType,
+                            handler: function(item,e){
                                     console.log(item.text);
-                                    var arr = flowActions.filter(function(obj){
-                                        return obj.actionType === item.text;
-                                    });
 
-                                    if(arr.length === 1){
-                                        var actNode = arr[0];
-                                        actNode.text = actNode.actionType;
-                                        actNode.iconCls = 'icon-action';
-                                        console.log(actNode);
-                                        record.appendChild(actNode);
-                                        saveFlow(record);
-                                    }
-                               }
-                             });
-                        });
+                                    var actNode = act;
+                                    actNode.text = actNode.actionType;
+                                    actNode.iconCls = 'icon-action';
+                                    console.log(actNode);
+                                    record.appendChild(actNode);
+                                    saveFlow(record);
+                                }
+                            });
+                        }
                      }
                      else{
                         return;
                      }
-
                       menu.selectedRecord = record;
                       menu.showAt(e.getXY());
                  }

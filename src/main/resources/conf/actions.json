@@ -1,28 +1,29 @@
-[
-  {
+{
+  "execute":{
     "type": "action",
     "actionType": "execute",
     "params": {"cmd": ""},
     "exitCode": 0,
     "res": ""
-  },
-  {
+    },
+  "testAction":{
     "type": "action",
     "actionType": "testAction",
     "params": {
-                "url": "",
-                "headers":{},
-                "body":""
+      "url": "",
+      "headers":{},
+      "body":""
     },
     "exitCode": 0,
     "res": "",
     "context":{"headers":["aaa","bbb","ccc","ddd"]}
   },
-  {
+  "ssh":{
     "type": "action",
     "actionType": "ssh",
     "params": {"hostname": "","username": "","password": "","cmd": ""},
     "exitCode": 0,
     "res": ""
   }
-]
+}
+
