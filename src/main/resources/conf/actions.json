@@ -24,6 +24,12 @@
     "params": {"hostname": "","username": "","password": "","cmd": ""},
     "exitCode": 0,
     "res": ""
+  },
+  "html":{
+    "type": "action",
+    "actionType": "html",
+    "params": {"url": ""},
+    "res": ""
   }
 }
 

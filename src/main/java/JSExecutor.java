@@ -14,6 +14,7 @@ public class JSExecutor {
     public JSExecutor(){
         _bindings.put("horny",new utils.BasicUtils(_engine));
         _bindings.put("proc",new utils.ProcessUtils());
+        _bindings.put("html",new utils.HtmlUnitUtils());
     }
 
     Object eval(String script){

@@ -5,6 +5,8 @@ horny.printToLog("hello printToLog!!!");
 
 
 
+
+
 //print("Hello from test.js");
 //
 //var System = java.lang.System;
