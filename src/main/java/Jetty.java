@@ -32,7 +32,7 @@ public class Jetty {
         try {
             p.load(new FileInputStream("./conf/log4j.properties"));
             PropertyConfigurator.configure(p);
-            log.info("Wow! I'm configured!");
+            log.info("Starting ...");
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -71,33 +71,7 @@ public class Jetty {
             staticContext.setHandler(staticHandler);
 
 
-            ServletContextHandler apiContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-
-            ServletHolder servletHolder = new ServletHolder(FilesServlet.class);
-            apiContext.addServlet(servletHolder, "/api/files");
-
-            ServletHolder ngramHolder = new ServletHolder(NGramServlet.class);
-            apiContext.addServlet(ngramHolder, "/api/ngram");
-
-            ServletHolder charGramHolder = new ServletHolder(CharGramServlet.class);
-            apiContext.addServlet(charGramHolder, "/api/chargram");
-
-            ServletHolder getTextHolder = new ServletHolder(TextServlet.class);
-            apiContext.addServlet(getTextHolder, "/api/text");
-
-
-            ServletHolder propsHolder = new ServletHolder(PropertiesSerlvet.class);
-            apiContext.addServlet(propsHolder, "/api/props");
-
-            ServletHolder jsonHolder = new ServletHolder(JsonServlet.class);
-            apiContext.addServlet(jsonHolder, "/api/json");
-
-            ServletHolder flowHolder = new ServletHolder(FlowServlet.class);
-            apiContext.addServlet(flowHolder, "/flow");
-
-            ServletHolder flowActionsHolder = new ServletHolder(FlowActionServlet.class);
-            apiContext.addServlet(flowActionsHolder, "/flow/action");
-
+            ServletContextHandler apiContext = initFlowsServletContextHandler();
 
             ContextHandlerCollection contexts = new ContextHandlerCollection();
 
@@ -106,7 +80,7 @@ public class Jetty {
 
             System.err.println(server.dump());
 
-            apiContext.setAttribute("rootPath", _rootPath);
+
 
             server.start();
             server.join();
@@ -114,6 +88,38 @@ public class Jetty {
         catch(Exception e){
             log.error("Jetty Oops...",e);
         }
+    }
+
+    private ServletContextHandler initFlowsServletContextHandler() {
+        ServletContextHandler apiContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
+
+        ServletHolder servletHolder = new ServletHolder(FilesServlet.class);
+        apiContext.addServlet(servletHolder, "/api/files");
+
+        ServletHolder ngramHolder = new ServletHolder(NGramServlet.class);
+        apiContext.addServlet(ngramHolder, "/api/ngram");
+
+        ServletHolder charGramHolder = new ServletHolder(CharGramServlet.class);
+        apiContext.addServlet(charGramHolder, "/api/chargram");
+
+        ServletHolder getTextHolder = new ServletHolder(TextServlet.class);
+        apiContext.addServlet(getTextHolder, "/api/text");
+
+
+        ServletHolder propsHolder = new ServletHolder(PropertiesSerlvet.class);
+        apiContext.addServlet(propsHolder, "/api/props");
+
+        ServletHolder jsonHolder = new ServletHolder(JsonServlet.class);
+        apiContext.addServlet(jsonHolder, "/api/json");
+
+        ServletHolder flowHolder = new ServletHolder(FlowServlet.class);
+        apiContext.addServlet(flowHolder, "/flow");
+
+        ServletHolder flowActionsHolder = new ServletHolder(FlowActionServlet.class);
+        apiContext.addServlet(flowActionsHolder, "/flow/action");
+
+        apiContext.setAttribute("rootPath", _rootPath);
+        return apiContext;
     }
 
 }
