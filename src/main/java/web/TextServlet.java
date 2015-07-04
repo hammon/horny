@@ -32,8 +32,14 @@ public class TextServlet extends HttpServlet {
 
         String op = "get";
 
+        String sEscapeHtml = "false";
+
         if(request.getParameterMap().containsKey("op")){
             op = request.getParameter("op");
+        }
+
+        if(request.getParameterMap().containsKey("escapeHtml")){
+            sEscapeHtml = request.getParameter("escapeHtml");
         }
 
         //  long start = System.currentTimeMillis();
@@ -53,7 +59,11 @@ public class TextServlet extends HttpServlet {
 
             String text = FileUtils.readFileToString(file);
 
-            text = StringEscapeUtils.escapeHtml4(text);
+            if(sEscapeHtml.equalsIgnoreCase("true")){
+                text = StringEscapeUtils.escapeHtml4(text);
+            }
+
+
 
             out.print(text);
         }

@@ -395,7 +395,20 @@ Ext.define('Horny.FilesTree', {
             }
             else{
 
-                http.get("/api/text?path=" + path,function(res){
+                var itemText = record.data.text;
+                var namePartsArr = itemText.split('.');
+
+                var propsView = Ext.getCmp('propsView');
+                var jsonView = Ext.getCmp('jsonView');
+
+                var jsView = Ext.getCmp('jsView');
+
+                propsView.tab.hide();
+                jsonView.tab.hide();
+                //jsView.tab.hide();
+
+
+                http.get("/api/text?escapeHtml=true&path=" + path,function(res){
                     //console.log(res);
 
                    Ext.getCmp('textView').update("<pre>" + res + "</pre>");
@@ -413,14 +426,7 @@ Ext.define('Horny.FilesTree', {
                     var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
                 });
 
-                var itemText = record.data.text;
-                var namePartsArr = itemText.split('.');
 
-                var propsView = Ext.getCmp('propsView');
-                var jsonView = Ext.getCmp('jsonView');
-
-                propsView.tab.hide();
-                jsonView.tab.hide();
 
 
                 if(namePartsArr.length > 0){
@@ -443,6 +449,18 @@ Ext.define('Horny.FilesTree', {
                                 jsonView.update(res);
                                 jsonView.tab.show();
                                 jsonView.show();
+                            });
+                        }
+                        else if(fileExt === 'js'){
+                            http.get('/api/text?path=' + path,function(res){
+
+                                console.log('js: ' + res);
+                                    var ast = esprima.parse(res.replace('"','\"'), {range: true, loc: true});
+                                    console.log(JSON.stringify(ast));
+//                                jsonView.filePath = path;
+//                                jsonView.update(res);
+//                                jsonView.tab.show();
+//                                jsonView.show();
                             });
                         }
                     }
