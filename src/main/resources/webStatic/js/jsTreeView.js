@@ -1,11 +1,25 @@
 
 function addJsTreeViewNode(treeNode,jsonNode){
 
+
+
     var nodeType = Object.prototype.toString.call(jsonNode);
 
     if(nodeType === "[object Object]"){
         for(var m in jsonNode){
-            console.log("obj: " + m + " : " + jsonNode[m]);
+
+            if(!jsonNode.hasOwnProperty(m)){
+                continue;
+            }
+
+            if(jsonNode.type){
+                console.log('type: ' + jsonNode.type);
+            }
+
+            if(jsonNode.id && jsonNode.id.name){
+                console.log('name: ' + jsonNode.id.name);
+            }
+//            console.log("obj: " + m + " : " + jsonNode[m]);
             var t = Object.prototype.toString.call(jsonNode[m]);
 
             var treeObj = {
@@ -35,7 +49,7 @@ function addJsTreeViewNode(treeNode,jsonNode){
     }
     else if(nodeType === "[object Array]"){
         for(var i = 0; i < jsonNode.length;i++){
-            console.log("arr: " + i + " : " + jsonNode[i]);
+//            console.log("arr: " + i + " : " + jsonNode[i]);
             var t = Object.prototype.toString.call(jsonNode[i]);
 
             var treeObj = {
@@ -70,7 +84,7 @@ function addJsTreeViewNode(treeNode,jsonNode){
 }
 
 
-function treeToJson(treeNode){
+function jsTreeToJson(treeNode){
     var jsonNode = null;
     var type = treeNode.raw.type;
 
@@ -81,10 +95,10 @@ function treeToJson(treeNode){
         for(var i = 0; i < treeNode.childNodes.length;i++){
 
             if(treeNode.childNodes[i].data.leaf){
-                jsonNode[treeNode.childNodes[i].data.name] = castTreeValue(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = castJsTreeValue(treeNode.childNodes[i]);
             }
             else{
-                jsonNode[treeNode.childNodes[i].data.name] = treeToJson(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = jsTreeToJson(treeNode.childNodes[i]);
             }
         }
     }
@@ -92,10 +106,10 @@ function treeToJson(treeNode){
         jsonNode = [];
         for(var i = 0; i < treeNode.childNodes.length;i++){
             if(treeNode.childNodes[i].data.leaf){
-                jsonNode[treeNode.childNodes[i].data.name] = castTreeValue(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = castJsTreeValue(treeNode.childNodes[i]);
             }
             else{
-                jsonNode[treeNode.childNodes[i].data.name] = treeToJson(treeNode.childNodes[i]);
+                jsonNode[treeNode.childNodes[i].data.name] = jsTreeToJson(treeNode.childNodes[i]);
             }
         }
     }
@@ -103,7 +117,7 @@ function treeToJson(treeNode){
     return jsonNode;
 }
 
-function castTreeValue(treeNode){
+function castJsTreeValue(treeNode){
     if(treeNode.data.type === "[object Number]"){
         return parseFloat(treeNode.data.value);
     }
@@ -297,7 +311,7 @@ Ext.define('Horny.JsTreeView', {
         root.removeAll();
         //this.store.removeAll();
 
-        var jsonObj = JSON.parse(json);
+        var jsonObj = json;//JSON.parse(json);
 
         root.raw.type = Object.prototype.toString.call(jsonObj);
 
@@ -317,7 +331,7 @@ Ext.define('Horny.JsTreeView', {
 
                 var jsonView = this.up().up();
                 var store = jsonView.getStore();
-                var json = treeToJson(store.getRootNode(),{});
+                var json = jsTreeToJson(store.getRootNode(),{});
 
                 console.log("json from tree: " + JSON.stringify(json));
 

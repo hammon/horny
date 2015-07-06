@@ -14,6 +14,8 @@ Ext.define('Horny.SplitView', {
     //     layout: 'anchor',
         split: true,
         collapsible: true,
+       // layout: 'anchor',
+        //layout: 'fit',
 
         flex: 1
 

@@ -24,6 +24,7 @@ Ext.onReady(function(){
                 Ext.create('Horny.SplitView',{
                     title: 'Flow',
                     region:'center',
+               //     layout: 'fit',
                     //width: 425,
                     items: [
 
@@ -43,15 +44,21 @@ Ext.onReady(function(){
                     title: 'Files',
                     items: [
                         Ext.create('Horny.SplitView',{
+                       //     layout: 'fit',
+                            layout: 'anchor',
                             region:'west',
                             width: 325,
                             items: [
 
                                 Ext.create('Horny.FilesTree',{
+//                                    layout: 'fit',
+//                                    flex: 1,
                                     region:'center',
                                     minWidth: 100,
                                 }),
                                 Ext.create('Horny.NgramsGrid',{
+//                                    layout: 'fit',
+//                                    flex: 1,
                                     region:'south',
                                     id:'ngramsGrid'//,
                                     //collapsible: true
@@ -70,6 +77,11 @@ Ext.onReady(function(){
                                 items: [
                                         Ext.create('Horny.JsonTree',{
                                             id: 'jsonView'
+                                        //    region:'center',
+                                        //    minWidth: 100,
+                                        }),
+                                        Ext.create('Horny.JsTreeView',{
+                                            id: 'jsTreeView'
                                         //    region:'center',
                                         //    minWidth: 100,
                                         }),
