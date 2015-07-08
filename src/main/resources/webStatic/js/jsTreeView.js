@@ -455,39 +455,6 @@ Ext.define('Horny.JsTreeView', {
              }
          };
 
-        var treeStore = this.getStore();
-        var root = treeStore.getRootNode();
-
-//        http.get("/api/text?path=home/michael/dev/Ouroboros/src/main/resources/webStatic/task1.json",function(res){
-//            console.log(res);
-//
-//            var jsonObj = JSON.parse(res);
-//
-//            root.raw.type = Object.prototype.toString.call(jsonObj);
-//
-//            addJsTreeViewNode(root,jsonObj);
-//            //Object.prototype.toString.call(jsonObj.task.arr)
-//
-////            filesArr.forEach(function(file){
-////                root.appendChild(file);
-////            });
-//
-////            treeStore.sort([
-////                {
-////                    property : 'text',
-////                    direction: 'ASC'
-////                }
-////            ]);
-//        });
-
-//        this.on('itemcontextmenu', function(view, record, item, index, event){
-//                         alert(record)
-//                         //treePanelCurrentNode = record;
-//                         //menu1.showAt(event.getXY());
-//                         event.stopEvent();
-//                 },this);
-
-
          this.callParent(arguments);
     },
 
@@ -523,27 +490,6 @@ Ext.define('Horny.JsTreeView', {
 //                    record.expand();
 //                });
 //            }
-//            else{
-//
-//                http.get("/api/text?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                   Ext.getCmp('textView').update("<pre>" + res + "</pre>");
-//                });
-//
-//                 http.get("/api/chargram?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                  //  var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-//                 });
-//
-//                http.get("/api/ngram?path=" + path,function(res){
-//                    //console.log(res);
-//
-//                    var ngramsGrid = Ext.getCmp('ngramsGrid').getStore().loadData(JSON.parse(res));
-//                });
-//            }
-
 
 
         }
