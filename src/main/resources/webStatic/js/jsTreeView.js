@@ -14,37 +14,45 @@ function addJsTreeViewNode(treeNode,jsonNode){
 
             if(jsonNode.type){
                 console.log('type: ' + jsonNode.type);
+                switch(jsonNode.type){
+                    case 'VariableDeclaration':
+                    case 'FunctionDeclaration':
+                    case 'Program':
+                         if(jsonNode.id && jsonNode.id.name){
+                            console.log('name: ' + jsonNode.id.name);
+                         }
+                        //            console.log("obj: " + m + " : " + jsonNode[m]);
+                        var t = Object.prototype.toString.call(jsonNode[m]);
+
+                        var treeObj = {
+                                          "name" : m,
+                                          "type" : t,
+                                          "value" : jsonNode[m],
+                                          "leaf" : true,
+                                          "iconCls" : 'icon-jsonValue'
+                                      };
+
+                        if(t === "[object Object]"){
+                            treeObj.leaf = false;
+                            treeObj.iconCls = 'icon-jsonObject';
+                            treeObj.value = "...";
+                        }
+                        else if( t === "[object Array]" ){
+                            treeObj.leaf = false;
+                            treeObj.iconCls = 'icon-jsonArray';
+                            treeObj.value = "...";
+                        }
+
+
+                        var childTreeNode = treeNode.appendChild(treeObj);
+
+                        addJsTreeViewNode(childTreeNode,jsonNode[m]);
+
+                    break;
+                }
             }
 
-            if(jsonNode.id && jsonNode.id.name){
-                console.log('name: ' + jsonNode.id.name);
-            }
-//            console.log("obj: " + m + " : " + jsonNode[m]);
-            var t = Object.prototype.toString.call(jsonNode[m]);
 
-            var treeObj = {
-                              "name" : m,
-                              "type" : t,
-                              "value" : jsonNode[m],
-                              "leaf" : true,
-                              "iconCls" : 'icon-jsonValue'
-                          };
-
-            if(t === "[object Object]"){
-                treeObj.leaf = false;
-                treeObj.iconCls = 'icon-jsonObject';
-                treeObj.value = "...";
-            }
-            else if( t === "[object Array]" ){
-                treeObj.leaf = false;
-                treeObj.iconCls = 'icon-jsonArray';
-                treeObj.value = "...";
-            }
-
-
-            var childTreeNode = treeNode.appendChild(treeObj);
-
-            addJsTreeViewNode(childTreeNode,jsonNode[m]);
         }
     }
     else if(nodeType === "[object Array]"){
