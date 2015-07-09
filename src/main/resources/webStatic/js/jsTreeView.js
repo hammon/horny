@@ -1,36 +1,43 @@
 
 function addJsTreeViewNode(treeNode,jsonNode){
 
-
-
     var nodeType = Object.prototype.toString.call(jsonNode);
 
     if(nodeType === "[object Object]"){
-        for(var m in jsonNode){
 
-            if(!jsonNode.hasOwnProperty(m)){
-                continue;
-            }
+        if(jsonNode.type){
+            console.log('type: ' + jsonNode.type);
+            switch(jsonNode.type){
+                case 'FunctionDeclaration':
+                    addJsFunctionToTree(treeNode,jsonNode);
+                break;
+                case 'VariableDeclaration':
+                    addJsVariableToTree(treeNode,jsonNode);
+                break;
+                case 'Program':
+                    addJsProgramToTree(treeNode,jsonNode);
+                break;
+//
+//                case 'VariableDeclarator':
+//
+//                    //            console.log("obj: " + m + " : " + jsonNode[m]);
+//                break;
 
-            if(jsonNode.type){
-                console.log('type: ' + jsonNode.type);
-                switch(jsonNode.type){
-                    case 'VariableDeclaration':
-                    case 'FunctionDeclaration':
-                    case 'Program':
-                         if(jsonNode.id && jsonNode.id.name){
-                            console.log('name: ' + jsonNode.id.name);
-                         }
-                        //            console.log("obj: " + m + " : " + jsonNode[m]);
+                default:{
+                    for(var m in jsonNode){
+
+                        if(!jsonNode.hasOwnProperty(m)){
+                            continue;
+                        }
+
                         var t = Object.prototype.toString.call(jsonNode[m]);
-
                         var treeObj = {
-                                          "name" : m,
-                                          "type" : t,
-                                          "value" : jsonNode[m],
-                                          "leaf" : true,
-                                          "iconCls" : 'icon-jsonValue'
-                                      };
+                            "name" : m,
+                            "type" : t,
+                            "value" : jsonNode[m],
+                            "leaf" : true,
+                            "iconCls" : 'icon-jsonValue'
+                        };
 
                         if(t === "[object Object]"){
                             treeObj.leaf = false;
@@ -43,46 +50,44 @@ function addJsTreeViewNode(treeNode,jsonNode){
                             treeObj.value = "...";
                         }
 
-
                         var childTreeNode = treeNode.appendChild(treeObj);
-
                         addJsTreeViewNode(childTreeNode,jsonNode[m]);
 
-                    break;
+                    }
                 }
+                break;
             }
-
-
         }
+
     }
     else if(nodeType === "[object Array]"){
         for(var i = 0; i < jsonNode.length;i++){
 //            console.log("arr: " + i + " : " + jsonNode[i]);
-            var t = Object.prototype.toString.call(jsonNode[i]);
 
-            var treeObj = {
-                            "name":i,
-                            "type":t,
-                            "value":jsonNode[i],
-                            "leaf":true,
-                            "iconCls" : 'icon-jsonValue'
-                          };
-
-            if(t === "[object Object]"){
-                treeObj.leaf = false;
-                treeObj.iconCls = 'icon-jsonObject';
-                treeObj.value = "...";
-            }
-            else if( t === "[object Array]" ){
-                treeObj.leaf = false;
-                treeObj.iconCls = 'icon-jsonArray';
-                treeObj.value = "...";
-            }
-
-            var childTreeNode = treeNode.appendChild(treeObj);
+//            var t = Object.prototype.toString.call(jsonNode[i]);
+//            var treeObj = {
+//                            "name":i,
+//                            "type":t,
+//                            "value":jsonNode[i],
+//                            "leaf":true,
+//                            "iconCls" : 'icon-jsonValue'
+//                          };
+//
+//            if(t === "[object Object]"){
+//                treeObj.leaf = false;
+//                treeObj.iconCls = 'icon-jsonObject';
+//                treeObj.value = "...";
+//            }
+//            else if( t === "[object Array]" ){
+//                treeObj.leaf = false;
+//                treeObj.iconCls = 'icon-jsonArray';
+//                treeObj.value = "...";
+//            }
+//
+//            var childTreeNode = treeNode.appendChild(treeObj);
             //var childTreeNode = treeNode.appendChild({"name":i,"type":t,"value":jsonNode[i]});
 
-            addJsTreeViewNode(childTreeNode,jsonNode[i]);
+            addJsTreeViewNode(treeNode,jsonNode[i]);
         }
     }
 //    else{
@@ -137,6 +142,75 @@ function castJsTreeValue(treeNode){
     }
 }
 
+
+function addJsProgramToTree(treeNode,jsonNode){
+    if(!jsonNode.type
+        || jsonNode.type !== 'Program'){
+        return;
+    }
+
+    addJsTreeViewNode(treeNode,jsonNode.body);
+//    if(jsonNode.id && jsonNode.id.name){
+//        var treeObj = {
+//            "name" : jsonNode.id.name,
+//            "type" : 'Program',
+//            "value" : '...',
+//            "leaf" : true,
+//            "iconCls" : 'icon-jsonValue'
+//        };
+//        var childTreeNode = treeNode.appendChild(treeObj);
+//    }
+}
+
+function addJsFunctionToTree(treeNode,jsonNode){
+    if(!jsonNode.type
+        || jsonNode.type !== 'FunctionDeclaration'){
+        return;
+    }
+
+    if(jsonNode.id && jsonNode.id.name){
+        var treeObj = {
+            "name" : jsonNode.id.name,
+            "type" : 'FunctionDeclaration',
+            "value" : '...',
+            "leaf" : true,
+            "iconCls" : 'icon-function'
+        };
+        var childTreeNode = treeNode.appendChild(treeObj);
+    }
+}
+
+function addJsVariableToTree(treeNode,jsonNode){
+    if(!jsonNode.type
+        || jsonNode.type !== 'VariableDeclaration'){
+        return;
+    }
+
+    var varNames = "";
+
+    var decls = jsonNode.declarations;
+    for(var i = 0; i < decls.length;i++){
+        var decl = decls[i];
+        if(decl.type === 'VariableDeclarator'){
+            varNames += decl.id.name + ',';
+        }
+    }
+
+    var varNames = varNames.substring(0,varNames.length - 1);
+
+    if(varNames){
+        var treeObj = {
+            "name" : varNames,
+            "type" : 'VariableDeclaration',
+            "value" : '...',
+            "leaf" : true,
+            "iconCls" : 'icon-jsonValue'
+        };
+        var childTreeNode = treeNode.appendChild(treeObj);
+
+        //addJsTreeViewNode(childTreeNode,jsonNode);
+    }
+}
 
 Ext.define('Horny.JsTreeViewAddMenu', {
     extend: 'Ext.menu.Menu',
