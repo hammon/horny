@@ -14,6 +14,12 @@ function addJsTreeViewNode(treeNode,jsonNode){
                 case 'VariableDeclaration':
                     addJsVariableToTree(treeNode,jsonNode);
                 break;
+                case 'ObjectExpression':
+                    addJsObjectExpressionToTree(treeNode,jsonNode);
+                break;
+                case 'Property':
+                    addJsPropertyToTree(treeNode,jsonNode);
+                break;
                 case 'Program':
                     addJsProgramToTree(treeNode,jsonNode);
                 break;
@@ -192,24 +198,76 @@ function addJsVariableToTree(treeNode,jsonNode){
     for(var i = 0; i < decls.length;i++){
         var decl = decls[i];
         if(decl.type === 'VariableDeclarator'){
-            varNames += decl.id.name + ',';
+            //varNames += decl.id.name + ',';
+            var treeObj = {
+                        "name" : decl.id.name,
+                        "type" : 'VariableDeclaration',
+                        "value" : '...',
+                        "leaf" : false,
+                        "iconCls" : 'icon-jsonValue'
+            };
+
+            var childTreeNode = treeNode.appendChild(treeObj);
+
+            if(decl.init){
+                addJsTreeViewNode(childTreeNode,decl.init);
+            }
         }
     }
 
-    var varNames = varNames.substring(0,varNames.length - 1);
+//    var varNames = varNames.substring(0,varNames.length - 1);
 
     if(varNames){
-        var treeObj = {
-            "name" : varNames,
-            "type" : 'VariableDeclaration',
-            "value" : '...',
-            "leaf" : true,
-            "iconCls" : 'icon-jsonValue'
-        };
-        var childTreeNode = treeNode.appendChild(treeObj);
 
-        //addJsTreeViewNode(childTreeNode,jsonNode);
+
+ //       addJsTreeViewNode(childTreeNode,jsonNode);
     }
+}
+
+function addJsObjectExpressionToTree(treeNode,jsonNode){
+    if(!jsonNode.type
+        || jsonNode.type !== 'ObjectExpression'){
+        return;
+    }
+
+    if(!jsonNode.properties){
+        return;
+    }
+
+    addJsTreeViewNode(treeNode,jsonNode.properties);
+//    jsonNode.properties.forEach(function(prop){
+//
+//    });
+}
+
+function addJsPropertyToTree(treeNode,jsonNode){
+    if(!jsonNode.type
+        || jsonNode.type !== 'Property'){
+        return;
+    }
+
+    if(!jsonNode.key){
+        return;
+    }
+
+    var treeObj = {
+        "name" : jsonNode.key.value,
+        "type" : jsonNode.key.type,
+        "value" : '...',
+        "leaf" : false,
+        "iconCls" : 'icon-jsonValue'
+    };
+
+    var childTreeNode = treeNode.appendChild(treeObj);
+
+    if(jsonNode.value){
+        addJsTreeViewNode(childTreeNode,jsonNode.value);
+    }
+
+
+//    jsonNode.properties.forEach(function(prop){
+//
+//    });
 }
 
 Ext.define('Horny.JsTreeViewAddMenu', {
