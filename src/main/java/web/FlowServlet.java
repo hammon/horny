@@ -153,10 +153,14 @@ public class FlowServlet extends HttpServlet {
                     String name = f.getName();
 
                     obj.put("path",f.getAbsolutePath().replace(root.getAbsolutePath(),""));
+                    obj.put("text", name);
+                    obj.put("leaf", false);
 
                     if(f.isDirectory()){
                         obj.put("type", "directory");
                         //obj.put("iconCls", "icon-flow");
+
+                        jsonArr.put(obj);
                     }
                     else if(extension.equalsIgnoreCase("json")){
                         name = FilenameUtils.getBaseName(f.getAbsolutePath());
@@ -164,10 +168,11 @@ public class FlowServlet extends HttpServlet {
                         //obj.put("iconCls", "icon-action");
                         obj.put("iconCls", "icon-flow");
 
+                        jsonArr.put(obj);
+
                     }
 
-                    obj.put("text", name);
-                    obj.put("leaf", false);
+
 //                    obj.put("hidden", f.isHidden());
 //                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //
@@ -178,7 +183,7 @@ public class FlowServlet extends HttpServlet {
                 } catch (JSONException e) {
                     log.error("Error adding file to json",e);
                 }
-                jsonArr.put(obj);
+
             }
 
             //out.println(f.getName());

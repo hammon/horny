@@ -434,7 +434,7 @@ Ext.define('Horny.JsTreeView', {
     alias: 'widget.jsontree',
 
   //  id: 'jsonTree',
-    title: 'JSON',
+    title: 'JS',
     rootVisible: false,
 
     plugins:[

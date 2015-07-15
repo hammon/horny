@@ -45,7 +45,8 @@ Ext.onReady(function(){
                     items: [
                         Ext.create('Horny.SplitView',{
                        //     layout: 'fit',
-                            layout: 'anchor',
+                        //    layout: 'anchor',
+                            floatable: false,
                             region:'west',
                             width: 325,
                             items: [
@@ -53,6 +54,7 @@ Ext.onReady(function(){
                                 Ext.create('Horny.FilesTree',{
 //                                    layout: 'fit',
 //                                    flex: 1,
+                                    collapsible: false,
                                     region:'center',
                                     minWidth: 100,
                                 }),
@@ -67,6 +69,7 @@ Ext.onReady(function(){
                          }),
                         Ext.create('Horny.SplitView',{
                             region:'center',
+                            collapsible: false,
                             items: [
 
                             Ext.createWidget('tabpanel', {

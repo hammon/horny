@@ -6,21 +6,31 @@ Ext.define('Horny.SplitView', {
 
     layout: {
         type: 'border',
-    //    align: 'stretch'
-        //padding: 5
+        padding: 5
     },
     defaults: {
-      //  collapsible: true,
-    //     layout: 'anchor',
-        split: true,
         collapsible: true,
-       // layout: 'anchor',
-        //layout: 'fit',
-
-        flex: 1
-
-     // bodyPadding: 10
+        split: true,
+    // bodyPadding: 10
     }
+
+//    layout: {
+//        type: 'border',
+//    //    align: 'stretch'
+//        //padding: 5
+//    },
+//    defaults: {
+//      //  collapsible: true,
+//    //     layout: 'anchor',
+//        split: true,
+//        collapsible: true,
+//       // layout: 'anchor',
+//        //layout: 'fit',
+//
+//        flex: 1
+//
+//     // bodyPadding: 10
+//    }
 
 
 });
