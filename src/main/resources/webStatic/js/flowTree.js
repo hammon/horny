@@ -406,9 +406,7 @@ Ext.define('Horny.FlowTree', {
                 spliview.add(stepEditor);
                 spliview.doLayout();
 
-                var i = 0;
-
-
+                //var i = 0;
 
             }
         }

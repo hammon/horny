@@ -18,7 +18,7 @@ Ext.onReady(function(){
             id: 'mainTabs',
             region: 'center',
             collapsible: false,
-            activeTab: 0,
+            activeTab: 1,
             items: [
 
                 Ext.create('Horny.SplitView',{
@@ -62,8 +62,8 @@ Ext.onReady(function(){
 //                                    layout: 'fit',
 //                                    flex: 1,
                                     region:'south',
-                                    id:'ngramsGrid'//,
-                                    //collapsible: true
+                                    id:'ngramsGrid',
+                                    collapsed: true
                                 })
                             ]
                          }),
@@ -105,7 +105,8 @@ Ext.onReady(function(){
                                 }),
                                 Ext.create('Horny.SnippetsGrid',{
                                     region:'south',
-                                    id: 'snippetsGrid'//,
+                                    id: 'snippetsGrid',
+                                    collapsed: true
                                     //collapsible: true
                                 })
                             ]

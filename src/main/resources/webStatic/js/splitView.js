@@ -10,7 +10,8 @@ Ext.define('Horny.SplitView', {
     },
     defaults: {
         collapsible: true,
-        split: true,
+        split: true
+
     // bodyPadding: 10
     }
 

@@ -140,31 +140,31 @@ Ext.define('Horny.FilesTreeToolbar',{
            text: 'New',
            "iconCls" : 'icon-add',
            menu: Ext.create('Horny.FilesTreeAddMenu')
-        },
-        {
-            boxLabel: 'Show hidden',
-            xtype: 'checkbox',
-            listeners: {
-                change: {
-                    fn: function( that, newValue, oldValue, eOpts ) {
-                        console.log('new val: ' + newValue);
-
-                        var tree = that.up().up();
-
-                        var store = tree.getStore();
-
-                        store.filter([
-                            {
-                                filterFn:function(item){
-                                    console.log('item.raw.hidden: ' + item.raw.hidden);
-                                    return item.raw.hidden;
-                                }
-                            }
-                        ]);
-                    }
-                }
-            }
-        }
+        }//,
+//        {
+//            boxLabel: 'Show hidden',
+//            xtype: 'checkbox',
+//            listeners: {
+//                change: {
+//                    fn: function( that, newValue, oldValue, eOpts ) {
+//                        console.log('new val: ' + newValue);
+//
+//                        var tree = that.up().up();
+//
+//                        var store = tree.getStore();
+//
+//                        store.filter([
+//                            {
+//                                filterFn:function(item){
+//                                    console.log('item.raw.hidden: ' + item.raw.hidden);
+//                                    return item.raw.hidden;
+//                                }
+//                            }
+//                        ]);
+//                    }
+//                }
+//            }
+//        }
     ]
 });
 

@@ -205,6 +205,7 @@ Ext.define('Horny.StepEditor', {
     id: 'stepEditor',
 //    title: 'JSON',
     rootVisible: false,
+    flex: 1,
 
     plugins:[
         Ext.create('Ext.grid.plugin.CellEditing', {
