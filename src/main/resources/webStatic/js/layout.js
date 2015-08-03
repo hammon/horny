@@ -53,14 +53,14 @@ Ext.onReady(function(){
 
                                 Ext.create('Horny.FilesTree',{
 //                                    layout: 'fit',
-//                                    flex: 1,
+                                    flex: 1,
                                     collapsible: false,
                                     region:'center',
                                     minWidth: 100,
                                 }),
                                 Ext.create('Horny.NgramsGrid',{
 //                                    layout: 'fit',
-//                                    flex: 1,
+                                    flex: 1,
                                     region:'south',
                                     id:'ngramsGrid',
                                     collapsed: true
@@ -77,6 +77,7 @@ Ext.onReady(function(){
                                 region: 'center',
                                 collapsible: false,
                                 activeTab: 0,
+                                flex:1,
                                 items: [
                                         Ext.create('Horny.JsonTree',{
                                             id: 'jsonView'
@@ -106,7 +107,8 @@ Ext.onReady(function(){
                                 Ext.create('Horny.SnippetsGrid',{
                                     region:'south',
                                     id: 'snippetsGrid',
-                                    collapsed: true
+                                    collapsed: true,
+                                    flex:1
                                     //collapsible: true
                                 })
                             ]

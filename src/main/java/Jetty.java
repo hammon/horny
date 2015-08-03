@@ -39,7 +39,7 @@ public class Jetty {
         }
 
         Jetty jetty = new Jetty();
-        jetty.start(8081,".");///scripts/lib
+        jetty.start(8081,"/home/michael");///scripts/lib
     }
 
     public void start(int port){

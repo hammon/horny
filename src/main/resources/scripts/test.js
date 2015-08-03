@@ -1,5 +1,14 @@
 
+horny.load('scripts/lib/nasven.js');
+
 horny.printToLog("hello printToLog!!!");
+
+
+for(var m in Nasven){
+    print('m: ' + m);
+}
+
+
 
 
 

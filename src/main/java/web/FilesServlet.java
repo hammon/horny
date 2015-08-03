@@ -202,23 +202,25 @@ public class FilesServlet extends HttpServlet {
         JSONArray jsonArr = new JSONArray();
 
         for(File f : list){
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("text", f.getName());
-                obj.put("leaf", f.isFile());
-                obj.put("hidden", f.isHidden());
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(!f.isHidden()) {
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("text", f.getName());
+                    obj.put("leaf", f.isFile());
+                    obj.put("hidden", f.isHidden());
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                obj.put("lastModified", df.format(new Date(f.lastModified())));
-                obj.put("length", f.length());
+                    obj.put("lastModified", df.format(new Date(f.lastModified())));
+                    obj.put("length", f.length());
 
-                //obj.put("checked", true);
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                    //obj.put("checked", true);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                jsonArr.put(obj);
+                //out.println(f.getName());
             }
-            jsonArr.put(obj);
-            //out.println(f.getName());
         }
 
         //long stop = System.currentTimeMillis();
