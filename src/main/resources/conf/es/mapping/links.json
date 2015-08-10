@@ -1,0 +1,9 @@
+{
+    "links" : {
+        "properties" : {
+            "url" : { "type": "string" , "index" : "not_analyzed"},
+            "link" : { "type": "string" , "index" : "not_analyzed"},
+            "date":{"type": "date","format": "dateOptionalTime"}
+        }
+    }
+}

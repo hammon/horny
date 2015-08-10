@@ -1,0 +1,10 @@
+{
+    "web" : {
+        "properties" : {
+            "title" : { "type": "string"},
+            "url" : { "type": "string" , "index" : "not_analyzed"},
+            "text" : { "type": "string" },
+            "date":{"type": "date","format": "dateOptionalTime"}
+        }
+    }
+}

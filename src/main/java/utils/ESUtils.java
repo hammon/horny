@@ -104,6 +104,8 @@ public class ESUtils {
 
         _client = createNodeClient();
 
+        initData("horny");
+
     }
 
     public void close(){
@@ -122,9 +124,10 @@ public class ESUtils {
     }
 
     public Client createNodeClient(){
-        _node = nodeBuilder().node();
-        Client client = _node.client();
-        return client;
+
+        _node = nodeBuilder().clusterName("horny").node();
+        _client = _node.client();
+        return _client;
     }
 
     public Client getClient(){
@@ -141,6 +144,11 @@ public class ESUtils {
         }
 
         File dir = new File("conf/es/mapping");
+
+        if(!dir.exists()){
+            return;
+        }
+
         FileFilter fileFilter = new WildcardFileFilter("*.json");
 
         File[] files = dir.listFiles(fileFilter);
