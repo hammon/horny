@@ -15,6 +15,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.util.logging.Logger;
 
 import static org.elasticsearch.node.NodeBuilder.*;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 
 /**
@@ -125,7 +127,11 @@ public class ESUtils {
 
     public Client createNodeClient(){
 
-        _node = nodeBuilder().clusterName("horny").node();
+        Settings settings=ImmutableSettings.settingsBuilder().put("path.conf", "conf/es").build();
+
+        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName("horny").data(true).settings(settings);
+
+        _node = nodeBuilder.node();
         _client = _node.client();
         return _client;
     }

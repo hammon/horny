@@ -114,7 +114,15 @@ Ext.onReady(function(){
                             ]
                         })
                     ]
-                })//,
+                }),
+                Ext.create('Horny.EsMappingTree',{
+                    title: 'ES',
+                    flex: 1,
+                    collapsible: false,
+                    region:'center',
+                })
+
+                //,
 //                {
 //                    html: '<h2>Web</h2><p>Wellcome!</p>',
 //                    title: 'Web'
