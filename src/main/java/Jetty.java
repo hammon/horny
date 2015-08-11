@@ -11,6 +11,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.ESUtils;
 import web.*;
 
 import java.io.FileInputStream;
@@ -119,6 +120,8 @@ public class Jetty {
         apiContext.addServlet(flowActionsHolder, "/flow/action");
 
         apiContext.setAttribute("rootPath", _rootPath);
+
+        apiContext.setAttribute("es", new ESUtils());
         return apiContext;
     }
 
