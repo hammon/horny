@@ -115,14 +115,20 @@ Ext.onReady(function(){
                         })
                     ]
                 }),
-                Ext.create('Horny.EsMappingTree',{
+
+                Ext.create('Horny.SplitView',{
                     title: 'ES',
-                    flex: 1,
-                    collapsible: false,
                     region:'center',
+                    items: [
+                        Ext.create('Horny.EsMappingTree',{
+                            flex: 1,
+                            collapsible: false,
+                            region:'center',
+                        })
+                    ]
                 })
 
-                //,
+
 //                {
 //                    html: '<h2>Web</h2><p>Wellcome!</p>',
 //                    title: 'Web'
