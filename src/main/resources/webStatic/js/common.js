@@ -31,11 +31,13 @@ var http = {
             url: url,
             method: 'POST',
             jsonData: json,
-            success: function(transport){
-                      // do something
+            success: function(response){
+                if(callback){
+                    callback(response.responseText);
+                }
             },
-            failure: function(transport){
-                    alert("Error: " - transport.responseText);
+            failure: function(response){
+                    alert("Error: " - response.responseText);
             }
         });
     }

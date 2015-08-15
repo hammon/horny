@@ -8,6 +8,6 @@ public class Test {
     public void test(){
 
         Assert.assertTrue(true);
-        assert(false);
+        //assert(false);
     }
 }

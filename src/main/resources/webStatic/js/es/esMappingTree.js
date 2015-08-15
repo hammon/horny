@@ -110,13 +110,23 @@ Ext.define('Horny.EsMappingTree', {
                             parentPanel.remove(esDocsGrid.id,true);
                         }
 
-                        parentPanel.add(Ext.create('Horny.EsDocsGrid',{
+                        var esDocsGrid = Ext.create('Horny.EsDocsGrid',{
                             region: 'east',
                             title : "Docs",
                             flex: 1,
                             store: docGridStore,
                             columns: gridColumns
-                        }));
+                        });
+
+                        esDocsGrid.update(path);
+
+                        parentPanel.add(esDocsGrid);
+
+                        esDocsGrid.update(path);
+
+                        esDocsGrid.doLayout();
+
+
                     }
                 });
             }
