@@ -77,7 +77,10 @@ Ext.define('Horny.EsMappingTree', {
                         for(var propName in props){
                             if (props.hasOwnProperty(propName) && props[propName].type){
                                 var field = {};
-                                var column = {};
+                                var column = {
+                                    editor: {
+                                    allowBlank: false
+                                }};
 
                                 if(props[propName].type.toLowerCase() === "double" || props[propName].type.toLowerCase() === "long"){
                                     field.type = "number";

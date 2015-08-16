@@ -85,7 +85,7 @@ Ext.define('Horny.PropertiesEditorGrid', {
                       }
                       ],
                       plugins: [ Ext.create('Ext.grid.plugin.CellEditing', {
-                                        clicksToEdit: 1
-                                    })]
+                        clicksToEdit: 1
+                    })]
 
 });
