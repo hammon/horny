@@ -119,6 +119,9 @@ public class Jetty {
         ServletHolder flowActionsHolder = new ServletHolder(FlowActionServlet.class);
         apiContext.addServlet(flowActionsHolder, "/flow/action");
 
+        ServletHolder esHolder = new ServletHolder(EsServlet.class);
+        apiContext.addServlet(esHolder, "/es");
+
         apiContext.setAttribute("rootPath", _rootPath);
 
         apiContext.setAttribute("es", new ESUtils());

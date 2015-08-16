@@ -306,6 +306,17 @@ Ext.define('Horny.FilesTree', {
 //                                     alert("Add");
 //                                  }
                               },
+                              {
+                                text: 'Index',
+                                "iconCls" : 'icon-add',
+                                handler: function(item,e){
+                                    var selectedRecord = this.parentMenu.selectedRecord;
+                                    var path = selectedRecord.getPath('text','/').replace('/Root/','');
+                                    http.get('/api/files?op=index&path=' + path ,function(res){
+                                        console.log(res);
+                                   });
+                                }
+                              },
                         //      {text: 'Edit'},
                               {text: 'Delete',
                               'iconCls' : 'icon-erase',

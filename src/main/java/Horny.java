@@ -31,10 +31,10 @@ public class Horny {
         HornyCmd cmd = new HornyCmd();
         new JCommander(cmd,args);
 
-        cmd.parameters.forEach(param -> {
-            //System.out.println(param);
-            log.info(param);
-        });
+//        cmd.parameters.forEach(param -> {
+//            //System.out.println(param);
+//            log.info(param);
+//        });
 
         if(!cmd.file.isEmpty()){
             try {

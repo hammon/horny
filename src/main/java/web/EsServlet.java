@@ -26,15 +26,15 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 //import org.joda.*;
 
 /**
  * Created by michael on 08/02/15.
  */
-public class FilesServlet extends HttpServlet {
+public class EsServlet extends HttpServlet {
 
-    final static Logger log = LoggerFactory.getLogger(FilesServlet.class);
+    final static Logger log = LoggerFactory.getLogger(EsServlet.class);
     //File root = new File("/home/michael/");
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,7 +57,7 @@ public class FilesServlet extends HttpServlet {
         else if(op.equalsIgnoreCase("create")){
             createFile(request,response);
         }
-        else if(op.equalsIgnoreCase("rm")){
+        else if(op.equalsIgnoreCase("delete")){
             delete(request,response);
         }
         else if(op.equalsIgnoreCase("index")){
@@ -139,25 +139,7 @@ public class FilesServlet extends HttpServlet {
     void delete(HttpServletRequest request, HttpServletResponse response){
 
         JSONObject jsonRes = new JSONObject();
-
         jsonRes.put("result","SUCCESS");
-
-        String path = request.getParameter("path");
-
-        File root = new File(getServletContext().getAttribute("rootPath").toString());
-        File file = new File(root,path);
-
-
-        try {
-            FileUtils.forceDelete(file);
-        } catch (IOException e) {
-            log.error("Failed to delete " + file.getAbsolutePath(), e);
-            response.setStatus(500);
-            jsonRes.put("result","FAILURE");
-            jsonRes.put("message",e.getMessage());
-        }
-
-        //File newFile = new File(currDir,request.getParameter("name"));
 
         PrintWriter out = null;
         try {
@@ -166,23 +148,47 @@ public class FilesServlet extends HttpServlet {
             log.error("Failed to get writer", e);
         }
 
-//        try {
-//
-//                //jsonRes.put("message",newFile.getAbsolutePath());
-//
-//
-//        } catch (IOException e) {
-//
-//            //log.error("Failed to create directory " + newFile.getAbsolutePath(),e);
-//            response.setStatus(500);
-//            jsonRes.put("result","FAILURE");
-//            //"Failed to create directory " + newDir.getAbsolutePath() +
-//            jsonRes.put("message",e.getMessage());
-//            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
-//        }
+        String esIndex = request.getParameter("index");
+        if(esIndex == null || esIndex.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", "index in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+
+        String esType = request.getParameter("type");
+        if(esType == null || esType.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","type in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esId = request.getParameter("id");
+        if(esId == null || esId.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","id in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+
+        try {
+            String result = es.delete(esIndex,esType,esId);
+            jsonRes.put("message", result);
+        } catch (Exception e) {
+            log.error("Failed to delete " + esIndex + "/" + esType + "/" + esId, e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", e.getMessage());
+        }
 
         out.write(jsonRes.toString());
-
     }
 
     void createFile(HttpServletRequest request, HttpServletResponse response){

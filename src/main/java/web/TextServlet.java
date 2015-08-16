@@ -63,8 +63,6 @@ public class TextServlet extends HttpServlet {
                 text = StringEscapeUtils.escapeHtml4(text);
             }
 
-
-
             out.print(text);
         }
 

@@ -65,8 +65,8 @@ Ext.define('Horny.EsMappingTree', {
                     console.log(path + ' mapping: ' + res);
 
                     var mapping = JSON.parse(res);
-                    var storeFields =  [];
-                    var gridColumns = [];
+                    var storeFields =  [{name:'id',type:'string'}];
+                    var gridColumns = [{text:'id',dataIndex:'id'}];
 
                     if(mapping[esIndex]
                         && mapping[esIndex]['mappings']
