@@ -4,12 +4,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -44,6 +51,26 @@ public class ESUtils {
     public static void main(String[] args) {
         ESUtils es = new ESUtils();
 
+        GetMappingsResponse res = null;
+        try {
+            res = es.getClient().admin().indices().getMappings(new GetMappingsRequest().indices("horny")).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        ImmutableOpenMap<String, MappingMetaData> mapping  = res.mappings().get("horny");
+        for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
+            System.out.println(c.key+" = "+c.value.source());
+        }
+
+
+//        ClusterState cs = es.getClient().get()    //.admin().cluster()..prepareState()..setFilterIndices("myIndex").execute().actionGet().getState();
+//        IndexMetaData imd = cs.getMetaData().index("myIndex");
+//        MappingMetaData mdd = imd.mapping("myType");
+
+
+
 //        String res = es.get("news","rss","http://www.bbc.co.uk/news/education-31501917");
 //
 //        log.info(res);
@@ -67,15 +94,16 @@ public class ESUtils {
         //es.delete("envsconf","task","AUsC5_Me5mi79R2ZpD6v");
         //es.initData();
 
-        JSONObject obj = new JSONObject();
+//        JSONObject obj = new JSONObject();
+//        obj.put("name","Michael");
+//        obj.put("msg", "Hello1");
+//        es.set("test","test","1",obj.toString());
+//
+//        String res = es.get("test","test","1");
+//        es.close();
 
-        obj.put("name","Michael");
-        obj.put("msg", "Hello1");
-        es.set("test","test","1",obj.toString());
 
-        String res = es.get("test","test","1");
 
-        es.close();
 //        es.set("test","test",obj.toString());
 
 //        try {
