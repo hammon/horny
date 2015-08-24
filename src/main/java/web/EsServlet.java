@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import text.NGram;
 import utils.ESUtils;
+import utils.HttpUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,22 +47,57 @@ public class EsServlet extends HttpServlet {
 
         String op = request.getParameter("op");
 
-        if(op.equalsIgnoreCase("list")){
-            listDir(request,response);
-        }
-        else if(op.equalsIgnoreCase("mkdir")){
-            mkdir(request,response);
-        }
-        else if(op.equalsIgnoreCase("create")){
-            createFile(request,response);
-        }
-        else if(op.equalsIgnoreCase("delete")){
-            delete(request,response);
-        }
-        else if(op.equalsIgnoreCase("index")){
-            index(request, response);
+        switch(op){
+            case "delete":
+                delete(request,response);
+                break;
+            case "index":
+                index(request, response);
+                break;
+            case "mapping":
+                mapping(request, response);
+                break;
+            case "update":
+                update(request, response);
+                break;
+
         }
 
+
+    }
+
+    void mapping(HttpServletRequest request, HttpServletResponse response){
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("result","SUCCESS");
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        String path = request.getParameter("path");
+        if(path == null || path.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","path in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        if(path.length() > 1){
+            if(!path.endsWith("/")){
+                path += "/";
+            }
+
+            if(!path.startsWith("/")){
+                path = "/" + path;
+            }
+        }
+
+        HttpUtils http = new HttpUtils();
+        out.write(http.get("http://127.0.0.1:9200" + path + "_mapping"));
     }
 
     void index(HttpServletRequest request, HttpServletResponse response){
@@ -110,8 +146,6 @@ public class EsServlet extends HttpServlet {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             });
 
             log.info("send ngrams balk");
@@ -127,11 +161,78 @@ public class EsServlet extends HttpServlet {
                     }
                 }
             }
-
             log.info("finished " + n + "-gram balk");
         }
+    }
 
+    void update(HttpServletRequest request, HttpServletResponse response){
 
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("result","SUCCESS");
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        String esIndex = request.getParameter("index");
+        if(esIndex == null || esIndex.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", "index in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esType = request.getParameter("type");
+        if(esType == null || esType.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","type in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esId = request.getParameter("id");
+        if(esId == null || esId.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","id in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String column = request.getParameter("column");
+        if(esId == null || esId.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","column in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String value = request.getParameter("value");
+        if(esId == null){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","value in null.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+        try {
+            String result = es.update(esIndex,esType,esId,column,value);
+            jsonRes.put("message", result);
+        } catch (Exception e) {
+            log.error("Failed to delete " + esIndex + "/" + esType + "/" + esId, e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", e.getMessage());
+        }
+        out.write(jsonRes.toString());
     }
 
     void delete(HttpServletRequest request, HttpServletResponse response){
@@ -155,7 +256,6 @@ public class EsServlet extends HttpServlet {
             return;
         }
 
-
         String esType = request.getParameter("type");
         if(esType == null || esType.isEmpty()){
             jsonRes.put("result","FAILURE");
@@ -175,7 +275,6 @@ public class EsServlet extends HttpServlet {
         }
 
         ESUtils es = (ESUtils)getServletContext().getAttribute("es");
-
         try {
             String result = es.delete(esIndex,esType,esId);
             jsonRes.put("message", result);
@@ -185,134 +284,12 @@ public class EsServlet extends HttpServlet {
             jsonRes.put("result","FAILURE");
             jsonRes.put("message", e.getMessage());
         }
-
         out.write(jsonRes.toString());
     }
 
-    void createFile(HttpServletRequest request, HttpServletResponse response){
 
-        JSONObject jsonRes = new JSONObject();
 
-        jsonRes.put("result","SUCCESS");
 
-        String path = request.getParameter("path");
 
-        File root = new File(getServletContext().getAttribute("rootPath").toString());
-        File currDir = new File(root,path);
-        File newFile = new File(currDir,request.getParameter("name"));
 
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            log.error("Failed to get writer", e);
-        }
-
-        try {
-            if(newFile.createNewFile()){
-                jsonRes.put("message",newFile.getAbsolutePath());
-            }
-
-        } catch (IOException e) {
-
-            log.error("Failed to create directory " + newFile.getAbsolutePath(),e);
-            response.setStatus(500);
-            jsonRes.put("result","FAILURE");
-            //"Failed to create directory " + newDir.getAbsolutePath() +
-            jsonRes.put("message",e.getMessage());
-            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
-        }
-
-        out.write(jsonRes.toString());
-
-    }
-
-    void mkdir(HttpServletRequest request, HttpServletResponse response){
-
-        JSONObject jsonRes = new JSONObject();
-
-        jsonRes.put("result","SUCCESS");
-
-        String path = request.getParameter("path");
-
-        File root = new File(getServletContext().getAttribute("rootPath").toString());
-        File currDir = new File(root,path);
-        File newDir = new File(currDir,request.getParameter("name"));
-
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            log.error("Failed to get writer", e);
-        }
-
-        try {
-            FileUtils.forceMkdir(newDir);
-            jsonRes.put("message",newDir.getAbsolutePath());
-        } catch (IOException e) {
-
-            log.error("Failed to create directory " + newDir.getAbsolutePath(),e);
-            response.setStatus(500);
-            jsonRes.put("result","FAILURE");
-            //"Failed to create directory " + newDir.getAbsolutePath() +
-            jsonRes.put("message",e.getMessage());
-            //out.write("Failed to create directory " + newDir.getAbsolutePath() + e.getMessage());
-        }
-
-        out.write(jsonRes.toString());
-
-    }
-
-    void listDir(HttpServletRequest request, HttpServletResponse response){
-        String path = request.getParameter("path");
-
-        Enumeration<String> en = request.getAttributeNames();
-
-//        while(en.hasMoreElements()){
-//            log(en.nextElement());
-//        }
-
-        File root = new File(getServletContext().getAttribute("rootPath").toString());
-
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        File currDir = new File(root,path);
-
-        File[] list = currDir.listFiles();
-
-        JSONArray jsonArr = new JSONArray();
-
-        for(File f : list){
-            if(!f.isHidden()) {
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("text", f.getName());
-                    obj.put("leaf", f.isFile());
-                    obj.put("hidden", f.isHidden());
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                    obj.put("lastModified", df.format(new Date(f.lastModified())));
-                    obj.put("length", f.length());
-
-                    //obj.put("checked", true);
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                jsonArr.put(obj);
-                //out.println(f.getName());
-            }
-        }
-
-        //long stop = System.currentTimeMillis();
-
-        //long total = stop - start;
-
-        out.print(jsonArr.toString());
-    }
 }

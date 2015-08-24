@@ -23,7 +23,8 @@ Ext.define('Horny.EsMappingTree', {
         var treeStore = this.getStore();
         var root = treeStore.getRootNode();
 
-        http.get('http://127.0.0.1:9200/_mapping',function(res){
+        //http.get('http://127.0.0.1:9200/_mapping',function(res){
+        http.get('es?op=mapping&path=/',function(res){
             console.log("ES MAPPING: " + res);
 
             var mapping = JSON.parse(res);
@@ -61,7 +62,8 @@ Ext.define('Horny.EsMappingTree', {
 
                 var path = esIndex + '/' + esDoc;
 
-                http.get('http://127.0.0.1:9200/' + path + '/_mapping',function(res){
+                //http.get('http://127.0.0.1:9200/' + path + '/_mapping',function(res){
+                http.get('/es?op=mapping&path=' + path + '/',function(res){
                     console.log(path + ' mapping: ' + res);
 
                     var mapping = JSON.parse(res);
@@ -128,8 +130,6 @@ Ext.define('Horny.EsMappingTree', {
                         esDocsGrid.update(path);
 
                         esDocsGrid.doLayout();
-
-
                     }
                 });
             }

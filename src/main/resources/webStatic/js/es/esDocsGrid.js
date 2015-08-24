@@ -11,7 +11,7 @@ Ext.define('Horny.EsDocsGrid', {
     layout: 'fit',
 
     plugins: [ Ext.create('Ext.grid.plugin.CellEditing', {
-        clicksToEdit: 1
+        clicksToEdit: 2
     })],
 
     //scroll works in win 7 chrome Version 44.0.2403.130 m and ff 40.0.2

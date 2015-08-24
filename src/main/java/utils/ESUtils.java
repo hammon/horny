@@ -46,6 +46,27 @@ public class ESUtils {
 
     private static final Logger log = Logger.getLogger(ESUtils.class.getName());
 
+    Client _client;
+    Node _node = null;
+    String _clusterName = "horny1";
+
+    public ESUtils(){
+        // _client = createTransportClient();
+
+        _client = createNodeClient();
+
+        initData(_clusterName);
+
+    }
+
+    public void close(){
+        if(_node != null){
+            _node.close();
+        }
+        else{
+            _client.close();
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -127,29 +148,11 @@ public class ESUtils {
 //        log.info(ln("get: " + es.get("envsconf","task",id));
     }
 
-    Client _client;
-    Node _node = null;
-    public ESUtils(){
-       // _client = createTransportClient();
 
-        _client = createNodeClient();
-
-        initData("horny");
-
-    }
-
-    public void close(){
-        if(_node != null){
-            _node.close();
-        }
-        else{
-            _client.close();
-        }
-    }
 
     public Client createTransportClient() {
         Settings settings = ImmutableSettings.settingsBuilder()
-                .put("cluster.name", "horny").build();
+                .put("cluster.name", _clusterName).build();
         return  new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
     }
 
@@ -157,7 +160,7 @@ public class ESUtils {
 
         Settings settings=ImmutableSettings.settingsBuilder().put("path.conf", "conf/es").build();
 
-        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName("horny").data(true).settings(settings);
+        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(_clusterName).data(true).settings(settings);
 
         _node = nodeBuilder.node();
         _client = _node.client();

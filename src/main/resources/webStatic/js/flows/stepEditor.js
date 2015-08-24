@@ -168,7 +168,6 @@ Ext.define('Horny.StepEditorAddMenu', {
             return selectedNode;
     },
     items: [
-
         {
            text: 'Array',
            "iconCls" : 'icon-jsonArray',
