@@ -81,8 +81,53 @@ Ext.define('Horny.EsMappingTree', {
                                 var field = {};
                                 var column = {
                                     editor: {
-                                    allowBlank: false
-                                }};
+                                        //allowBlank: false,
+
+                                        xtype:'textfield',
+                                        listeners : {
+                                            blur: function( that, The, eOpts ){
+                                                console.log('textfield blur');
+
+                                                var docsGrid = that.up('esdocsgrid');
+                                                var editedRecord = null;
+
+                                                if (docsGrid.getSelectionModel().hasSelection()) {
+                                                    editedRecord = docsGrid.getSelectionModel().getSelection()[0];
+                                                }
+
+                                                if(editedRecord){
+                                                    console.log('textfield blur editedRecord.raw' + JSON.stringify(editedRecord.raw));
+                                                }
+                                                else{
+                                                    return;
+                                                }
+
+//                                                    var flowTree = Ext.getCmp('flowTree');
+//                                                    var selectedTreeNode = null;
+//
+//                                                    if (flowTree.getSelectionModel().hasSelection()) {
+//                                                        selectedTreeNode = flowTree.getSelectionModel().getSelection()[0];
+//                                                    }
+//
+//                                                    if(selectedTreeNode){
+//                                                        //editorNodeToJson(editedRecord);//
+//                                                        selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
+//                                                        console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
+//
+//                                                        var flowNode = selectedTreeNode.parentNode;
+//                                                        if(flowNode.raw.type === 'flow'){
+//                                                           saveFlow(flowNode);
+//                                                           docsGrid.getStore().sync();
+//                                                        }
+//                                                        else{
+//                                                           console.error('Unexpected node type ' + flowNode.raw.type);
+//                                                        }
+//
+//                                                    }
+                                            }
+                                        }
+                                    }
+                                };
 
                                 if(props[propName].type.toLowerCase() === "double" || props[propName].type.toLowerCase() === "long"){
                                     field.type = "number";

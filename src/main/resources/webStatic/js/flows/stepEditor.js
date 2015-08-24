@@ -279,48 +279,47 @@ Ext.define('Horny.StepEditor', {
                     sortable: true,
                     dataIndex: 'value',
                     editor:{
-                      xtype:'textfield',
-                      listeners : {
-                          blur: function( that, The, eOpts ){
-                              console.log('textfield blur');
+                        xtype:'textfield',
+                        listeners : {
+                            blur: function( that, The, eOpts ){
+                                console.log('textfield blur');
 
-                              var stepEditor = that.up('stepEditor');
-                              var editedRecord = null;
+                                var stepEditor = that.up('stepEditor');
+                                var editedRecord = null;
 
-                              if (stepEditor.getSelectionModel().hasSelection()) {
+                                if (stepEditor.getSelectionModel().hasSelection()) {
                                   editedRecord = stepEditor.getSelectionModel().getSelection()[0];
-                              }
+                                }
 
-                              if(editedRecord){
+                                if(editedRecord){
                                   console.log('textfield blur editedRecord.raw' + JSON.stringify(editedRecord.raw));
-                              }
-                              else{
-                                    return;
-                              }
-
-                              var flowTree = Ext.getCmp('flowTree');
-                              var selectedTreeNode = null;
-
-                              if (flowTree.getSelectionModel().hasSelection()) {
-                                  selectedTreeNode = flowTree.getSelectionModel().getSelection()[0];
-                              }
-
-                              if(selectedTreeNode){
-                                //editorNodeToJson(editedRecord);//
-                                selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
-                                console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
-
-                                var flowNode = selectedTreeNode.parentNode;
-                                if(flowNode.raw.type === 'flow'){
-                                    saveFlow(flowNode);
-                                    stepEditor.getStore().sync();
                                 }
                                 else{
-                                    console.error('Unexpected node type ' + flowNode.raw.type);
+                                    return;
                                 }
 
-                              }
-                          }
+                                var flowTree = Ext.getCmp('flowTree');
+                                var selectedTreeNode = null;
+
+                                if (flowTree.getSelectionModel().hasSelection()) {
+                                  selectedTreeNode = flowTree.getSelectionModel().getSelection()[0];
+                                }
+
+                                if(selectedTreeNode){
+                                //editorNodeToJson(editedRecord);//
+                                    selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
+                                    console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
+
+                                    var flowNode = selectedTreeNode.parentNode;
+                                    if(flowNode.raw.type === 'flow'){
+                                        saveFlow(flowNode);
+                                        stepEditor.getStore().sync();
+                                    }
+                                    else{
+                                        console.error('Unexpected node type ' + flowNode.raw.type);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
