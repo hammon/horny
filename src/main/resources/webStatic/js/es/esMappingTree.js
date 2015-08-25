@@ -109,31 +109,6 @@ Ext.define('Horny.EsMappingTree', {
                                                     //docsGrid.getStore().sync();
                                                     docsGrid.getStore().getAt(editedRecord.index).commit();
                                                 });
-
-//                                                var mappingTree = Ext.getCmp('esMappingTree');
-//                                                var selectedTreeNode = null;
-//
-//                                                if (mappingTree.getSelectionModel().hasSelection()) {
-//                                                    selectedTreeNode = mappingTree.getSelectionModel().getSelection()[0];
-//                                                }
-//
-//                                                if(selectedTreeNode){
-//                                                    if(selectedTreeNode.raw.type !== 'esDoc'){
-//                                                        console.log('Unexpected selectedTreeNode type: ' + selectedTreeNode.raw.type);
-//                                                        return;
-//                                                    }
-//
-//                                                    var esType = selectedTreeNode.raw.text;
-//                                                    var esIndex = selectedTreeNode.parentNode.raw.text;
-//
-//                                                    console.log("index: " + esIndex + " type: " + esType + " id: " + id + " column: " + column + " value: " + value);
-//
-//                                                    http.get("/es?op=update&index=" + esIndex + "&type=" + esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
-//                                                        console.log("es update res: " + res );
-//                                                        //docsGrid.getStore().sync();
-//                                                        docsGrid.getStore().getAt(editedRecord.index).commit();
-//                                                    });
-//                                                }
                                             }
                                         }
                                     }
@@ -183,7 +158,7 @@ Ext.define('Horny.EsMappingTree', {
                         esDocsGrid['esIndex'] = esIndex;
                         esDocsGrid['esType'] = esDoc;
 
-                        esDocsGrid.update(path);
+//                        esDocsGrid.update(path);
 
                         parentPanel.add(esDocsGrid);
 

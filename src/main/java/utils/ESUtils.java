@@ -7,6 +7,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
@@ -272,7 +273,10 @@ public class ESUtils {
     }
 
     public String query(String index,String type,JSONObject query){
-        return _client.prepareSearch(index).setTypes(type).setQuery(query.toString()).execute().actionGet().toString();
+
+        //.setSearchType(SearchType.SCAN) .setQuery(query) // <-- Query string in JSON format .execute().actionGet();
+
+        return _client.prepareSearch(index).setTypes(type).setSearchType(SearchType.SCAN).setQuery(query.toString()).execute().actionGet().toString();
     }
 
     public String delete(String index,String type,String id){

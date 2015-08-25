@@ -74,36 +74,8 @@ Ext.define('Horny.EsDocsGrid', {
                     },
                     function onError(res,opts){
                         alert("Error on delete: " + JSON.stringify(res));
-                    });
-
-//                var mappingTree = Ext.getCmp('esMappingTree');
-//                var selectedTreeNode = null;
-//
-//                if (mappingTree.getSelectionModel().hasSelection()) {
-//                    selectedTreeNode = mappingTree.getSelectionModel().getSelection()[0];
-//                }
-//
-//                if(selectedTreeNode){
-//                    if(selectedTreeNode.raw.type !== 'esDoc'){
-//                        console.log('Unexpected selectedTreeNode type: ' + selectedTreeNode.raw.type);
-//                        return;
-//                    }
-//
-//                    var esType = selectedTreeNode.raw.text;
-//                    var esIndex = selectedTreeNode.parentNode.raw.text;
-//
-//                    console.log("delete index: " + esIndex + " type: " + esType + " id: " + id );
-//
-//                    http.get("/es?op=delete&index=" + esIndex + "&type=" + esType + "&id=" + id,function(res){
-//                        console.log("es delete res: " + res );
-//
-//                        store.remove(selectedRecord);
-//                        //store.sync();
-//                    },
-//                    function onError(res,opts){
-//                        alert("Error on delete: " + JSON.stringify(res));
-//                    });
-//                }
+                    }
+                 );
             }
         }
     ],
@@ -178,7 +150,8 @@ Ext.define('Horny.EsDocsGrid', {
 
         this.store.removeAll();
 
-        http.post('http://127.0.0.1:9200/' + path + '/_search','{"from":0,"size":1000}',function(res){
+        //http.post('http://127.0.0.1:9200/' + path + '/_search','{"from":0,"size":1000}',function(res){
+        http.post('es?op=search&index=' + this.esIndex + '&type=' + this.esType,'{"from":0,"size":1000}',function(res){
             //console.log(res);
 
             res = JSON.parse(res);

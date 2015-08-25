@@ -78,6 +78,9 @@ public class EsServlet extends HttpServlet {
             case "set":
                 setEsRecord(request, response);
                 break;
+            case "search":
+                search(request, response);
+                break;
 
         }
     }
@@ -372,6 +375,65 @@ public class EsServlet extends HttpServlet {
         out.write(jsonRes.toString());
     }
 
+    void search(HttpServletRequest request, HttpServletResponse response){
 
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("result","SUCCESS");
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null)
+                jb.append(line);
+        } catch (Exception e) {
+            log.error("Failed read json data :(",e);
+        }
+
+        JSONObject queryJson = new JSONObject(jb.toString());
+
+        log.info("save json data: " + jb.toString());
+
+        String esIndex = request.getParameter("index");
+        if(esIndex == null || esIndex.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", "index in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esType = request.getParameter("type");
+        if(esType == null || esType.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","type in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        try {
+            ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+            HttpUtils http = new HttpUtils();
+            String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",queryJson.toString());//es.query(esIndex,esType,queryJson);
+            //jsonRes.put("message", result);
+            out.write(result);
+            return;
+
+        } catch (Exception e) {
+            log.error("Failed to query " + esIndex + "/" + esType + "/" + queryJson.toString(), e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", e.getMessage());
+        }
+        out.write(jsonRes.toString());
+    }
 
 }
