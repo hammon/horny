@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,7 +50,7 @@ public class EsServlet extends HttpServlet {
 
         switch(op){
             case "delete":
-                delete(request,response);
+                delete(request, response);
                 break;
             case "index":
                 index(request, response);
@@ -60,10 +61,25 @@ public class EsServlet extends HttpServlet {
             case "update":
                 update(request, response);
                 break;
+            case "set":
+                //set(request, response);
+                break;
 
         }
 
 
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        String op = request.getParameter("op");
+
+        switch(op){
+
+            case "set":
+                setEsRecord(request, response);
+                break;
+
+        }
     }
 
     void mapping(HttpServletRequest request, HttpServletResponse response){
@@ -276,7 +292,7 @@ public class EsServlet extends HttpServlet {
 
         ESUtils es = (ESUtils)getServletContext().getAttribute("es");
         try {
-            String result = es.delete(esIndex,esType,esId);
+            String result = es.delete(esIndex, esType, esId);
             jsonRes.put("message", result);
         } catch (Exception e) {
             log.error("Failed to delete " + esIndex + "/" + esType + "/" + esId, e);
@@ -288,7 +304,73 @@ public class EsServlet extends HttpServlet {
     }
 
 
+    void setEsRecord(HttpServletRequest request, HttpServletResponse response){
 
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("result","SUCCESS");
+
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            log.error("Failed to get writer", e);
+        }
+
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null)
+                jb.append(line);
+        } catch (Exception e) {
+            log.error("Failed read json data :(",e);
+        }
+
+        JSONObject recJson = new JSONObject(jb.toString());
+
+        log.info("props save json data: " + jb.toString());
+
+        String esIndex = request.getParameter("index");
+        if(esIndex == null || esIndex.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", "index in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esType = request.getParameter("type");
+        if(esType == null || esType.isEmpty()){
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message","type in null or empty.");
+            response.setStatus(500);
+            out.write(jsonRes.toString());
+            return;
+        }
+
+        String esId = request.getParameter("id");
+
+
+        ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+        try {
+            if(esId == null || esId.isEmpty()){
+                String result = es.set(esIndex, esType, recJson.toString());
+                jsonRes.put("message", result);
+            }
+            else{
+                String result = es.set(esIndex, esType, esId, recJson.toString());
+                jsonRes.put("message", result);
+            }
+
+
+        } catch (Exception e) {
+            log.error("Failed to delete " + esIndex + "/" + esType + "/" + esId, e);
+            response.setStatus(500);
+            jsonRes.put("result","FAILURE");
+            jsonRes.put("message", e.getMessage());
+        }
+        out.write(jsonRes.toString());
+    }
 
 
 

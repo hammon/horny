@@ -82,12 +82,13 @@ Ext.define('Horny.EsMappingTree', {
                                 var column = {
                                     editor: {
                                         //allowBlank: false,
-
                                         xtype:'textfield',
                                         listeners : {
                                             blur: function( that, The, eOpts ){
                                                 console.log('textfield blur');
-
+                                                var id = "";
+                                                var column = that.column.text;
+                                                var value = that.value;
                                                 var docsGrid = that.up('esdocsgrid');
                                                 var editedRecord = null;
 
@@ -97,33 +98,42 @@ Ext.define('Horny.EsMappingTree', {
 
                                                 if(editedRecord){
                                                     console.log('textfield blur editedRecord.raw' + JSON.stringify(editedRecord.raw));
+                                                    id = editedRecord.raw.id;
                                                 }
                                                 else{
                                                     return;
                                                 }
 
-//                                                    var flowTree = Ext.getCmp('flowTree');
-//                                                    var selectedTreeNode = null;
+                                                http.get("/es?op=update&index=" + docsGrid.esIndex + "&type=" + docsGrid.esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
+                                                    console.log("es update res: " + res );
+                                                    //docsGrid.getStore().sync();
+                                                    docsGrid.getStore().getAt(editedRecord.index).commit();
+                                                });
+
+//                                                var mappingTree = Ext.getCmp('esMappingTree');
+//                                                var selectedTreeNode = null;
 //
-//                                                    if (flowTree.getSelectionModel().hasSelection()) {
-//                                                        selectedTreeNode = flowTree.getSelectionModel().getSelection()[0];
+//                                                if (mappingTree.getSelectionModel().hasSelection()) {
+//                                                    selectedTreeNode = mappingTree.getSelectionModel().getSelection()[0];
+//                                                }
+//
+//                                                if(selectedTreeNode){
+//                                                    if(selectedTreeNode.raw.type !== 'esDoc'){
+//                                                        console.log('Unexpected selectedTreeNode type: ' + selectedTreeNode.raw.type);
+//                                                        return;
 //                                                    }
 //
-//                                                    if(selectedTreeNode){
-//                                                        //editorNodeToJson(editedRecord);//
-//                                                        selectedTreeNode.raw.params[editedRecord.raw.name] = that.value;
-//                                                        console.log('textfield blur selectedTreeNode.raw' + JSON.stringify(selectedTreeNode.raw));
+//                                                    var esType = selectedTreeNode.raw.text;
+//                                                    var esIndex = selectedTreeNode.parentNode.raw.text;
 //
-//                                                        var flowNode = selectedTreeNode.parentNode;
-//                                                        if(flowNode.raw.type === 'flow'){
-//                                                           saveFlow(flowNode);
-//                                                           docsGrid.getStore().sync();
-//                                                        }
-//                                                        else{
-//                                                           console.error('Unexpected node type ' + flowNode.raw.type);
-//                                                        }
+//                                                    console.log("index: " + esIndex + " type: " + esType + " id: " + id + " column: " + column + " value: " + value);
 //
-//                                                    }
+//                                                    http.get("/es?op=update&index=" + esIndex + "&type=" + esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
+//                                                        console.log("es update res: " + res );
+//                                                        //docsGrid.getStore().sync();
+//                                                        docsGrid.getStore().getAt(editedRecord.index).commit();
+//                                                    });
+//                                                }
                                             }
                                         }
                                     }
@@ -167,6 +177,11 @@ Ext.define('Horny.EsMappingTree', {
                             store: docGridStore,
                             columns: gridColumns
                         });
+
+                        //for create new record
+                        esDocsGrid['mapping'] = props;
+                        esDocsGrid['esIndex'] = esIndex;
+                        esDocsGrid['esType'] = esDoc;
 
                         esDocsGrid.update(path);
 

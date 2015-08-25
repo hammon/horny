@@ -10,6 +10,104 @@ Ext.define('Horny.EsDocsGrid', {
     autoScroll: true,
     layout: 'fit',
 
+    tbar: [
+    {
+        text: 'New',
+        'iconCls' : 'icon-add',
+        handler : function(){
+            var docsGrid = this.up('esdocsgrid');
+            var store = docsGrid.getStore();
+
+            var mapping = docsGrid.mapping;
+            console.log('mapping: ' + JSON.stringify(mapping));
+
+            var newRec = {};
+
+            for(var col in mapping){
+                if (mapping.hasOwnProperty(col)){
+                    if(mapping[col].type === 'string'){
+                        newRec[col] = 'new ' + col;
+                    }
+                    else if(mapping[col].type === 'long'){
+                        newRec[col] = 0;
+                    }
+                    else if(mapping[col].type === 'date'){
+                        newRec[col] = new Date().toISOString();
+                    }
+                }
+            }
+
+            http.post('/es?op=set&index=' + docsGrid.esIndex + '&type=' + docsGrid.esType,newRec,function(res){
+                console.log(res);
+                res = JSON.parse(res);
+                newRec.id = res.message;
+                store.insert(0, newRec);
+            });
+
+        }
+        },
+        {
+            text: 'Delete',
+            "iconCls" : 'icon-erase',
+            handler : function(){
+                var docsGrid = this.up('esdocsgrid');
+                var store = docsGrid.getStore();
+                var selectedRecord = null;
+
+                if (docsGrid.getSelectionModel().hasSelection()) {
+                    selectedRecord = docsGrid.getSelectionModel().getSelection()[0];
+                }
+
+                if(selectedRecord){
+                    console.log('textfield blur selectedRecord.raw' + JSON.stringify(selectedRecord.raw));
+                    id = selectedRecord.raw.id;
+                }
+                else{
+                    return;
+                }
+
+                 http.get("/es?op=delete&index=" + docsGrid.esIndex + "&type=" + docsGrid.esType + "&id=" + id,function(res){
+                        console.log("es delete res: " + res );
+
+                        store.remove(selectedRecord);
+                        //store.sync();
+                    },
+                    function onError(res,opts){
+                        alert("Error on delete: " + JSON.stringify(res));
+                    });
+
+//                var mappingTree = Ext.getCmp('esMappingTree');
+//                var selectedTreeNode = null;
+//
+//                if (mappingTree.getSelectionModel().hasSelection()) {
+//                    selectedTreeNode = mappingTree.getSelectionModel().getSelection()[0];
+//                }
+//
+//                if(selectedTreeNode){
+//                    if(selectedTreeNode.raw.type !== 'esDoc'){
+//                        console.log('Unexpected selectedTreeNode type: ' + selectedTreeNode.raw.type);
+//                        return;
+//                    }
+//
+//                    var esType = selectedTreeNode.raw.text;
+//                    var esIndex = selectedTreeNode.parentNode.raw.text;
+//
+//                    console.log("delete index: " + esIndex + " type: " + esType + " id: " + id );
+//
+//                    http.get("/es?op=delete&index=" + esIndex + "&type=" + esType + "&id=" + id,function(res){
+//                        console.log("es delete res: " + res );
+//
+//                        store.remove(selectedRecord);
+//                        //store.sync();
+//                    },
+//                    function onError(res,opts){
+//                        alert("Error on delete: " + JSON.stringify(res));
+//                    });
+//                }
+            }
+        }
+    ],
+
     plugins: [ Ext.create('Ext.grid.plugin.CellEditing', {
         clicksToEdit: 2
     })],

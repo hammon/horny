@@ -27,63 +27,54 @@ Ext.define('Horny.PropertiesEditorGrid', {
 
        columns: [{
                 //   id: this.id + '-name',
-                   header: 'Name',
-                   dataIndex: 'name',
-                   flex: 1,
-                   editor: {
-                       allowBlank: false
-                   }
-               },
-               {
-              //    id: this.id + '-value',
-                  header: 'Value',
-                  dataIndex: 'value',
-                  flex: 1,
-                  editor: {
-                      allowBlank: false
-                  }
+               header: 'Name',
+               dataIndex: 'name',
+               flex: 1,
+               editor: {
+                   allowBlank: false
+               }
+           },
+           {
+          //    id: this.id + '-value',
+              header: 'Value',
+              dataIndex: 'value',
+              flex: 1,
+              editor: {
+                  allowBlank: false
               }
-              ],
-              tbar: [{
-                          text: 'Add Property',
-                          'iconCls' : 'icon-add',
-                          handler : function(){
+          }
+      ],
+          tbar: [{
+                  text: 'Add Property',
+                  'iconCls' : 'icon-add',
+                  handler : function(){
 
-                              this.up().up().store.insert(0, {
-                                                                                name: 'prop name',
-                                                                                value: 'prop value',
-                                                                                dirty: true
+                      this.up().up().store.insert(0, {
+                        name: 'prop name',
+                        value: 'prop value',
+                        dirty: true
 
-                                                                            });
-                              //cellEditing.startEditByPosition({row: 0, column: 0});
-                          }
-                      },
-                      {
-                            text: 'Save',
-                            "iconCls" : 'icon-save',
-                             handler : function(){
+                    });
+                  }
+              },
+              {
+                text: 'Save',
+                "iconCls" : 'icon-save',
+                 handler : function(){
+                    var propsView = this.up().up();
+                    var store = propsView.getStore();
+                    var propsArr = [];
 
-                                var propsView = this.up().up();
+                    store.each(function(record){
+                        console.log(record.data.name + ' : ' + record.data.value);
+                        propsArr.push(record.data);
+                    });
 
-                                var store = propsView.getStore();
-
-                                var propsArr = [];
-
-                                store.each(function(record){
-                                    console.log(record.data.name + ' : ' + record.data.value);
-                                    propsArr.push(record.data);
-
-//                                    record.phantom = false;
-//                                    record.modified = {};
-
-                                });
-
-                                http.post('/api/props?op=save&path=' + propsView.propsPath,propsArr);
-                                store.commitChanges( );
-
-                             }
-                      }
-                      ],
+                    http.post('/api/props?op=save&path=' + propsView.propsPath,propsArr);
+                    store.commitChanges( );
+                 }
+              }
+          ],
                       plugins: [ Ext.create('Ext.grid.plugin.CellEditing', {
                         clicksToEdit: 1
                     })]
