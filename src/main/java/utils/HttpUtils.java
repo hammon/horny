@@ -204,4 +204,39 @@ public class HttpUtils {
         return  post(url,headers,body);
 
 	}
+
+    public String delete(String url){
+        String res = "";
+
+        //URL url = new URL(url);
+        HttpURLConnection httpCon = null;
+        try {
+            httpCon = (HttpURLConnection) (new URL(url)).openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        httpCon.setDoOutput(true);
+        httpCon.setRequestProperty(
+                "Content-Type", "application/x-www-form-urlencoded" );
+        try {
+            httpCon.setRequestMethod("DELETE");
+            System.out.println(httpCon.getResponseCode());
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            httpCon.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (httpCon != null) {
+                httpCon.disconnect();
+            }
+        }
+
+        return res;
+    }
 }

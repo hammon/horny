@@ -267,6 +267,9 @@ public class EsServlet extends HttpServlet {
         }
 
         String esIndex = request.getParameter("index");
+        String esType = request.getParameter("type");
+        String esId = request.getParameter("id");
+
         if(esIndex == null || esIndex.isEmpty()){
             jsonRes.put("result","FAILURE");
             jsonRes.put("message", "index in null or empty.");
@@ -275,7 +278,16 @@ public class EsServlet extends HttpServlet {
             return;
         }
 
-        String esType = request.getParameter("type");
+        if((esType == null || esType.isEmpty())
+                && (esId == null || esId.isEmpty())){
+
+            HttpUtils http = new HttpUtils();
+            out.write(http.delete("http://127.0.0.1:9200/" + esIndex));
+            return;
+
+        }
+
+
         if(esType == null || esType.isEmpty()){
             jsonRes.put("result","FAILURE");
             jsonRes.put("message","type in null or empty.");
@@ -284,7 +296,7 @@ public class EsServlet extends HttpServlet {
             return;
         }
 
-        String esId = request.getParameter("id");
+
         if(esId == null || esId.isEmpty()){
             jsonRes.put("result","FAILURE");
             jsonRes.put("message","id in null or empty.");

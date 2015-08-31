@@ -387,7 +387,7 @@ index.number_of_replicas: 0
 
 #http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-http.html#modules-http
 
-#http.cors.enabled: true
+http.cors.enabled: true
 
 #http.cors.allow-origin:"*"
 #http.cors.allow-origin: true
@@ -396,6 +396,23 @@ index.number_of_replicas: 0
 #http.cors.allow-credentials: true
 
 #http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-scripting.html
+
 script.groovy.sandbox.enabled: true
+
+script.engine.groovy.file.aggs: on
+script.engine.groovy.file.mapping: on
+script.engine.groovy.file.search: on
+script.engine.groovy.file.update: on
+script.engine.groovy.file.plugin: on
+script.engine.groovy.indexed.aggs: on
+script.engine.groovy.indexed.mapping: on
+script.engine.groovy.indexed.search: on
+script.engine.groovy.indexed.update: on
+script.engine.groovy.indexed.plugin: off
+script.engine.groovy.inline.aggs: on
+script.engine.groovy.inline.mapping: on
+script.engine.groovy.inline.search: on
+script.engine.groovy.inline.update: on
+script.engine.groovy.inline.plugin: on
 
 

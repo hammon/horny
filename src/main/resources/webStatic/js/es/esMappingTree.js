@@ -8,6 +8,66 @@ Ext.define('Horny.EsMappingTree', {
 
     rootVisible: false,
 
+       tbar: [
+        {
+            text: 'New',
+            'iconCls' : 'icon-add',
+            handler : function(){
+                var esMappingTree = this.up('esmappingtree');
+                var store = esMappingTree.getStore();
+
+                Ext.Msg.prompt('Name', 'Please enter new index name:', function(btn, text){
+                    if (btn == 'ok'){
+
+                    //Ext.Msg.alert('new index name', text);
+                        http.post('/es?op=set&index=' + text + '&type=' + text,'{"str":"hello","number1":1}',function(res){
+                            console.log(res);
+//                            res = JSON.parse(res);
+//                            newRec.id = res.message;
+//                            store.insert(0, newRec);
+                        });
+                    }
+                });
+
+
+
+
+            }
+            },
+            {
+                text: 'Delete',
+                "iconCls" : 'icon-erase',
+                handler : function(){
+                    var esMappingTree = this.up('esmappingtree');
+                    var store = esMappingTree.getStore();
+                    var selectedRecord = null;
+
+                    if (esMappingTree.getSelectionModel().hasSelection()) {
+                        selectedRecord = esMappingTree.getSelectionModel().getSelection()[0];
+                    }
+
+                    if(selectedRecord){
+                        console.log('esMappingTree selectedRecord.raw' + JSON.stringify(selectedRecord.raw));
+                        id = selectedRecord.raw.id;
+                    }
+                    else{
+                        return;
+                    }
+
+                     http.get("/es?op=delete&index=" + selectedRecord.raw.text,function(res){
+                            console.log("es delete res: " + res );
+
+                            store.remove(selectedRecord);
+                            //store.sync();
+                        },
+                        function onError(res,opts){
+                            alert("Error on delete: " + JSON.stringify(res));
+                        }
+                     );
+                }
+            }
+        ],
+
     initComponent : function(){
 
         this.store = Ext.create('Ext.data.TreeStore', {
@@ -107,7 +167,8 @@ Ext.define('Horny.EsMappingTree', {
                                                 http.get("/es?op=update&index=" + docsGrid.esIndex + "&type=" + docsGrid.esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
                                                     console.log("es update res: " + res );
                                                     //docsGrid.getStore().sync();
-                                                    docsGrid.getStore().getAt(editedRecord.index).commit();
+                                                    //docsGrid.getStore().getAt(editedRecord.index).commit();
+                                                    docsGrid.getStore().getById(editedRecord.internalId).commit();
                                                 });
                                             }
                                         }
