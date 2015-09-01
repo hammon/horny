@@ -18,7 +18,7 @@ Ext.onReady(function(){
             id: 'mainTabs',
             region: 'center',
             collapsible: false,
-            activeTab: 1,
+            activeTab: 2,
             items: [
 
                 Ext.create('Horny.SplitView',{
@@ -154,26 +154,28 @@ Ext.onReady(function(){
                              flex: 3,
                              //width: 325,
                              items: [
-                                Ext.create('Horny.TextView',{
-                                     region:'north',
-                                     id:'queryView',
-                                     title: 'Query',
-                                     html: '{}',
-                                     tbar: [
-                                             {
-                                                 text: 'Run >>',
-                                                 //'iconCls' : 'icon-add',
-                                                 handler : function(){
-                                                     //var esMappingTree = this.up('esmappingtree');
-                                                     //var store = esMappingTree.getStore();
-                                                     var queryView = Ext.getCmp('queryView');
-                                                     var text = queryView.body.dom.innerText;
+                                Ext.create('Horny.QueryView',{region:'north'})
 
-                                                     console.log(text);
-                                                 }
-                                             }
-                                     ],
-                                })
+//                                Ext.create('Horny.TextView',{
+//                                     region:'north',
+//                                     id:'queryView',
+//                                     title: 'Query',
+//                                     html: '{}',
+//                                     tbar: [
+//                                             {
+//                                                 text: 'Run >>',
+//                                                 //'iconCls' : 'icon-add',
+//                                                 handler : function(){
+//                                                     //var esMappingTree = this.up('esmappingtree');
+//                                                     //var store = esMappingTree.getStore();
+//                                                     var queryView = Ext.getCmp('queryView');
+//                                                     var text = queryView.body.dom.innerText;
+//
+//                                                     console.log(text);
+//                                                 }
+//                                             }
+//                                     ],
+//                                })
                              ]
                           }),
 

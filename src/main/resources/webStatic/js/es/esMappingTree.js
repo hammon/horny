@@ -28,45 +28,41 @@ Ext.define('Horny.EsMappingTree', {
                         });
                     }
                 });
-
-
-
-
             }
-            },
-            {
-                text: 'Delete',
-                "iconCls" : 'icon-erase',
-                handler : function(){
-                    var esMappingTree = this.up('esmappingtree');
-                    var store = esMappingTree.getStore();
-                    var selectedRecord = null;
+        },
+        {
+            text: 'Delete',
+            "iconCls" : 'icon-erase',
+            handler : function(){
+                var esMappingTree = this.up('esmappingtree');
+                var store = esMappingTree.getStore();
+                var selectedRecord = null;
 
-                    if (esMappingTree.getSelectionModel().hasSelection()) {
-                        selectedRecord = esMappingTree.getSelectionModel().getSelection()[0];
-                    }
-
-                    if(selectedRecord){
-                        console.log('esMappingTree selectedRecord.raw' + JSON.stringify(selectedRecord.raw));
-                        id = selectedRecord.raw.id;
-                    }
-                    else{
-                        return;
-                    }
-
-                     http.get("/es?op=delete&index=" + selectedRecord.raw.text,function(res){
-                            console.log("es delete res: " + res );
-
-                            store.remove(selectedRecord);
-                            //store.sync();
-                        },
-                        function onError(res,opts){
-                            alert("Error on delete: " + JSON.stringify(res));
-                        }
-                     );
+                if (esMappingTree.getSelectionModel().hasSelection()) {
+                    selectedRecord = esMappingTree.getSelectionModel().getSelection()[0];
                 }
+
+                if(selectedRecord){
+                    console.log('esMappingTree selectedRecord.raw' + JSON.stringify(selectedRecord.raw));
+                    id = selectedRecord.raw.id;
+                }
+                else{
+                    return;
+                }
+
+                 http.get("/es?op=delete&index=" + selectedRecord.raw.text,function(res){
+                        console.log("es delete res: " + res );
+
+                        store.remove(selectedRecord);
+                        //store.sync();
+                    },
+                    function onError(res,opts){
+                        alert("Error on delete: " + JSON.stringify(res));
+                    }
+                 );
             }
-        ],
+        }
+    ],
 
     initComponent : function(){
 
@@ -114,8 +110,6 @@ Ext.define('Horny.EsMappingTree', {
     listeners: {
         //itemclick: function( that, record, item, index, e, eOpts) {
         select : function( that, record, index, eOpts ){
-
-
 
             if(record.raw.type === 'esType'){
 
