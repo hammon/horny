@@ -14,7 +14,7 @@ Ext.define('Horny.QueryView', {
             xtype : 'textareafield',
             name  : 'query',
             autoScroll: true,
-            value: '{}'
+            value: '{"size":10,"filter":{"range":{"count":{"gt": 150, "lte": 300}}}}'
            //flex: 1,
            //border: 0,
            //style : { border: 0 },
