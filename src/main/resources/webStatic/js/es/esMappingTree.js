@@ -100,7 +100,7 @@ Ext.define('Horny.EsMappingTree', {
                     for(var doc in mapping[index]['mappings']){
                         var docNode = indexNode.appendChild({
                             text: doc,
-                            type: 'esDoc',
+                            type: 'esType',
                             leaf: false
                         });
                     }
@@ -115,12 +115,14 @@ Ext.define('Horny.EsMappingTree', {
         //itemclick: function( that, record, item, index, e, eOpts) {
         select : function( that, record, index, eOpts ){
 
-            if(record.raw.type === 'esDoc'){
+
+
+            if(record.raw.type === 'esType'){
 
                 var esIndex = record.parentNode.raw.text;
-                var esDoc = record.raw.text;
+                var esType = record.raw.text;
 
-                var path = esIndex + '/' + esDoc;
+                var path = esIndex + '/' + esType;
 
                 //http.get('http://127.0.0.1:9200/' + path + '/_mapping',function(res){
                 http.get('/es?op=mapping&path=' + path + '/',function(res){
@@ -132,12 +134,22 @@ Ext.define('Horny.EsMappingTree', {
 
                     if(mapping[esIndex]
                         && mapping[esIndex]['mappings']
-                        && mapping[esIndex]['mappings'][esDoc]
-                        && mapping[esIndex]['mappings'][esDoc]['properties']){
+                        && mapping[esIndex]['mappings'][esType]
+                        && mapping[esIndex]['mappings'][esType]['properties']){
 
-                        var props = mapping[esIndex]['mappings'][esDoc]['properties'];
+                        record.removeAll();
+
+                        var props = mapping[esIndex]['mappings'][esType]['properties'];
                         for(var propName in props){
                             if (props.hasOwnProperty(propName) && props[propName].type){
+
+                                record.appendChild({
+                                    text: propName,
+                                    type: 'esProperty',
+                                    esType: props[propName].type,
+                                    leaf: false
+                                });
+
                                 var field = {};
                                 var column = {
                                     editor: {
@@ -149,11 +161,11 @@ Ext.define('Horny.EsMappingTree', {
                                                 var id = "";
                                                 var column = that.column.text;
                                                 var value = that.value;
-                                                var docsGrid = that.up('esdocsgrid');
+                                                var typesGrid = that.up('estypesgrid');
                                                 var editedRecord = null;
 
-                                                if (docsGrid.getSelectionModel().hasSelection()) {
-                                                    editedRecord = docsGrid.getSelectionModel().getSelection()[0];
+                                                if (typesGrid.getSelectionModel().hasSelection()) {
+                                                    editedRecord = typesGrid.getSelectionModel().getSelection()[0];
                                                 }
 
                                                 if(editedRecord){
@@ -164,11 +176,11 @@ Ext.define('Horny.EsMappingTree', {
                                                     return;
                                                 }
 
-                                                http.get("/es?op=update&index=" + docsGrid.esIndex + "&type=" + docsGrid.esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
+                                                http.get("/es?op=update&index=" + typesGrid.esIndex + "&type=" + typesGrid.esType + "&id=" + id + "&column=" + column + "&value=" + value,function(res){
                                                     console.log("es update res: " + res );
-                                                    //docsGrid.getStore().sync();
-                                                    //docsGrid.getStore().getAt(editedRecord.index).commit();
-                                                    docsGrid.getStore().getById(editedRecord.internalId).commit();
+                                                    //typesGrid.getStore().sync();
+                                                    //typesGrid.getStore().getAt(editedRecord.index).commit();
+                                                    typesGrid.getStore().getById(editedRecord.internalId).commit();
                                                 });
                                             }
                                         }
@@ -195,38 +207,68 @@ Ext.define('Horny.EsMappingTree', {
                             }
                         }
 
-                        var docGridStore = Ext.create('Ext.data.JsonStore', {
+                        var typeGridStore = Ext.create('Ext.data.JsonStore', {
                             fields: storeFields
                         });
 
-                        var parentPanel = Ext.getCmp('esMappingTree').up();
-                        var esDocsGrid = Ext.getCmp('esDocsGrid');
+                        var esCenter = Ext.getCmp('esCenter');
+                        var esTypesGrid = Ext.getCmp('esTypesGrid');
 
-                        if(esDocsGrid){
-                            parentPanel.remove(esDocsGrid.id,true);
+                        if(esTypesGrid){
+                            esCenter.remove(esTypesGrid.id,true);
                         }
 
-                        var esDocsGrid = Ext.create('Horny.EsDocsGrid',{
-                            region: 'east',
+                        var esTypesGrid = Ext.create('Horny.EsTypesGrid',{
+                            region: 'center',
                             title : "Docs",
-                            flex: 1,
-                            store: docGridStore,
+                            //flex: 2,
+                            store: typeGridStore,
                             columns: gridColumns
                         });
 
                         //for create new record
-                        esDocsGrid['mapping'] = props;
-                        esDocsGrid['esIndex'] = esIndex;
-                        esDocsGrid['esType'] = esDoc;
+                        esTypesGrid['mapping'] = props;
+                        esTypesGrid['esIndex'] = esIndex;
+                        esTypesGrid['esType'] = esType;
 
-//                        esDocsGrid.update(path);
+//                        esTypesGrid.update(path);
 
-                        parentPanel.add(esDocsGrid);
+                        esCenter.add(esTypesGrid);
 
-                        esDocsGrid.update(path);
+                        esTypesGrid.update(path);
 
-                        esDocsGrid.doLayout();
+                        esTypesGrid.doLayout();
                     }
+                });
+            }
+            if(record.raw.type === 'esProperty'){
+
+                var esProperty = record.raw.text;
+                var esType = record.parentNode.raw.text;
+                var esIndex = record.parentNode.parentNode.raw.text;
+
+                http.post('/es?op=search&index=' + esIndex + '&type=' + esType,{
+                    "size" : 0,
+                    "aggs" : {
+                        "bucket_agg" : {
+                            "terms" : {
+                                "field" : esProperty,
+                                "size" : 0
+                            }
+                        }
+                    }
+                },function(res){
+                    res = JSON.parse(res);
+                    //console.log(JSON.stringify(res));
+                   if(res && res.aggregations && res.aggregations.bucket_agg && res.aggregations.bucket_agg.buckets){
+                        var buckets = res.aggregations.bucket_agg.buckets;
+
+                        var ngramsGrid = Ext.getCmp('bucketsGrid').getStore().loadData(buckets);
+//                        for(var i = 0; i < buckets.length;i++){
+//                            var bucket = buckets[i];
+//                            console.log('key: ' + bucket.key + ' count: ' + bucket.doc_count);
+//                        }
+                   }
                 });
             }
         }

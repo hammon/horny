@@ -120,11 +120,43 @@ Ext.onReady(function(){
                     title: 'ES',
                     region:'center',
                     items: [
-                        Ext.create('Horny.EsMappingTree',{
+                        Ext.create('Horny.SplitView',{
+                       //     layout: 'fit',
+                        //    layout: 'anchor',
                             flex: 1,
-                            collapsible: false,
-                            region:'center',
-                        })
+                            floatable: false,
+                            region:'west',
+                            width: 325,
+                            items: [
+
+                                Ext.create('Horny.EsMappingTree',{
+                                    flex: 2,
+                                    collapsible: false,
+                                    region:'center',
+                                }),
+                                Ext.create('Horny.BucketsGrid',{
+//                                    layout: 'fit',
+                                    flex: 1,
+                                    region:'south',
+                                    id:'bucketsGrid',
+                                    collapsed: true
+                                })
+                            ]
+                         }),
+                         Ext.create('Horny.SplitView',{
+                        //     layout: 'fit',
+                         //    layout: 'anchor',
+                             collapsible: false,
+                             id: "esCenter",
+                          //   title: "esCenter",
+                             floatable: false,
+                             region:'center',
+                             flex: 3,
+                             //width: 325,
+                             items: [
+                             ]
+                          }),
+
                     ]
                 })
 

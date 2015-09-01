@@ -1,10 +1,10 @@
 
 
-Ext.define('Horny.EsDocsGrid', {
+Ext.define('Horny.EsTypesGrid', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.esdocsgrid',
+    alias: 'widget.estypesgrid',
 
-    id: 'esDocsGrid',
+    id: 'esTypesGrid',
 
     autoRender: true,
     autoScroll: true,
@@ -165,9 +165,9 @@ Ext.define('Horny.EsDocsGrid', {
                 arr.push(obj);
             }
 
-            var esDocsGrid = Ext.getCmp('esDocsGrid');
-            esDocsGrid.getStore().loadData(arr);
-            esDocsGrid.doLayout();
+            var esTypesGrid = Ext.getCmp('esTypesGrid');
+            esTypesGrid.getStore().loadData(arr);
+            esTypesGrid.doLayout();
 
         });
 
