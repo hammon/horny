@@ -325,7 +325,7 @@ Ext.define('Horny.FlowTree', {
         var root = treeStore.getRootNode();
 
         http.get('/flow?op=list&path=',function(res){
-            console.log(res);
+//            console.log(res);
 
             var filesArr = JSON.parse(res);
 

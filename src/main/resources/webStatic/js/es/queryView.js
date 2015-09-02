@@ -34,8 +34,25 @@ Ext.define('Horny.QueryView', {
 
                  console.log(text);
 
-                 http.post('/es?op=search&index=horny&type=web1gram',JSON.parse(text),function(res){
+                 var esIndex = settings.get('es.ui.selectedIndex');
+                 var esType = settings.get('es.ui.selectedType');
+
+                 if(!esIndex || !esType){
+                    console.error('Index or Type selection missing !!!');
+                    return;
+                 }
+
+                 http.post('/es?op=search&index=' + esIndex + '&type=' + esType,JSON.parse(text),function(res){
                     console.log(res);
+
+                    var esTypesGrid = Ext.getCmp('esTypesGrid');
+                    if(!esTypesGrid){
+                        console.error('esTypesGrid not found !!!');
+                        return;
+                    }
+
+                    esTypesGrid.loadData(JSON.parse(res));
+
                  });
              }
          }

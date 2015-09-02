@@ -75,13 +75,13 @@ Ext.define('Horny.EsMappingTree', {
         });
 
 
-
-        var treeStore = this.getStore();
+        var tree = this;
+        var treeStore = tree.getStore();
         var root = treeStore.getRootNode();
 
         //http.get('http://127.0.0.1:9200/_mapping',function(res){
         http.get('es?op=mapping&path=/',function(res){
-            console.log("ES MAPPING: " + res);
+//            console.log("ES MAPPING: " + res);
 
             var mapping = JSON.parse(res);
 
@@ -102,6 +102,23 @@ Ext.define('Horny.EsMappingTree', {
                     }
                 }
             }
+
+            var esIndex = settings.get('es.ui.selectedIndex');
+            var esType = settings.get('es.ui.selectedType');
+
+            //var rootNode = this.getStore().getRootNode( );
+
+            if(esIndex){
+                var indexRec = root.findChild('text',esIndex);
+                tree.getSelectionModel().select(indexRec);
+                indexRec.expand();
+                if(esType){
+                    var typeRec = indexRec.findChild('text',esType);
+                    tree.getSelectionModel().select(typeRec);
+                    typeRec.expand();
+                }
+            }
+
         });
 
         this.callParent(arguments);
@@ -111,10 +128,21 @@ Ext.define('Horny.EsMappingTree', {
         //itemclick: function( that, record, item, index, e, eOpts) {
         select : function( that, record, index, eOpts ){
 
-            if(record.raw.type === 'esType'){
+            settings.remove('es.ui.selectedIndex');
+            settings.remove('es.ui.selectedType');
+            settings.remove('es.ui.selectedProperty');
+
+            if(record.raw.type === 'esIndex'){
+                var esIndex = record.raw.text;
+                settings.set('es.ui.selectedIndex',esIndex);
+            }
+            else if(record.raw.type === 'esType'){
 
                 var esIndex = record.parentNode.raw.text;
                 var esType = record.raw.text;
+
+                settings.set('es.ui.selectedIndex',esIndex);
+                settings.set('es.ui.selectedType',esType);
 
                 var path = esIndex + '/' + esType;
 
@@ -235,11 +263,15 @@ Ext.define('Horny.EsMappingTree', {
                     }
                 });
             }
-            if(record.raw.type === 'esProperty'){
+            else if(record.raw.type === 'esProperty'){
 
                 var esProperty = record.raw.text;
                 var esType = record.parentNode.raw.text;
                 var esIndex = record.parentNode.parentNode.raw.text;
+
+                settings.set('es.ui.selectedIndex',esIndex);
+                settings.set('es.ui.selectedType',esType);
+                settings.set('es.ui.selectedProperty',esProperty);
 
                 http.post('/es?op=search&index=' + esIndex + '&type=' + esType,{
                     "size" : 0,
@@ -265,6 +297,22 @@ Ext.define('Horny.EsMappingTree', {
                    }
                 });
             }
+        },
+
+        viewready: function( that, eOpts ){
+//            var esIndex = settings.get('es.ui.selectedIndex');
+//            var esType = settings.get('es.ui.selectedType');
+//
+//            var rootNode = this.getStore().getRootNode( );
+//
+//            if(esIndex){
+//                var indexRec = rootNode.findChild('text',esIndex);
+//                this.getSelectionModel().select(indexRec);
+//                if(esType){
+//                    var typeRec = indexRec.findChild('text',esType);
+//                    this.getSelectionModel().select(indexRec);
+//                }
+//            }
         }
     }
 });

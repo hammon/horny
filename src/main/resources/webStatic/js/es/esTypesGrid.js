@@ -142,7 +142,21 @@ Ext.define('Horny.EsTypesGrid', {
 //        this.callParent();
 //    },
 
+    loadData: function(data){
 
+        var arr = [];
+
+        for(var i = 0; i < data.hits.hits.length;i++){
+            //console.log('record: ' + JSON.stringify(data.hits.hits[i]));
+            var obj = data.hits.hits[i]._source;
+            obj["id"] = data.hits.hits[i]._id;
+            arr.push(obj);
+        }
+
+        var esTypesGrid = Ext.getCmp('esTypesGrid');
+        esTypesGrid.getStore().loadData(arr);
+        esTypesGrid.doLayout();
+    },
 
     update: function(path){
 
@@ -156,18 +170,9 @@ Ext.define('Horny.EsTypesGrid', {
 
             res = JSON.parse(res);
 
-            var arr = [];
-
-            for(var i = 0; i < res.hits.hits.length;i++){
-                //console.log('record: ' + JSON.stringify(res.hits.hits[i]));
-                var obj = res.hits.hits[i]._source;
-                obj["id"] = res.hits.hits[i]._id;
-                arr.push(obj);
-            }
-
             var esTypesGrid = Ext.getCmp('esTypesGrid');
-            esTypesGrid.getStore().loadData(arr);
-            esTypesGrid.doLayout();
+
+            esTypesGrid.loadData(res);
 
         });
 
