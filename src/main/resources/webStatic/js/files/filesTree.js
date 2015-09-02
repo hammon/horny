@@ -362,7 +362,7 @@ Ext.define('Horny.FilesTree', {
         var root = treeStore.getRootNode();
 
         http.get("/api/files?op=list&path=",function(res){
-            console.log(res);
+//            console.log(res);
 
             var filesArr = JSON.parse(res);
 
