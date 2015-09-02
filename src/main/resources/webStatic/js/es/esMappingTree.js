@@ -294,6 +294,18 @@ Ext.define('Horny.EsMappingTree', {
 //                            var bucket = buckets[i];
 //                            console.log('key: ' + bucket.key + ' count: ' + bucket.doc_count);
 //                        }
+
+                        var esCenter = Ext.getCmp('esCenter');
+                        var esBarChart = Ext.getCmp('esBarChart');
+
+                        if(esBarChart){
+                            esCenter.remove('esBarChart',true);
+                        }
+
+                        esBarChart = createEsBarChart();
+
+                        esCenter.add(esBarChart);
+
                    }
                 });
             }
