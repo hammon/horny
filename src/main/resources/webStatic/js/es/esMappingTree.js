@@ -233,7 +233,7 @@ Ext.define('Horny.EsMappingTree', {
                             fields: storeFields
                         });
 
-                        var esCenter = Ext.getCmp('esCenter');
+                        var esCenter = Ext.getCmp('esCenterTabs');
                         var esTypesGrid = Ext.getCmp('esTypesGrid');
 
                         if(esTypesGrid){
@@ -241,7 +241,7 @@ Ext.define('Horny.EsMappingTree', {
                         }
 
                         var esTypesGrid = Ext.create('Horny.EsTypesGrid',{
-                            region: 'center',
+                            //region: 'center',
                             title : "Docs",
                             //flex: 2,
                             store: typeGridStore,
@@ -257,7 +257,9 @@ Ext.define('Horny.EsMappingTree', {
 
                         esCenter.add(esTypesGrid);
 
-                        esTypesGrid.update(path);
+                        esCenter.setActiveTab(esTypesGrid);
+
+                        esTypesGrid.update();
 
                         esTypesGrid.doLayout();
                     }
@@ -295,7 +297,7 @@ Ext.define('Horny.EsMappingTree', {
 //                            console.log('key: ' + bucket.key + ' count: ' + bucket.doc_count);
 //                        }
 
-                        var esCenter = Ext.getCmp('esCenter');
+                        var esCenter = Ext.getCmp('esCenterTabs');
                         var esBarChart = Ext.getCmp('esBarChart');
 
                         if(esBarChart){
@@ -305,6 +307,10 @@ Ext.define('Horny.EsMappingTree', {
                         esBarChart = createEsBarChart();
 
                         esCenter.add(esBarChart);
+
+                        esCenter.setActiveTab(esBarChart);
+
+                        esBarChart.updateLayout();
 
                    }
                 });

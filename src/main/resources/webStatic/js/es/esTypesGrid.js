@@ -120,14 +120,14 @@ Ext.define('Horny.EsTypesGrid', {
             fn: function( ct, column, direction, eOpts ){
                 console.log("sortchange column: " + column.dataIndex + " direction: " + direction);
 
-//                docsQuery = JSON.parse(localStorage.getItem("docsQuery"));
-//
-//                docsQuery.sort = {};
-//                docsQuery.sort[column.dataIndex] = {"order": direction.toLowerCase()};
-//
-//                localStorage.setItem("docsQuery",JSON.stringify(docsQuery));
-//
-//                this.update(this.esPath);
+                var query = queryMgr.getActiveQueryJson();
+
+                query.sort = {};
+                query.sort[column.dataIndex] = {"order": direction.toLowerCase()};
+
+                queryMgr.setActiveQueryJson(query);
+
+                this.update();
             }
         }
     },
@@ -158,14 +158,17 @@ Ext.define('Horny.EsTypesGrid', {
         esTypesGrid.doLayout();
     },
 
-    update: function(path){
+    update: function(){
 
-        this.esPath = path;
+         var esIndex = settings.get('es.ui.selectedIndex');
+         var esType = settings.get('es.ui.selectedType');
 
         this.store.removeAll();
 
+        var query = queryMgr.getActiveQuery();
+
         //http.post('http://127.0.0.1:9200/' + path + '/_search','{"from":0,"size":1000}',function(res){
-        http.post('es?op=search&index=' + this.esIndex + '&type=' + this.esType,'{"from":0,"size":1000}',function(res){
+        http.post('es?op=search&index=' + esIndex + '&type=' + esType,query,function(res){
             //console.log(res);
 
             res = JSON.parse(res);

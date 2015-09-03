@@ -17,7 +17,7 @@ var settings = {
 //                                });
     },
     setJson: function (key,value){
-        setting.set(key,JSON.stringify(value));
+        settings.set(key,JSON.stringify(value));
     },
     get: function (key){
         return localStorage.getItem(key);

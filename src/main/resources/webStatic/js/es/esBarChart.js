@@ -5,6 +5,8 @@ Ext.define('Horny.EsBarChart', {
 
     id: 'esBarChart',
 
+    title: 'Chart',
+
     style: 'background:#fff',
     animate: true,
     shadow: true,
@@ -48,9 +50,9 @@ Ext.define('Horny.EsBarChart', {
                                     trackMouse: true,
                                     width: 165,
                                     height: 28,
-//                                    renderer: function(storeItem, item) {
-//                                        this.setTitle(String(item.value[0] + " " + item.value[1]));// / 1000000) + 'M');
-//                                    }
+                                    renderer: function(storeItem, item) {
+                                        this.setTitle(String(item.value[0] + " " + item.value[1]));// / 1000000) + 'M');
+                                    }
                                 }
                             }]
 
@@ -66,7 +68,7 @@ function createEsBarChart(){
 
     var chart = Ext.create('Horny.EsBarChart',{
         store: store,
-        region: 'east',
+        //region: 'east',
         //flex: 1
     });
 

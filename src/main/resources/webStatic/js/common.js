@@ -26,7 +26,7 @@ var http = {
         });
     },
 
-    post: function(url,json,callback){
+    post: function(url,json,callback,onerror){
         Ext.Ajax.request({
             url: url,
             method: 'POST',
@@ -37,7 +37,13 @@ var http = {
                 }
             },
             failure: function(response){
-                    alert("Error: " - response.responseText);
+                if(onerror){
+                    onerror(response);
+                }
+                else{
+                    console.error("Http post Error: " - JSON.stringify(response));
+                }
+
             }
         });
     }
