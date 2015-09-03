@@ -39,6 +39,39 @@ var queryMgr = {
 
     setActiveQueryJson: function(query){
         queryMgr.setActiveQuery(JSON.stringify(query));
+    },
+
+    getBucketQuery: function(field){
+        var esIndex = settings.get('es.ui.selectedIndex');
+        var esType = settings.get('es.ui.selectedType');
+
+        var query = {
+            "size" : settings.get('es.ui.bucketsGrid.size') || 100,
+            "aggs" : {
+                "bucket_agg" : {
+                    "terms" : {
+                        "field" : field,
+                        "size" : settings.get('es.ui.bucketsGrid.size') || 100
+                    }
+                }
+            }
+        };
+
+        return settings.get('es.bucketQuery.' + esIndex + '.' + esType + '.' + field) || JSON.stringify(query);
+    },
+
+    getBucketQueryJson: function(field){
+        return JSON.parse(queryMgr.getBucketQuery(field));
+    },
+
+    setBucketQuery: function(field,query){
+        var esIndex = settings.get('es.ui.selectedIndex');
+        var esType = settings.get('es.ui.selectedType');
+        settings.set('es.bucketQuery.' + esIndex + '.' + esType + '.' + field,query);
+    },
+
+    setBucketQueryJson: function(field,query){
+        queryMgr.setBucketQuery(field,JSON.stringify(query));
     }
 
 };

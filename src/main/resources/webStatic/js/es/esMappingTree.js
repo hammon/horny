@@ -275,45 +275,44 @@ Ext.define('Horny.EsMappingTree', {
                 settings.set('es.ui.selectedType',esType);
                 settings.set('es.ui.selectedProperty',esProperty);
 
-                http.post('/es?op=search&index=' + esIndex + '&type=' + esType,{
-                    "size" : 0,
-                    "aggs" : {
-                        "bucket_agg" : {
-                            "terms" : {
-                                "field" : esProperty,
-                                "size" : 0
-                            }
-                        }
-                    }
-                },function(res){
-                    res = JSON.parse(res);
-                    //console.log(JSON.stringify(res));
-                   if(res && res.aggregations && res.aggregations.bucket_agg && res.aggregations.bucket_agg.buckets){
-                        var buckets = res.aggregations.bucket_agg.buckets;
+                Ext.getCmp('bucketsGrid').update();
 
-                        var ngramsGrid = Ext.getCmp('bucketsGrid').getStore().loadData(buckets);
-//                        for(var i = 0; i < buckets.length;i++){
-//                            var bucket = buckets[i];
-//                            console.log('key: ' + bucket.key + ' count: ' + bucket.doc_count);
+//                http.post('/es?op=search&index=' + esIndex + '&type=' + esType,{
+//                    "size" : 0,
+//                    "aggs" : {
+//                        "bucket_agg" : {
+//                            "terms" : {
+//                                "field" : esProperty,
+//                                "size" : 0
+//                            }
 //                        }
-
-                        var esCenter = Ext.getCmp('esCenterTabs');
-                        var esBarChart = Ext.getCmp('esBarChart');
-
-                        if(esBarChart){
-                            esCenter.remove('esBarChart',true);
-                        }
-
-                        esBarChart = createEsBarChart();
-
-                        esCenter.add(esBarChart);
-
-                        esCenter.setActiveTab(esBarChart);
-
-                        esBarChart.updateLayout();
-
-                   }
-                });
+//                    }
+//                },function(res){
+//                    res = JSON.parse(res);
+//                    //console.log(JSON.stringify(res));
+//                   if(res && res.aggregations && res.aggregations.bucket_agg && res.aggregations.bucket_agg.buckets){
+//                        var buckets = res.aggregations.bucket_agg.buckets;
+//
+//                        var ngramsGrid = Ext.getCmp('bucketsGrid').getStore().loadData(buckets);
+//
+//
+//                        var esCenter = Ext.getCmp('esCenterTabs');
+//                        var esBarChart = Ext.getCmp('esBarChart');
+//
+//                        if(esBarChart){
+//                            esCenter.remove('esBarChart',true);
+//                        }
+//
+//                        esBarChart = createEsBarChart();
+//
+//                        esCenter.add(esBarChart);
+//
+//                        esCenter.setActiveTab(esBarChart);
+//
+//                        esBarChart.updateLayout();
+//
+//                   }
+//                });
             }
         },
 
