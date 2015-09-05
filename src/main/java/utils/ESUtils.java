@@ -3,6 +3,7 @@ package utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
@@ -26,11 +27,11 @@ import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -71,20 +72,22 @@ public class ESUtils {
 
 
     public static void main(String[] args) {
-        ESUtils es = new ESUtils();
 
-        GetMappingsResponse res = null;
-        try {
-            res = es.getClient().admin().indices().getMappings(new GetMappingsRequest().indices("horny")).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        ImmutableOpenMap<String, MappingMetaData> mapping  = res.mappings().get("horny");
-        for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
-            System.out.println(c.key+" = "+c.value.source());
-        }
+
+        ESUtils.httpBulk();
+
+//        GetMappingsResponse res = null;
+//        try {
+//            res = es.getClient().admin().indices().getMappings(new GetMappingsRequest().indices("horny")).get();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        ImmutableOpenMap<String, MappingMetaData> mapping  = res.mappings().get("horny");
+//        for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
+//            System.out.println(c.key+" = "+c.value.source());
+//        }
 
 
 //        ClusterState cs = es.getClient().get()    //.admin().cluster()..prepareState()..setFilterIndices("myIndex").execute().actionGet().getState();
@@ -283,6 +286,80 @@ public class ESUtils {
         return _client.prepareDelete(index, type, id)
                 .execute()
                 .actionGet().getId();
+    }
+
+    // convert from UTF-8 -> internal Java String format
+    public static String convertFromUTF8(String s) {
+        String out = null;
+        try {
+            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+        return out;
+    }
+
+    // convert from internal Java String format -> UTF-8
+    public static String convertToUTF8(String s) {
+        String out = null;
+        try {
+            out = new String(s.getBytes("ISO-8859-1"),"UTF-8"); //"ISO-8859-1");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+        return out;
+    }
+
+    public static void  httpBulk(){
+
+        String content = "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"1\" } }\n";
+               content += new JSONObject("{ \"field1\" : \"aaaaaa\" }").toString() + "\n";
+
+               content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"2\" } }\n";
+               content += new JSONObject("{ \"field1\" : \"асдасдасдсад\" }").toString() + "\n";
+
+
+               content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"3\" } }\n";
+                JSONObject obj  = new JSONObject();
+
+        try {
+            obj.put("field1", URLEncoder.encode("тыуи","UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        content += obj.toString() + "\n";
+
+        log.info("content: " + content);
+
+//        byte[] bytes = null;
+//        try {
+//            bytes = content.getBytes("UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        log.info("bytes utf-8: " + bytes.toString());
+
+        HttpUtils http = new HttpUtils();
+
+        Map<String,String> headers = new HashMap();
+        headers.put("Content-Type","application/x-www-form-urlencoded");
+        //headers.put("charset", "UTF-8");
+
+        http.post("http://127.0.0.1:9200/_bulk",headers,content);
+    }
+
+    public static String encode(String s) {
+        StringBuffer sb = new StringBuffer("");
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if((c >= 0) && (c <=127)) {
+                sb.append(c);
+            } else {
+                sb.append("&#" + Integer.toHexString(c) + ";");
+            }
+        }
+        return sb.toString();
     }
 
 }

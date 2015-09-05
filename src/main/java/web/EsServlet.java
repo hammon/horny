@@ -127,7 +127,7 @@ public class EsServlet extends HttpServlet {
 
         String text = null;
         try {
-            text = FileUtils.readFileToString(file);
+            text = FileUtils.readFileToString(file,"UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,24 +147,33 @@ public class EsServlet extends HttpServlet {
             Map<String,Integer> nCount =  ngram.getTokensCount(n);
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 
+
+
             final int finalN = n;
             nCount.forEach((k,v) ->{
 
-                try {
-//                    log.info("str: " + k + " count: " + v);
-                    bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
-                                    .setSource(jsonBuilder()
-                                                    .startObject()
-                                                    .field("str", k)
-                                                    .field("count", v)
-                                                    .field("date", new Date())
-                                                    .field("url", file.getAbsolutePath())
-                                                    .endObject()
-                                    )
-                    );
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.info("str: " + k + " count: " + v);
+
+                JSONObject obj = new JSONObject();
+                obj.put("str",k);
+                obj.put("count",v);
+                obj.put("date",new Date());
+                obj.put("url",file.getAbsolutePath());
+
+                bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+                                .setSource(obj.toString())
+                );
+
+//                    bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
+//                                    .setSource(jsonBuilder()
+//                                                    .startObject()
+//                                                    .field("str", k)
+//                                                    .field("count", v)
+//                                                    .field("date", new Date())
+//                                                    .field("url", file.getAbsolutePath())
+//                                                    .endObject()
+//                                    )
+//                    );
             });
 
             log.info("send ngrams balk");

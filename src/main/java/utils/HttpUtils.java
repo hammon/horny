@@ -103,9 +103,6 @@ public class HttpUtils {
             connection.setRequestProperty(key,headers.get(key));
         }
 
-
-
-
         connection.setRequestProperty("Content-Length", "" + Integer.toString(body.getBytes().length));
         connection.setUseCaches (false);
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
@@ -17,6 +18,14 @@ public class Horny {
     final static Logger log = LoggerFactory.getLogger(Horny.class);
 
     public static void main(String[] args) {
+
+        //-Dfile.encoding=UTF-8
+
+        System.out.println("Default Charset=" + Charset.defaultCharset());
+        //System.setProperty("file.encoding", "Latin-1");
+        System.out.println("file.encoding=" + System.getProperty("file.encoding"));
+        System.out.println("Default Charset=" + Charset.defaultCharset());
+        //System.out.println("Default Charset in Use=" + getDefaultCharSet());
 
         Properties p = new Properties();
 
