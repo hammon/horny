@@ -74,7 +74,7 @@ public class FilesServlet extends HttpServlet {
 
         String text = null;
         try {
-            text = FileUtils.readFileToString(file);
+            text = FileUtils.readFileToString(file,"UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,6 +94,8 @@ public class FilesServlet extends HttpServlet {
             Map<String,Integer> nCount =  ngram.getTokensCount(n);
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 
+           // bulkRequest.request().putHeader("charset","UTF-8");
+
             final int finalN = n;
             nCount.forEach((k,v) ->{
 
@@ -102,7 +104,9 @@ public class FilesServlet extends HttpServlet {
                     bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
                                     .setSource(jsonBuilder()
                                                     .startObject()
-                                                    .field("str", k)
+//                                                    .field("str", new String(k.getBytes("UTF-8"),"CP1252"))
+//                                                    .field("str_cp", new String(k.getBytes("CP1252")))
+                                                    .field("str", new String(k.getBytes("UTF-8"),"ISO-8859-1"))
                                                     .field("count", v)
                                                     .field("date", new Date())
                                                     .field("url", file.getAbsolutePath())

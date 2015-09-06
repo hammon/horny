@@ -57,7 +57,7 @@ public class TextServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            String text = FileUtils.readFileToString(file);
+            String text = FileUtils.readFileToString(file,"UTF-8");
 
             if(sEscapeHtml.equalsIgnoreCase("true")){
                 text = StringEscapeUtils.escapeHtml4(text);

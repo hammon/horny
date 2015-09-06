@@ -1,3 +1,6 @@
+
+
+
 package utils;
 
 import org.apache.commons.io.FileUtils;
@@ -40,6 +43,7 @@ import static org.elasticsearch.node.NodeBuilder.*;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
+import org.apache.http.entity.StringEntity;
 
 /**
  * Created by malexan on 19/01/2015.
@@ -310,23 +314,31 @@ public class ESUtils {
         return out;
     }
 
+
+    public static  String encodeX(String str){
+        String encoded = "";
+
+        return encoded;
+    }
+
     public static void  httpBulk(){
 
         String content = "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"1\" } }\n";
-               content += new JSONObject("{ \"field1\" : \"aaaaaa\" }").toString() + "\n";
+               content += new JSONObject("{ \"field1\" : \"asdasd\" }").toString() + "\n";
 
                content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"2\" } }\n";
-               content += new JSONObject("{ \"field1\" : \"асдасдасдсад\" }").toString() + "\n";
-
-
-               content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"3\" } }\n";
-                JSONObject obj  = new JSONObject();
-
         try {
-            obj.put("field1", URLEncoder.encode("тыуи","UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+            content += new JSONObject("{ \"field1\" : \"" + IOUtils.toString(new StringEntity("мероприятие ","UTF-8").getContent()) + "\" }") + "\n";
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"3\" } }\n";
+                JSONObject obj  = new JSONObject();
+
+        obj.put("field1", "סבהסבהסבה");
+
         content += obj.toString() + "\n";
 
         log.info("content: " + content);
@@ -344,7 +356,7 @@ public class ESUtils {
 
         Map<String,String> headers = new HashMap();
         headers.put("Content-Type","application/x-www-form-urlencoded");
-        //headers.put("charset", "UTF-8");
+        headers.put("charset", "UTF-8");
 
         http.post("http://127.0.0.1:9200/_bulk",headers,content);
     }
@@ -356,7 +368,7 @@ public class ESUtils {
             if((c >= 0) && (c <=127)) {
                 sb.append(c);
             } else {
-                sb.append("&#" + Integer.toHexString(c) + ";");
+                sb.append("&#" + Integer.toString(c) + ";");
             }
         }
         return sb.toString();

@@ -110,6 +110,7 @@ public class HttpUtils {
         try {
             wr = new DataOutputStream(connection.getOutputStream ());
             wr.writeBytes(body);
+            //wr.writeUTF(body);
             wr.flush();
             wr.close();
         } catch (IOException e) {
