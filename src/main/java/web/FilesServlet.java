@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -79,7 +81,7 @@ public class FilesServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        log.info("TEXT: " + text);
+        //log.info("TEXT: " + text);
         log.info("get ngrams");
 
         NGram ngram = new NGram(text);
@@ -96,24 +98,49 @@ public class FilesServlet extends HttpServlet {
 
            // bulkRequest.request().putHeader("charset","UTF-8");
 
+
             final int finalN = n;
             nCount.forEach((k,v) ->{
 
                 try {
-//                    log.info("str: " + k + " count: " + v);
-                    bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
-                                    .setSource(jsonBuilder()
-                                                    .startObject()
-//                                                    .field("str", new String(k.getBytes("UTF-8"),"CP1252"))
+                    log.info("str: " + k + " count: " + v);
+                    //log.info("str: " + new String(k.getBytes("UTF-8"), "ISO-8859-1") + " count: " + v);
+ //                   Charset.availableCharsets().forEach((str,charset) -> {
+                        //log.info("charsets str: " + str + " charset: " + charset.displayName());
+                        try {
+ //                           log.info("charset: " + str + " encoded val:" + new String(k.getBytes("UTF-8"), str) + " count: " + v);
+                            bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+                                            .setSource(jsonBuilder()
+                                                            .startObject()
+                                                        //    .field("charset", str)
+                                                                    //  .field("str_cp", new String(k.getBytes("CP1252")))
+                                                            .field("str", new String(k.getBytes("CESU-8"), "UTF-8"))
+                                                            .field("count", v)
+                                                            .field("date", new Date())
+                                                            .field("url", file.getAbsolutePath())
+                                                            .endObject()
+                                            )
+                            );
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+ //                   });
+
+//                    bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+//                                    .setSource(jsonBuilder()
+//                                                    .startObject()
+//                                                    .field("str_utf_cp", new String(k.getBytes("UTF-8"), "CP1252"))
 //                                                    .field("str_cp", new String(k.getBytes("CP1252")))
-                                                    .field("str", new String(k.getBytes("UTF-8"),"ISO-8859-1"))
-                                                    .field("count", v)
-                                                    .field("date", new Date())
-                                                    .field("url", file.getAbsolutePath())
-                                                    .endObject()
-                                    )
-                    );
-                } catch (IOException e) {
+//                                                    .field("str", new String(k.getBytes("UTF-8"), "ISO-8859-1"))//works on windwos
+//                                                    .field("count", v)
+//                                                    .field("date", new Date())
+//                                                    .field("url", file.getAbsolutePath())
+//                                                    .endObject()
+//                                    )
+//                    );
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -136,8 +163,6 @@ public class FilesServlet extends HttpServlet {
 
             log.info("finished " + n + "-gram balk");
         }
-
-
     }
 
     void delete(HttpServletRequest request, HttpServletResponse response){

@@ -445,7 +445,7 @@ public class EsServlet extends HttpServlet {
             HttpUtils http = new HttpUtils();
             String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",queryJson.toString());//es.query(esIndex,esType,queryJson);
             //jsonRes.put("message", result);
-            out.write(result);
+            out.write(new String(result.getBytes("UTF-8"),"ISO-8859-1"));
             return;
 
         } catch (Exception e) {
