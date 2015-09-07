@@ -65,7 +65,6 @@ public class FilesServlet extends HttpServlet {
         else if(op.equalsIgnoreCase("index")){
             index(request, response);
         }
-
     }
 
     void index(HttpServletRequest request, HttpServletResponse response){

@@ -29,13 +29,12 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
@@ -50,7 +49,8 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
  */
 public class ESUtils {
 
-    private static final Logger log = Logger.getLogger(ESUtils.class.getName());
+    //private static final Logger log = Logger.getLogger(ESUtils.class.getName());
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ESUtils.class);
 
     Client _client;
     Node _node = null;
@@ -77,8 +77,8 @@ public class ESUtils {
 
     public static void main(String[] args) {
 
-
-        ESUtils.httpBulk();
+        ESUtils.testEncoding();
+        //ESUtils.httpBulk();
 
 //        GetMappingsResponse res = null;
 //        try {
@@ -292,86 +292,128 @@ public class ESUtils {
                 .actionGet().getId();
     }
 
-    // convert from UTF-8 -> internal Java String format
-    public static String convertFromUTF8(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
+    public static void testEncoding() {
 
-    // convert from internal Java String format -> UTF-8
-    public static String convertToUTF8(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("ISO-8859-1"),"UTF-8"); //"ISO-8859-1");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
-
-
-    public static  String encodeX(String str){
-        String encoded = "";
-
-        return encoded;
-    }
-
-    public static void  httpBulk(){
-
-        String content = "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"1\" } }\n";
-               content += new JSONObject("{ \"field1\" : \"asdasd\" }").toString() + "\n";
-
-//               content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"2\" } }\n";
-//        try {
-//           // content += new JSONObject("{ \"field1\" : \"" + IOUtils.toString(new StringEntity("мероприятие ","UTF-8").getContent()) + "\" }") + "\n";
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-        content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"3\" } }\n";
-                JSONObject obj  = new JSONObject();
-
-        obj.put("field1", "סבהסבהסבה");
-
-        content += obj.toString() + "\n";
-
-        log.info("content: " + content);
-
-//        byte[] bytes = null;
-//        try {
-//            bytes = content.getBytes("UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        log.info("bytes utf-8: " + bytes.toString());
-
+        String testString = "формат";
         HttpUtils http = new HttpUtils();
 
-        Map<String,String> headers = new HashMap();
-        headers.put("Content-Type","application/x-www-form-urlencoded");
-        headers.put("charset", "UTF-8");
+        Map<String,Charset> charsetsMap =  Charset.availableCharsets();
 
-        http.post("http://127.0.0.1:9200/_bulk",headers,content);
-    }
+        Iterator<String> it =  charsetsMap.keySet().iterator();
 
-    public static String encode(String s) {
-        StringBuffer sb = new StringBuffer("");
-        for(int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if((c >= 0) && (c <=127)) {
-                sb.append(c);
-            } else {
-                sb.append("&#" + Integer.toString(c) + ";");
-            }
+        while(it.hasNext()){
+            String fromCharset = it.next();
+
+            Charset.availableCharsets().forEach((charsetName, toCharset) -> {
+                log.info("charsetName: " + charsetName + " charset: " + toCharset.displayName());
+
+                String encodedString = "";
+                try{
+                    encodedString = new String(testString.getBytes(fromCharset),toCharset);
+                }
+                catch(Exception e){
+                    System.out.println("Error getBytes for charset: " + charsetName + " " + e.toString());
+                    log.error("Error getBytes for charset: " + charsetName,e);
+                }
+
+                log.info("encodedString: " + encodedString);
+
+                JSONObject obj = new JSONObject();
+
+                obj.put("fromCharset",fromCharset);
+                obj.put("toCharset",charsetName);
+                obj.put("encodedString",encodedString);
+
+                String result = http.post("http://127.0.0.1:9200/horny/encodingTest",obj.toString());
+
+                log.info(result);
+
+            });
         }
-        return sb.toString();
+
     }
+
+//    // convert from UTF-8 -> internal Java String format
+//    public static String convertFromUTF8(String s) {
+//        String out = null;
+//        try {
+//            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
+//        } catch (java.io.UnsupportedEncodingException e) {
+//            return null;
+//        }
+//        return out;
+//    }
+//
+//    // convert from internal Java String format -> UTF-8
+//    public static String convertToUTF8(String s) {
+//        String out = null;
+//        try {
+//            out = new String(s.getBytes("ISO-8859-1"),"UTF-8"); //"ISO-8859-1");
+//        } catch (java.io.UnsupportedEncodingException e) {
+//            return null;
+//        }
+//        return out;
+//    }
+//
+//
+//    public static  String encodeX(String str){
+//        String encoded = "";
+//
+//        return encoded;
+//    }
+
+//    public static void  httpBulk(){
+//
+//        String content = "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"1\" } }\n";
+//               content += new JSONObject("{ \"field1\" : \"asdasd\" }").toString() + "\n";
+//
+////               content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"2\" } }\n";
+////        try {
+////           // content += new JSONObject("{ \"field1\" : \"" + IOUtils.toString(new StringEntity("мероприятие ","UTF-8").getContent()) + "\" }") + "\n";
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+//
+//
+//        content += "{ \"index\" : { \"_index\" : \"test\", \"_type\" : \"type1\", \"_id\" : \"3\" } }\n";
+//                JSONObject obj  = new JSONObject();
+//
+//        obj.put("field1", "סבהסבהסבה");
+//
+//        content += obj.toString() + "\n";
+//
+//        log.info("content: " + content);
+//
+////        byte[] bytes = null;
+////        try {
+////            bytes = content.getBytes("UTF-8");
+////        } catch (UnsupportedEncodingException e) {
+////            e.printStackTrace();
+////        }
+////
+////        log.info("bytes utf-8: " + bytes.toString());
+//
+//        HttpUtils http = new HttpUtils();
+//
+//        Map<String,String> headers = new HashMap();
+//        headers.put("Content-Type","application/x-www-form-urlencoded");
+//        headers.put("charset", "UTF-8");
+//
+//        http.post("http://127.0.0.1:9200/_bulk",headers,content);
+//    }
+
+//    public static String encode(String s) {
+//        StringBuffer sb = new StringBuffer("");
+//        for(int i = 0; i < s.length(); i++) {
+//            char c = s.charAt(i);
+//            if((c >= 0) && (c <=127)) {
+//                sb.append(c);
+//            } else {
+//                sb.append("&#" + Integer.toString(c) + ";");
+//            }
+//        }
+//        return sb.toString();
+//    }
+
 
 }
