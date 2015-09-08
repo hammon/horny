@@ -54,7 +54,7 @@ public class ESUtils {
 
     Client _client;
     Node _node = null;
-    String _clusterName = "horny1";
+    String _clusterName = "horny";
 
     public ESUtils(){
         // _client = createTransportClient();

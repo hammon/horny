@@ -64,9 +64,55 @@ Ext.define('Horny.BucketsGrid', {
                 checkchange: {
                     fn: function(column,rowIndex,checked) {
 
+                        var esProperty = settings.get('es.ui.selectedProperty');
+
                         var store = this.up().up().getStore();
                         var rec = store.getAt(rowIndex);
                         console.log('Checkbox changed key: ' + rec.data.key + " count: " + rec.data.doc_count + " checked: " + checked );
+
+                        var query = queryMgr.getActiveQueryJson();
+
+                        console.log("getActiveQueryJson: " + JSON.stringify(query));
+
+                        //var filtered = query.filtered || {'filter': {'terms':{}}};
+
+                        var filter = query.filter || {'terms':{}};
+
+                        filter.terms[esProperty] = [];
+
+
+
+                        for(var i = 0;i < store.count();i++){
+                            var r = store.getAt(i);
+                            if(r.data.filterBy === true){
+                                //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
+                                console.log(r.data.key + ' - checked');
+                                filter.terms[esProperty].push(r.data.key);
+                            }
+                        }
+
+                        if(filter.terms[esProperty].length === 0){
+                            delete filter.terms[esProperty];
+                        }
+
+                        if(Object.keys(filter.terms).length === 0){
+                            delete filter.terms;
+                        }
+
+                        query.filter = filter;
+
+                        if(Object.keys(query.filter).length === 0){
+                            delete query.filter;
+                        }
+
+
+                        console.log("getActiveQueryJson: " + JSON.stringify(query));
+
+                        queryMgr.setActiveQueryJson(query);
+
+                        var esTypesGrid = Ext.getCmp('esTypesGrid');
+
+                        esTypesGrid.update();
 
                         //'{"query":{"bool":{"must":{"terms":{"userDetails_genome_attributes_Brand_Aware":["0,9","1.0"]}}}},"from":0,"size":5,"sort":{"userDetails_genome_attributes_Activist":{"order":"desc"}}}'
 
