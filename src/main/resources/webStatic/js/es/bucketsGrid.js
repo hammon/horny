@@ -76,39 +76,49 @@ Ext.define('Horny.BucketsGrid', {
 
                         //var filtered = query.filtered || {'filter': {'terms':{}}};
 
-                        var filter = query.filter || {'terms':{}};
+                        var filter = queryMgr.getActiveFilterJson();
 
-                        filter.terms[esProperty] = [];
+                        //filter = filter || {"and":{"filters":[]}};
 
+                        var terms = {};
+                        terms[esProperty] = [];
 
+                        for(var i = 0;i < filter.and.filters.length;i++){
+                            if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
+                                terms = filter.and.filters[i].terms;
+                                filter.and.filters.splice(i,1);
+                                break;
+                            }
+                        }
 
                         for(var i = 0;i < store.count();i++){
                             var r = store.getAt(i);
                             if(r.data.filterBy === true){
                                 //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
                                 console.log(r.data.key + ' - checked');
-                                filter.terms[esProperty].push(r.data.key);
+                                if(terms[esProperty].indexOf(r.data.key) === -1){
+                                    terms[esProperty].push(r.data.key);
+                                }
                             }
                         }
 
-                        if(filter.terms[esProperty].length === 0){
-                            delete filter.terms[esProperty];
+                        if(terms[esProperty] && terms[esProperty].length > 0){
+                            filter.and.filters.push({"terms" : terms});
                         }
 
-                        if(Object.keys(filter.terms).length === 0){
-                            delete filter.terms;
-                        }
+                        //TODO: remove unused terms after uncheck
 
-                        query.filter = filter;
+//                        if(Object.keys(filter.terms).length === 0){
+//                            delete filter.terms;
+//                        }
+//
+//                        if(Object.keys(filter).length === 0){
+//                            delete query.filter;
+//                        }
 
-                        if(Object.keys(query.filter).length === 0){
-                            delete query.filter;
-                        }
+                        console.log("getActiveQueryJson: " + JSON.stringify(filter));
 
-
-                        console.log("getActiveQueryJson: " + JSON.stringify(query));
-
-                        queryMgr.setActiveQueryJson(query);
+                        queryMgr.setActiveFilterJson(filter);
 
                         var esTypesGrid = Ext.getCmp('esTypesGrid');
 
@@ -153,8 +163,11 @@ Ext.define('Horny.BucketsGrid', {
 
         grid.store.removeAll();
 
+        var query = queryMgr.getBucketQueryJson(esProperty);
+        query.filter = queryMgr.getActiveFilterJson();
+
         http.post('/es?op=search&index=' + esIndex + '&type=' + esType,
-        queryMgr.getBucketQueryJson(esProperty),
+        query,
 //        {
 //            "size" : 0,
 //            "aggs" : {
@@ -172,8 +185,34 @@ Ext.define('Horny.BucketsGrid', {
             if(res && res.aggregations && res.aggregations.bucket_agg && res.aggregations.bucket_agg.buckets){
                 var buckets = res.aggregations.bucket_agg.buckets;
 
-                grid.getStore().loadData(buckets);
+                var store = grid.getStore();
+                store.loadData(buckets);
 
+                var filter = queryMgr.getActiveFilterJson();
+
+                if(filter && filter.and && filter.and.filters ){
+
+                    var terms = {};
+                    terms[esProperty] = [];
+
+                    for(var i = 0;i < filter.and.filters.length;i++){
+                        if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
+                            terms = filter.and.filters[i].terms;
+                            break;
+                        }
+                    }
+
+                    terms[esProperty].forEach(function(value){
+                        var rec = store.findRecord('key',value);
+                        if(rec){
+                            rec.set('filterBy',true);
+                        }
+                        else{
+                            console.log(esProperty + ' - ' + value + ' not found in store.');
+                        }
+                    });
+                    store.sort('filterBy','DESC');
+                }
 
                 var esCenter = Ext.getCmp('esCenterTabs');
                 var esBarChart = Ext.getCmp('esBarChart');
@@ -225,29 +264,18 @@ Ext.define('Horny.BucketsGrid', {
             sortchange:{
                 fn: function( ct, column, direction, eOpts ){
                     console.log("sortchange column: " + column.dataIndex + " direction: " + direction);
+                    if(column.dataIndex !== 'filterBy '){
+                          return;
+                    }
 
                     var query = queryMgr.getBucketQueryJson(column.dataIndex);
 
-//                    if(!query.aggs || !query.aggs.bucket_agg || !query.aggs.bucket_agg.terms){
-//                        console.error('Invalid bucket query!');
-//                        return;
-//                    }
-
-//                    query.aggs.bucket_agg.terms['order'] = {};
-//                    query.aggs.bucket_agg.terms['order'][column.dataIndex] = direction;
                     query['order'] = {};
                     query['order'][column.dataIndex] = direction;
 
                     queryMgr.setBucketQueryJson(column.dataIndex,query);
 
                     this.update();
-//
-//                    query.sort = {};
-//                    query.sort[column.dataIndex] = {"order": direction.toLowerCase()};
-//
-//                    queryMgr.setActiveQueryJson(query);
-//
-//                    this.update();
                 }
             }
         }

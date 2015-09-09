@@ -72,6 +72,37 @@ var queryMgr = {
 
     setBucketQueryJson: function(field,query){
         queryMgr.setBucketQuery(field,JSON.stringify(query));
+    },
+
+    getActiveFilter: function(){
+        var esIndex = settings.get('es.ui.selectedIndex');
+        var esType = settings.get('es.ui.selectedType');
+
+        var filter = '';
+
+        if(esIndex && esType){
+            filter = settings.get('es.activeFilter.' + esIndex + '.' + esType);
+        }
+
+        if(!filter){
+            filter = '{"and":{"filters":[]}}';
+            queryMgr.setActiveFilter(filter);
+        }
+        return filter;
+    },
+
+    getActiveFilterJson: function(){
+        return JSON.parse(queryMgr.getActiveFilter());
+    },
+
+    setActiveFilter: function(filter){
+        var esIndex = settings.get('es.ui.selectedIndex');
+        var esType = settings.get('es.ui.selectedType');
+        settings.set('es.activeFilter.' + esIndex + '.' + esType,filter);
+    },
+
+    setActiveFilterJson: function(filter){
+        queryMgr.setActiveFilter(JSON.stringify(filter));
     }
 
 };
