@@ -132,16 +132,6 @@ Ext.define('Horny.EsTypesGrid', {
         }
     },
 
-//    initComponent: function () {
-//
-//        scroll: false,
-//        viewConfig: {
-//            style: { overflow: 'auto', overflowY: 'hidden' }
-//        },
-//
-//        this.callParent();
-//    },
-
     loadData: function(data){
 
         var arr = [];
@@ -160,8 +150,8 @@ Ext.define('Horny.EsTypesGrid', {
 
     update: function(){
 
-         var esIndex = settings.get('es.ui.selectedIndex');
-         var esType = settings.get('es.ui.selectedType');
+        var esIndex = settings.get('es.ui.selectedIndex');
+        var esType = settings.get('es.ui.selectedType');
 
         this.store.removeAll();
 
@@ -169,37 +159,15 @@ Ext.define('Horny.EsTypesGrid', {
 
         query.filter = queryMgr.getActiveFilterJson();
 
-
-
         //http.post('http://127.0.0.1:9200/' + path + '/_search','{"from":0,"size":1000}',function(res){
-        http.post('es?op=search&index=' + esIndex + '&type=' + esType,JSON.stringify(query),function(res){
+        http.post('es?op=search&index=' + esIndex + '&type=' + esType,
+            query,
+            function(res){
             //console.log(res);
 
             res = JSON.parse(res);
-
             var esTypesGrid = Ext.getCmp('esTypesGrid');
-
             esTypesGrid.loadData(res);
-
         });
-
-//        for(var p in props){
-//            this.store.add({'name' : p,'value':props[p]});
-//        }
     }
-
-//    initComponent : function(){
-//        this.store = Ext.create('Ext.data.JsonStore', {
-//            sortInfo: { field: "count", direction: "DESC" },
-//            //autoLoad: true,
-//            //autoSync: true,
-//            fields: [
-//                 {name: 'str',  type: 'string'},
-//                 {name: 'count',   type: 'int'}
-//            ]//,
-//           // data: [{str:'',count:0}]
-//        });
-//        this.callParent(arguments);
-//    }
-
 });

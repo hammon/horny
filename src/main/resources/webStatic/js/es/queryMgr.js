@@ -49,10 +49,14 @@ var queryMgr = {
             "size" : settings.get('es.ui.bucketsGrid.size') || 100,
             "aggs" : {
                 "bucket_agg" : {
-                    "terms" : {
-                        "field" : field,
-                        "size" : settings.get('es.ui.bucketsGrid.size') || 100
-                    }
+//                    "filter" : {},
+//                    "aggs":{
+                        "terms" : {
+                            "field" : field,
+                            "size" : settings.get('es.ui.bucketsGrid.size') || 100
+                        }
+ //                   }
+
                 }
             }
         };

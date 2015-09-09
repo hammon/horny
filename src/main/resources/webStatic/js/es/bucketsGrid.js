@@ -80,41 +80,51 @@ Ext.define('Horny.BucketsGrid', {
 
                         //filter = filter || {"and":{"filters":[]}};
 
-                        var terms = {};
-                        terms[esProperty] = [];
+                        if(checked){
+                            var terms = {};
+                            terms[esProperty] = [];
 
-                        for(var i = 0;i < filter.and.filters.length;i++){
-                            if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
-                                terms = filter.and.filters[i].terms;
-                                filter.and.filters.splice(i,1);
-                                break;
+                            //remove column filter
+                            for(var i = 0;i < filter.and.filters.length;i++){
+                                if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
+                                    terms = filter.and.filters[i].terms;
+                                    filter.and.filters.splice(i,1);
+                                    break;
+                                }
+                            }
+
+                            //add selected
+                            for(var i = 0;i < store.count();i++){
+                                var r = store.getAt(i);
+                                if(r.data.filterBy === true){
+                                    //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
+                                    console.log(r.data.key + ' - checked');
+                                    if(terms[esProperty].indexOf(r.data.key) === -1){
+                                        terms[esProperty].push(r.data.key);
+                                    }
+                                }
+                            }
+
+                            if(terms[esProperty] && terms[esProperty].length > 0){
+                                filter.and.filters.push({"terms" : terms});
                             }
                         }
-
-                        for(var i = 0;i < store.count();i++){
-                            var r = store.getAt(i);
-                            if(r.data.filterBy === true){
-                                //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
-                                console.log(r.data.key + ' - checked');
-                                if(terms[esProperty].indexOf(r.data.key) === -1){
-                                    terms[esProperty].push(r.data.key);
+                        else{
+                            var r = store.getAt(rowIndex);
+                            for(var i = 0;i < filter.and.filters.length;i++){
+                                if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
+                                    var ind = filter.and.filters[i].terms[esProperty].indexOf(r.data.key)
+                                    if(ind > -1){
+                                        filter.and.filters[i].terms[esProperty].splice(ind,1);
+                                        if(filter.and.filters[i].terms[esProperty].length === 0){
+                                            filter.and.filters.splice(i,1);
+                                             break;
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        if(terms[esProperty] && terms[esProperty].length > 0){
-                            filter.and.filters.push({"terms" : terms});
-                        }
-
-                        //TODO: remove unused terms after uncheck
-
-//                        if(Object.keys(filter.terms).length === 0){
-//                            delete filter.terms;
-//                        }
-//
-//                        if(Object.keys(filter).length === 0){
-//                            delete query.filter;
-//                        }
 
                         console.log("getActiveQueryJson: " + JSON.stringify(filter));
 
@@ -164,7 +174,7 @@ Ext.define('Horny.BucketsGrid', {
         grid.store.removeAll();
 
         var query = queryMgr.getBucketQueryJson(esProperty);
-        query.filter = queryMgr.getActiveFilterJson();
+        //query.filter = queryMgr.getActiveFilterJson();
 
         http.post('/es?op=search&index=' + esIndex + '&type=' + esType,
         query,
