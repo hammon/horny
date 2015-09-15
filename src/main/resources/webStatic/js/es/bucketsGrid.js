@@ -174,7 +174,18 @@ Ext.define('Horny.BucketsGrid', {
         grid.store.removeAll();
 
         var query = queryMgr.getBucketQueryJson(esProperty);
-        //query.filter = queryMgr.getActiveFilterJson();
+
+        var activeFilter = queryMgr.getActiveFilterJson();
+
+
+
+//        activeFilter.and.filters.forEach(function(terms){
+//            console.log('terms' + JSON.stringify(terms));
+//        });
+
+        //query.aggs.bucket_agg.filter = queryMgr.getActiveFilterJson();
+
+        console.log('buckets query: ' + JSON.stringify(query));
 
         http.post('/es?op=search&index=' + esIndex + '&type=' + esType,
         query,

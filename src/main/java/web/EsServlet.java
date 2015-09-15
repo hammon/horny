@@ -18,10 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -71,6 +68,9 @@ public class EsServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+
+        response.setCharacterEncoding("UTF-8");
+
         String op = request.getParameter("op");
 
         switch(op){
@@ -413,10 +413,17 @@ public class EsServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
-                jb.append(line);
+                jb.append(new String(line.getBytes("UTF-8"),"CESU-8"));
         } catch (Exception e) {
             log.error("Failed read json data :(",e);
         }
+
+//        try {
+//            log.info("search queryJson: " + new String(jb.toString().getBytes("CESU-8"), "UTF-8"));
+//           // ESUtils.testEncoding(jb.toString());
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
 
         JSONObject queryJson = new JSONObject(jb.toString());
 
@@ -443,6 +450,8 @@ public class EsServlet extends HttpServlet {
         try {
             ESUtils es = (ESUtils)getServletContext().getAttribute("es");
             HttpUtils http = new HttpUtils();
+
+
             String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",queryJson.toString());//es.query(esIndex,esType,queryJson);
             //jsonRes.put("message", result);
             out.write(new String(result.getBytes("UTF-8"),"ISO-8859-1"));

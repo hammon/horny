@@ -77,7 +77,7 @@ public class ESUtils {
 
     public static void main(String[] args) {
 
-        ESUtils.testEncoding();
+        ESUtils.testEncoding("формат");
         //ESUtils.httpBulk();
 
 //        GetMappingsResponse res = null;
@@ -292,9 +292,9 @@ public class ESUtils {
                 .actionGet().getId();
     }
 
-    public static void testEncoding() {
+    public static void testEncoding(String testString) {
 
-        String testString = "формат";
+        //String testString = "формат";
         HttpUtils http = new HttpUtils();
 
         Map<String,Charset> charsetsMap =  Charset.availableCharsets();

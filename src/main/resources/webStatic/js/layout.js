@@ -139,7 +139,7 @@ Ext.onReady(function(){
                                     flex: 1,
                                     region:'south',
                                     id:'bucketsGrid',
-                                    collapsed: true
+                                    collapsed: false
                                 })
                             ]
                          }),
