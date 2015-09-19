@@ -1,0 +1,9 @@
+{
+  "encodingTest": {
+    "properties": {
+      "encodedString": { "type": "string", "index" : "not_analyzed"},
+      "fromCharset": { "type": "string", "index" : "not_analyzed" },
+      "toCharset": { "type": "string", "index" : "not_analyzed" }
+    }
+  }
+}

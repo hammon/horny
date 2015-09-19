@@ -1,6 +1,7 @@
 package web;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -146,8 +147,6 @@ public class EsServlet extends HttpServlet {
         for(int n = 1;n < 6;n++){
             Map<String,Integer> nCount =  ngram.getTokensCount(n);
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-
-
 
             final int finalN = n;
             nCount.forEach((k,v) ->{
@@ -413,7 +412,8 @@ public class EsServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
-                jb.append(new String(line.getBytes("UTF-8"),"CESU-8"));
+                //jb.append(new String(line.getBytes("UTF-8"),"CESU-8"));
+                jb.append(new String(line.getBytes("UTF-8")));
         } catch (Exception e) {
             log.error("Failed read json data :(",e);
         }
@@ -425,9 +425,12 @@ public class EsServlet extends HttpServlet {
 //            e.printStackTrace();
 //        }
 
-        JSONObject queryJson = new JSONObject(jb.toString());
+        String strJson = StringEscapeUtils.unescapeJava(jb.toString());
 
-        log.info("save json data: " + jb.toString());
+        log.info("search queryJson: " + strJson);
+
+ //       JSONObject queryJson = new JSONObject(strJson);
+
 
         String esIndex = request.getParameter("index");
         if(esIndex == null || esIndex.isEmpty()){
@@ -448,17 +451,18 @@ public class EsServlet extends HttpServlet {
         }
 
         try {
-            ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+            //ESUtils es = (ESUtils)getServletContext().getAttribute("es");
             HttpUtils http = new HttpUtils();
 
 
-            String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",queryJson.toString());//es.query(esIndex,esType,queryJson);
+            String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",strJson);//es.query(esIndex,esType,queryJson);
             //jsonRes.put("message", result);
-            out.write(new String(result.getBytes("UTF-8"),"ISO-8859-1"));
+            //out.write(new String(result.getBytes("UTF-8"),"ISO-8859-1"));
+            out.write(result);
             return;
 
         } catch (Exception e) {
-            log.error("Failed to query " + esIndex + "/" + esType + "/" + queryJson.toString(), e);
+            log.error("Failed to query " + esIndex + "/" + esType + "/" + strJson, e);
             response.setStatus(500);
             jsonRes.put("result","FAILURE");
             jsonRes.put("message", e.getMessage());

@@ -77,7 +77,20 @@ public class ESUtils {
 
     public static void main(String[] args) {
 
-        ESUtils.testEncoding("формат");
+
+            String sJava="{\"size\":10,\"filter\":{\"term\":{\"str\":\"\\u0441\\u043a\\u0430\\u0437\\u0430\\u043b\"}}}";
+            System.out.println("StringEscapeUtils.unescapeJava(sJava):\n" + StringEscapeUtils.unescapeJava(sJava));
+
+
+//        try {
+//            String str = FileUtils.readFileToString(new File("/home/michael/Documents/utf8.txt"),"UTF-8");
+//            System.out.println("str: " + str);
+//            ESUtils.testEncoding(str);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
         //ESUtils.httpBulk();
 
 //        GetMappingsResponse res = null;
@@ -305,7 +318,7 @@ public class ESUtils {
             String fromCharset = it.next();
 
             Charset.availableCharsets().forEach((charsetName, toCharset) -> {
-                log.info("charsetName: " + charsetName + " charset: " + toCharset.displayName());
+                //log.info("charsetName: " + charsetName + " charset: " + toCharset.displayName());
 
                 String encodedString = "";
                 try{
@@ -313,20 +326,30 @@ public class ESUtils {
                 }
                 catch(Exception e){
                     System.out.println("Error getBytes for charset: " + charsetName + " " + e.toString());
-                    log.error("Error getBytes for charset: " + charsetName,e);
+                    //log.error("Error getBytes for charset: " + charsetName,e);
                 }
 
-                log.info("encodedString: " + encodedString);
+                if(encodedString.equalsIgnoreCase(testString)){
+                    System.out.println("encodedString: " + encodedString + " fromCharset: " + fromCharset + " toCharset: " + toCharset);
 
-                JSONObject obj = new JSONObject();
+                    JSONObject obj = new JSONObject();
 
-                obj.put("fromCharset",fromCharset);
-                obj.put("toCharset",charsetName);
-                obj.put("encodedString",encodedString);
+                    obj.put("fromCharset",fromCharset);
+                    obj.put("toCharset", charsetName);
+                    obj.put("encodedString",encodedString);
 
-                String result = http.post("http://127.0.0.1:9200/horny/encodingTest",obj.toString());
+                    Map<String,String> headers = new HashMap<>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Accept", "application/json");
 
-                log.info(result);
+                    String result = http.post("http://127.0.0.1:9200/horny/encodingTest",headers,obj.toString());
+
+                    System.out.println("result: " + result);
+                }
+
+
+
+                //log.info(result);
 
             });
         }

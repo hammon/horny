@@ -159,6 +159,8 @@ Ext.define('Horny.EsTypesGrid', {
 
         query.filter = queryMgr.getActiveFilterJson();
 
+        console.log("esTypesGrid.update query: " + JSON.stringify(query));
+
         //http.post('http://127.0.0.1:9200/' + path + '/_search','{"from":0,"size":1000}',function(res){
         http.post('es?op=search&index=' + esIndex + '&type=' + esType,
             query,

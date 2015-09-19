@@ -78,6 +78,8 @@ public class HttpUtils {
     }
 
     public String post(String url,Map<String,String> headers, String body){
+        System.out.println("post url: " + url + " body: " + body);
+
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) new URL(url).openConnection();

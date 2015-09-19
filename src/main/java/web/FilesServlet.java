@@ -95,7 +95,7 @@ public class FilesServlet extends HttpServlet {
             Map<String,Integer> nCount =  ngram.getTokensCount(n);
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 
-           // bulkRequest.request().putHeader("charset","UTF-8");
+            bulkRequest.request().putHeader("charset","UTF-8");
 
 
             final int finalN = n;
@@ -111,12 +111,18 @@ public class FilesServlet extends HttpServlet {
                             bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
                                             .setSource(jsonBuilder()
                                                             .startObject()
-                                                        //    .field("charset", str)
+                                                                    //    .field("charset", str)
                                                                     //  .field("str_cp", new String(k.getBytes("CP1252")))
-                                                            .field("str", new String(k.getBytes("CESU-8"), "UTF-8"))
-                                                            //.field("str", new String(k.getBytes("UTF-8"), "CP1252"))
-                                                                    // .field("str", new String(k.getBytes("UTF-8"),"ISO-8859-1"))
-                                                           // .field("str", new String(k.getBytes("CESU-8"), "UTF-8"))
+                                                            .field("str", k)
+//                                                            .field("str_cesu", new String(k.getBytes("CESU-8"), "UTF-8"))
+//                                                            .field("str_cesu1", new String(k.getBytes("UTF-8" ), "CESU-8"))
+//
+//                                                            .field("str_cp", new String(k.getBytes("CP1252"), "UTF-8"))
+//                                                            .field("str_cp1", new String(k.getBytes("UTF-8"), "CP1252"))
+//
+//                                                            .field("str_iso", new String(k.getBytes("UTF-8"), "ISO-8859-1"))
+//                                                            .field("str_iso1", new String(k.getBytes("ISO-8859-1"),"UTF-8" ))
+                                                                    // .field("str", new String(k.getBytes("CESU-8"), "UTF-8"))
                                                             .field("count", v)
                                                             .field("date", new Date())
                                                             .field("url", file.getAbsolutePath())
@@ -145,8 +151,6 @@ public class FilesServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             });
 
             log.info("send ngrams balk");
