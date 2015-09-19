@@ -21,13 +21,17 @@ import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
+import org.elasticsearch.common.io.FileSystemUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.plugins.PluginManager;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
@@ -193,6 +197,14 @@ public class ESUtils {
     }
 
     public void initData(String index){
+
+//        Tuple<Settings, Environment> initialSettings = InternalSettingsPerparer.prepareSettings(EMPTY_SETTINGS, true);
+//        if (!initialSettings.v2().pluginsFile().exists()) {
+//            FileSystemUtils.mkdirs(initialSettings.v2().pluginsFile());
+//        }
+//        String url = null;
+//        PluginManager pluginManager = new PluginManager(initialSettings.v2(),url);
+//        pluginManager.downloadAndExtract( "mylovely/<pluginname>/1.0.0", true);
 
         try {
             CreateIndexResponse createResponse = _client.admin().indices().create(Requests.createIndexRequest(index)).actionGet();

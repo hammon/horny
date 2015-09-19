@@ -105,13 +105,13 @@ public class HttpUtils {
             connection.setRequestProperty(key,headers.get(key));
         }
 
-        connection.setRequestProperty("Content-Length", "" + Integer.toString(body.getBytes().length));
+        connection.setRequestProperty("Content-Length", "" + String.valueOf(body.length()));
         connection.setUseCaches (false);
 
         DataOutputStream wr;
         try {
             wr = new DataOutputStream(connection.getOutputStream ());
-            wr.writeBytes(body);
+            wr.write(body.getBytes("UTF-8"));
             //wr.writeUTF(body);
             wr.flush();
             wr.close();

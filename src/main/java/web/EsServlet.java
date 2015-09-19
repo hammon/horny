@@ -2,6 +2,7 @@ package web;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.util.EncodingUtils;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -20,11 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 //import org.joda.*;
@@ -451,11 +450,19 @@ public class EsServlet extends HttpServlet {
         }
 
         try {
-            //ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+//            ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+//            String result = es.query(esIndex,esType,new JSONObject(strJson));
+
             HttpUtils http = new HttpUtils();
+            Map<String,String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/x-www-form-urlencoded");
+
+           // String encodedQuery = URLEncoder.encode(strJson, "UTF-8");
+
+            String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",headers, strJson);//es.query(esIndex,esType,queryJson);
 
 
-            String result = http.post("http://127.0.0.1:9200/" + esIndex + "/" + esType + "/_search",strJson);//es.query(esIndex,esType,queryJson);
+
             //jsonRes.put("message", result);
             //out.write(new String(result.getBytes("UTF-8"),"ISO-8859-1"));
             out.write(result);
