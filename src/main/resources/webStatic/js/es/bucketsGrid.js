@@ -78,9 +78,18 @@ Ext.define('Horny.BucketsGrid', {
 
                         var filter = queryMgr.getActiveFilterJson();
 
+                        var esMappingTree = Ext.getCmp('esMappingTree');
+                        var selectedTreeRecord = null;
+                        if (esMappingTree.getSelectionModel().hasSelection()) {
+                            selectedTreeRecord = esMappingTree.getSelectionModel().getSelection()[0];
+                        }
+
                         //filter = filter || {"and":{"filters":[]}};
 
                         if(checked){
+                            //clean tree color mark
+                            selectedTreeRecord.set("text","<span style=color:blue;'>" + selectedTreeRecord.raw.text + "</span>");
+
                             var terms = {};
                             terms[esProperty] = [];
 
@@ -108,6 +117,8 @@ Ext.define('Horny.BucketsGrid', {
                             if(terms[esProperty] && terms[esProperty].length > 0){
                                 filter.and.filters.push({"terms" : terms});
                             }
+
+                            queryMgr.setActiveFilterJson(filter);
                         }
                         else{
                             var r = store.getAt(rowIndex);
@@ -118,45 +129,33 @@ Ext.define('Horny.BucketsGrid', {
                                         filter.and.filters[i].terms[esProperty].splice(ind,1);
                                         if(filter.and.filters[i].terms[esProperty].length === 0){
                                             filter.and.filters.splice(i,1);
-                                             break;
+                                            break;
                                         }
                                     }
                                 }
                             }
+
+                            //clean tree color mark
+                            if(filter.and.filters.terms[esProperty].length === 0){
+                                selectedTreeRecord.set("text", selectedTreeRecord.raw.text );
+                            }
+
+                            queryMgr.setActiveFilterJson(filter);
+
+                            var bucketsGrid =  Ext.getCmp('bucketsGrid');
+
+                            bucketsGrid.update();
                         }
 
 
                         console.log("getActiveQueryJson: " + JSON.stringify(filter));
 
-                        queryMgr.setActiveFilterJson(filter);
+
 
                         var esTypesGrid = Ext.getCmp('esTypesGrid');
 
                         esTypesGrid.update();
 
-                        //'{"query":{"bool":{"must":{"terms":{"userDetails_genome_attributes_Brand_Aware":["0,9","1.0"]}}}},"from":0,"size":5,"sort":{"userDetails_genome_attributes_Activist":{"order":"desc"}}}'
-
-//                            {
-//                            	"query" : {
-//                                    "filtered": {
-//                                        "filter": {
-//                                            "range": {
-//                                                "rating" : {
-//                            						"from" : 7,
-//                            						"to" : 11
-//                            					}
-//                                            }
-//                                        }
-//                                    }
-//                                },
-//                               "aggs": {
-//                            		"sport": {
-//                            			"terms": {
-//                            				"field": "sport"
-//                            			}
-//                            		}
-//                            	}
-//                            }
                     }
                 }
             }
@@ -175,31 +174,10 @@ Ext.define('Horny.BucketsGrid', {
 
         var query = queryMgr.getBucketQueryJson(esProperty);
 
-        var activeFilter = queryMgr.getActiveFilterJson();
-
-
-
-//        activeFilter.and.filters.forEach(function(terms){
-//            console.log('terms' + JSON.stringify(terms));
-//        });
-
-        //query.aggs.bucket_agg.filter = queryMgr.getActiveFilterJson();
-
         console.log('buckets query: ' + JSON.stringify(query));
 
         http.post('/es?op=search&index=' + esIndex + '&type=' + esType,
         query,
-//        {
-//            "size" : 0,
-//            "aggs" : {
-//                "bucket_agg" : {
-//                    "terms" : {
-//                        "field" : esProperty,
-//                        "size" : settings.get('es.ui.bucketsGrid.size')
-//                    }
-//                }
-//            }
-//        },
         function(res){
             res = JSON.parse(res);
             //console.log(JSON.stringify(res));
@@ -243,13 +221,9 @@ Ext.define('Horny.BucketsGrid', {
                 }
 
                 esBarChart = createEsBarChart();
-
                 esCenter.add(esBarChart);
-
                 esCenter.setActiveTab(esBarChart);
-
                 esBarChart.updateLayout();
-
             }
         });
 

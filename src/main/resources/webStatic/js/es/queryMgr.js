@@ -46,20 +46,37 @@ var queryMgr = {
         var esType = settings.get('es.ui.selectedType');
 
         var query = {
-            "size" : settings.get('es.ui.bucketsGrid.size') || 100,
+            "query": {
+                "filtered": {
+                   "query": {
+                        "match_all": {}
+                    },
+                    "filter" : queryMgr.getActiveFilterJson()
+                }
+            },
             "aggs" : {
                 "bucket_agg" : {
-//                    "filter" : {},
-//                    "aggs":{
-                        "terms" : {
-                            "field" : field,
-                            "size" : settings.get('es.ui.bucketsGrid.size') || 100
-                        }
- //                   }
-
+                        "terms" : { "field" : field, "size": settings.get('es.ui.bucketsGrid.size') || 100 }
                 }
-            }
+            },
+            "size":"0"
         };
+
+//        var query = {
+//            "size" : settings.get('es.ui.bucketsGrid.size') || 100,
+//            "aggs" : {
+//                "bucket_agg" : {
+////                    "filter" : {},
+////                    "aggs":{
+//                        "terms" : {
+//                            "field" : field,
+//                            "size" : settings.get('es.ui.bucketsGrid.size') || 100
+//                        }
+// //                   }
+//
+//                }
+//            }
+//        };
 
         return settings.get('es.bucketQuery.' + esIndex + '.' + esType + '.' + field) || JSON.stringify(query);
     },
