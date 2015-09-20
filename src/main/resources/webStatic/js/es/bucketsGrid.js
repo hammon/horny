@@ -136,9 +136,14 @@ Ext.define('Horny.BucketsGrid', {
                             }
 
                             //clean tree color mark
-                            if(filter.and.filters.terms[esProperty].length === 0){
+                            if(filter.and.filters.length === 0)
+                            //if(filter.and.filters.terms[esProperty].length === 0){
+                            {
                                 selectedTreeRecord.set("text", selectedTreeRecord.raw.text );
                             }
+//                            else{
+//                                var ind = filter.and.filters
+//                            }
 
                             queryMgr.setActiveFilterJson(filter);
 
