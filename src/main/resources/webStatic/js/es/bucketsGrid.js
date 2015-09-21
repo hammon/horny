@@ -87,44 +87,60 @@ Ext.define('Horny.BucketsGrid', {
                         //filter = filter || {"and":{"filters":[]}};
 
                         if(checked){
-                            //clean tree color mark
+                            //add tree color mark
                             selectedTreeRecord.set("text","<span style=color:blue;'>" + selectedTreeRecord.raw.text + "</span>");
 
-                            var terms = {};
-                            terms[esProperty] = [];
-
-                            //remove column filter
-                            for(var i = 0;i < filter.and.filters.length;i++){
-                                if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
-                                    terms = filter.and.filters[i].terms;
-                                    filter.and.filters.splice(i,1);
-                                    break;
+                            var terms = filter.and.filters.find(function(element, index, array){
+                                if(element.terms[esProperty]){
+                                    return true;
                                 }
+                            });
+
+                            if(terms){
+                                terms.terms[esProperty].push(rec.data.key);
+                            }
+                            else{
+                                terms = {};
+                                terms[esProperty] = [];
+                                terms[esProperty].push(rec.data.key);
+                                filter.and.filters.push({'terms' : terms});
                             }
 
-                            //add selected
-                            for(var i = 0;i < store.count();i++){
-                                var r = store.getAt(i);
-                                if(r.data.filterBy === true){
-                                    //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
-                                    console.log(r.data.key + ' - checked');
-                                    if(terms[esProperty].indexOf(r.data.key) === -1){
-                                        terms[esProperty].push(r.data.key);
-                                    }
-                                }
-                            }
-
-                            if(terms[esProperty] && terms[esProperty].length > 0){
-                                filter.and.filters.push({"terms" : terms});
-                            }
+//                            var terms = {};
+//                            terms[esProperty] = [];
+//
+//                            //remove column filter
+//                            for(var i = 0;i < filter.and.filters.length;i++){
+//                                if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
+//                                    terms = filter.and.filters[i].terms;
+//                                    filter.and.filters.splice(i,1);
+//                                    break;
+//                                }
+//                            }
+//
+//                            //add selected
+//                            for(var i = 0;i < store.count();i++){
+//                                var r = store.getAt(i);
+//                                if(r.data.filterBy === true){
+//                                    //facetsFilter[arr[1]][arr[2]][arr[3]].push(r.data.term);
+//                                    console.log(r.data.key + ' - checked');
+//                                    if(terms[esProperty].indexOf(r.data.key) === -1){
+//                                        terms[esProperty].push(r.data.key);
+//                                    }
+//                                }
+//                            }
+//
+//                            if(terms[esProperty] && terms[esProperty].length > 0){
+//                                filter.and.filters.push({"terms" : terms});
+//                            }
 
                             queryMgr.setActiveFilterJson(filter);
                         }
                         else{
-                            var r = store.getAt(rowIndex);
+                            //var rec = store.getAt(rowIndex);
                             for(var i = 0;i < filter.and.filters.length;i++){
                                 if(filter.and.filters[i].terms && filter.and.filters[i].terms[esProperty]){
-                                    var ind = filter.and.filters[i].terms[esProperty].indexOf(r.data.key)
+                                    var ind = filter.and.filters[i].terms[esProperty].indexOf(rec.data.key)
                                     if(ind > -1){
                                         filter.and.filters[i].terms[esProperty].splice(ind,1);
                                         if(filter.and.filters[i].terms[esProperty].length === 0){
@@ -136,13 +152,28 @@ Ext.define('Horny.BucketsGrid', {
                             }
 
                             //clean tree color mark
-                            if(filter.and.filters.length === 0)
-                            //if(filter.and.filters.terms[esProperty].length === 0){
-                            {
+
+                            var terms = filter.and.filters.find(function(element, index, array){
+                                if(element.terms[esProperty]){
+                                    return true;
+                                }
+                            });
+
+                            if(!terms){
                                 selectedTreeRecord.set("text", selectedTreeRecord.raw.text );
                             }
+//                            if(filter.and.filters.length === 0)
+//                            //if(filter.and.filters.terms[esProperty].length === 0){
+//                            {
+//                                selectedTreeRecord.set("text", selectedTreeRecord.raw.text );
+//                            }
 //                            else{
-//                                var ind = filter.and.filters
+//                                for(var i = 0;i < filter.and.filters.length;i++){
+//                                    if(filter.and.filters[i].terms[esProperty]){
+//
+//                                    }
+//                                }
+//
 //                            }
 
                             queryMgr.setActiveFilterJson(filter);
