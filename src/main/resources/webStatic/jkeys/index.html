@@ -1,0 +1,40 @@
+<html>
+
+    <head>
+        <title>JKeys</title>
+
+        <script src="js/jkeys.js"></script>
+        <script type="text/javascript">
+            console.log("navigator.userAgent: " + navigator.userAgent);
+
+            //alert("navigator.userAgent: " + navigator.userAgent);
+
+        </script>
+    </head>
+
+    <body id=body style="background-color:white;"><h1></h1>
+
+        <input id=button1 type="button" value="Button" onclick=jKeys.init()>
+
+        <!--<font id=res style="font-size:15pt;">Font</font>-->
+
+
+        <div align=center><table id=summary border=1 style="display:none;"/></div>
+
+
+        <div align=center>
+            <table id=results border=1 style="display:none;">
+
+            <tr>
+                <td>Key</td>
+                <td>x</td>
+                <td>y</td>
+                <td>Font size</td>
+                <td>rgb</td>
+                <td>Response time</td>
+                <td>Result</td>
+            </tr>
+            </table>
+        </div>
+    </body>
+</html>

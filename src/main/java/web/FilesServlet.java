@@ -91,63 +91,39 @@ public class FilesServlet extends HttpServlet {
         ESUtils es = (ESUtils)getServletContext().getAttribute("es");
         Client esClient = es.getClient();
 
-        for(int n = 1;n < 6;n++){
-            Map<String,Integer> nCount =  ngram.getTokensCount(n);
-            BulkRequestBuilder bulkRequest = esClient.prepareBulk();
+        for(int n = 1;n < 4;n++){
+            Map<String,Integer> mapCount =  ngram.getTokensCount(n);
 
+            BulkRequestBuilder bulkRequest = esClient.prepareBulk();
             bulkRequest.request().putHeader("charset","UTF-8");
 
 
             final int finalN = n;
-            nCount.forEach((k,v) ->{
+
+
+            mapCount.forEach((k, v) -> {
+
+
+
+//                    log.info("str: " + k + " count: " + v);
 
                 try {
-                    log.info("str: " + k + " count: " + v);
-                    //log.info("str: " + new String(k.getBytes("UTF-8"), "ISO-8859-1") + " count: " + v);
- //                   Charset.availableCharsets().forEach((str,charset) -> {
-                        //log.info("charsets str: " + str + " charset: " + charset.displayName());
-                        try {
- //                           log.info("charset: " + str + " encoded val:" + new String(k.getBytes("UTF-8"), str) + " count: " + v);
-                            bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
-                                            .setSource(jsonBuilder()
-                                                            .startObject()
-                                                                    //    .field("charset", str)
-                                                                    //  .field("str_cp", new String(k.getBytes("CP1252")))
-                                                            .field("str", k)
-//                                                            .field("str_cesu", new String(k.getBytes("CESU-8"), "UTF-8"))
-//                                                            .field("str_cesu1", new String(k.getBytes("UTF-8" ), "CESU-8"))
-//
-//                                                            .field("str_cp", new String(k.getBytes("CP1252"), "UTF-8"))
-//                                                            .field("str_cp1", new String(k.getBytes("UTF-8"), "CP1252"))
-//
-//                                                            .field("str_iso", new String(k.getBytes("UTF-8"), "ISO-8859-1"))
-//                                                            .field("str_iso1", new String(k.getBytes("ISO-8859-1"),"UTF-8" ))
-                                                                    // .field("str", new String(k.getBytes("CESU-8"), "UTF-8"))
-                                                            .field("count", v)
-                                                            .field("date", new Date())
-                                                            .field("url", file.getAbsolutePath())
-                                                            .endObject()
-                                            )
-                            );
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
- //                   });
+                    bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+                                    .setSource(jsonBuilder()
+                                                    .startObject()
+                                                    .field("str", k)
+                                                    .field("count", v)
+                                                    .field("date", new Date())
+                                                    .field("url", file.getAbsolutePath())
+                                                    .endObject()
+                                    )
+                    );
 
-//                    bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
-//                                    .setSource(jsonBuilder()
-//                                                    .startObject()
-//                                                    .field("str_utf_cp", new String(k.getBytes("UTF-8"), "CP1252"))
-//                                                    .field("str_cp", new String(k.getBytes("CP1252")))
-//                                                    .field("str", new String(k.getBytes("UTF-8"), "ISO-8859-1"))//works on windwos
-//                                                    .field("count", v)
-//                                                    .field("date", new Date())
-//                                                    .field("url", file.getAbsolutePath())
-//                                                    .endObject()
-//                                    )
-//                    );
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
