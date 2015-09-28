@@ -1,0 +1,157 @@
+package text;
+
+import org.apache.commons.io.FileUtils;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.client.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import utils.ESUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+
+/**
+ * Created by michael on 9/28/15.
+ */
+public class ESIndexer {
+
+    final static Logger log = LoggerFactory.getLogger(ESIndexer.class);
+
+    ESUtils _es = new ESUtils("127.0.0.1");
+
+    public static void main(String[] args){
+        ESIndexer indexer = new ESIndexer();
+
+        indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULYCHEW"), new String[]{"txt"});
+    }
+
+    void indexDir(File dir,String[] extensions){
+        //String[] extensions = {fileExtension};
+
+        log.info("index dir: " + dir.getAbsolutePath());
+        Collection<File> files = FileUtils.listFiles(dir, extensions, true);
+
+        for(File f : files){
+            index(f);
+        }
+    }
+
+    void index(File file){
+
+        log.info("index file: " + file.getAbsolutePath());
+        //String path = request.getParameter("path");
+
+        //File root = new File(getServletContext().getAttribute("rootPath").toString());
+        //File file = new File(root,path);
+
+        String text = null;
+        try {
+            text = FileUtils.readFileToString(file, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //log.info("TEXT: " + text);
+        log.info("get ngrams");
+
+        NGram ngram = new NGram(text);
+
+        //JSONObject bulk = new JSONObject();
+
+        log.info("prepare es balk");
+        //ESUtils es = (ESUtils)getServletContext().getAttribute("es");
+        Client esClient = _es.getClient();
+
+        for(int n = 1;n < 5;n++){
+            Map<String,Integer> mapCount =  ngram.getTokensCount(n);
+
+            BulkRequestBuilder bulkRequest = esClient.prepareBulk();
+            bulkRequest.request().putHeader("charset", "UTF-8");
+
+
+            //final int finalN = n;
+
+            int nCounter = 0;
+
+            Iterator<Map.Entry<String,Integer>> itMapCount =  mapCount.entrySet().iterator();
+            while (itMapCount.hasNext())
+            //mapCount.forEach((k, v) ->
+            {
+                nCounter++;
+                Map.Entry<String,Integer> kv = itMapCount.next();
+                String k = kv.getKey();
+                Integer v = kv.getValue();
+
+
+//                    log.info("str: " + k + " count: " + v);
+
+                try {
+                    bulkRequest.add(esClient.prepareIndex("horny", "web" + n + "gram")
+                                    .setSource(jsonBuilder()
+                                                    .startObject()
+                                                    .field("str", k)
+                                                    .field("count", v)
+                                                    .field("date", new Date())
+                                                    .field("url", file.getAbsolutePath())
+                                                    .endObject()
+                                    )
+                    );
+
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(nCounter % 1000 == 0){
+                    log.info("send " + n + "grams balk counter:  " + nCounter);
+                    BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+                    if (bulkResponse.hasFailures()) {
+                        // process failures by iterating through each bulk response item
+                        Iterator<BulkItemResponse> it = bulkResponse.iterator();
+                        while (it.hasNext()){
+                            BulkItemResponse item = it.next();
+                            BulkItemResponse.Failure failure = item.getFailure();
+                            if(failure != null){
+                                log.error(failure.getMessage());
+                            }
+                        }
+                    }
+                    bulkRequest = esClient.prepareBulk();
+                    bulkRequest.request().putHeader("charset", "UTF-8");
+                }
+            }
+            //);
+
+            log.info("send ngrams balk");
+            BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+            if (bulkResponse.hasFailures()) {
+                // process failures by iterating through each bulk response item
+                Iterator<BulkItemResponse> it = bulkResponse.iterator();
+                while (it.hasNext()){
+                    BulkItemResponse item = it.next();
+                    BulkItemResponse.Failure failure = item.getFailure();
+                    if(failure != null){
+                        log.error(failure.getMessage());
+                    }
+                }
+            }
+
+            log.info("finished " + n + "-gram balk");
+        }
+    }
+}

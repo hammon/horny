@@ -246,6 +246,23 @@ Ext.define('Horny.EsMappingTree', {
                             //flex: 2,
                             store: typeGridStore,
                             columns: gridColumns
+
+//                            bbar: Ext.create('Ext.PagingToolbar', {
+//                                store: typeGridStore,
+//                                displayInfo: true,
+//                                displayMsg: 'Displaying topics {0} - {1} of {2}',
+//                                emptyMsg: "No topics to display",
+//                                items:[
+//                                    '-', {
+//                                    text: 'Show Preview',
+//                                   // pressed: pluginExpanded,
+//                                    enableToggle: true,
+//                                    toggleHandler: function(btn, pressed) {
+//                //                        var preview = Ext.getCmp('gv').getPlugin('preview');
+//                //                        preview.toggleExpanded(pressed);
+//                                    }
+//                                }]
+//                            })
                         });
 
                         //for create new record

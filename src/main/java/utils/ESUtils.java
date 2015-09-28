@@ -59,6 +59,8 @@ public class ESUtils {
     Client _client;
     Node _node = null;
     String _clusterName = "horny";
+    String _hostname = "127.0.0.1";
+    int _port = 9300;
 
     public ESUtils(){
         // _client = createTransportClient();
@@ -67,6 +69,17 @@ public class ESUtils {
 
         initData(_clusterName);
 
+    }
+
+    public ESUtils(String hostname){
+        _hostname = hostname;
+        _client = createTransportClient();
+    }
+
+    public ESUtils(String hostname,int port){
+        _port = port;
+        _hostname = hostname;
+        _client = createTransportClient();
     }
 
     public void close(){
@@ -178,7 +191,7 @@ public class ESUtils {
     public Client createTransportClient() {
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("cluster.name", _clusterName).build();
-        return  new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+        return  new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(_hostname, _port));
     }
 
     public Client createNodeClient(){

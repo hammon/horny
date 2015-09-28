@@ -95,20 +95,27 @@ public class FilesServlet extends HttpServlet {
             Map<String,Integer> mapCount =  ngram.getTokensCount(n);
 
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-            bulkRequest.request().putHeader("charset","UTF-8");
+            bulkRequest.request().putHeader("charset", "UTF-8");
 
 
-            final int finalN = n;
+            //final int finalN = n;
 
+            int nCounter = 0;
 
-            mapCount.forEach((k, v) -> {
-
+            Iterator<Map.Entry<String,Integer>> itMapCount =  mapCount.entrySet().iterator();
+            while (itMapCount.hasNext())
+            //mapCount.forEach((k, v) ->
+            {
+                nCounter++;
+                Map.Entry<String,Integer> kv = itMapCount.next();
+                String k = kv.getKey();
+                Integer v = kv.getValue();
 
 
 //                    log.info("str: " + k + " count: " + v);
 
                 try {
-                    bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+                    bulkRequest.add(esClient.prepareIndex("horny", "web" + n + "gram")
                                     .setSource(jsonBuilder()
                                                     .startObject()
                                                     .field("str", k)
@@ -127,7 +134,26 @@ public class FilesServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
+
+                if(nCounter % 1000 == 0){
+                    log.info("send " + n + "grams balk counter:  " + nCounter);
+                    BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+                    if (bulkResponse.hasFailures()) {
+                        // process failures by iterating through each bulk response item
+                        Iterator<BulkItemResponse> it = bulkResponse.iterator();
+                        while (it.hasNext()){
+                            BulkItemResponse item = it.next();
+                            BulkItemResponse.Failure failure = item.getFailure();
+                            if(failure != null){
+                                log.error(failure.getMessage());
+                            }
+                        }
+                    }
+                    bulkRequest = esClient.prepareBulk();
+                    bulkRequest.request().putHeader("charset", "UTF-8");
+                }
+            }
+            //);
 
             log.info("send ngrams balk");
             BulkResponse bulkResponse = bulkRequest.execute().actionGet();

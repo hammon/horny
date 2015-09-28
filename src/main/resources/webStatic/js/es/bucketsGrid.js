@@ -54,7 +54,10 @@ Ext.define('Horny.BucketsGrid', {
     autoRender: true,
     autoScroll: true,
     layout: 'fit',
-    tbar: Ext.create('Horny.BucketsGridToolbar'),
+    dockedItems: [
+                    Ext.create('Horny.BucketsGridToolbar')
+                 //   ,Ext.create('Horny.BucketsGridToolbar')
+                 ],
 
     columns: [
         {text: "Key", flex: 1, dataIndex: 'key', sortable: true},

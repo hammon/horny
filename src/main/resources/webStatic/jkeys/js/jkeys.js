@@ -1,5 +1,10 @@
 
 
+function createDot(x,y){
+    var e = document.createElement('div');
+    e.id = id || elemUtils.generateId('div');
+}
+
 var jKeys = {
     time: 0,
     prevTime: 0,
@@ -186,7 +191,7 @@ var jKeys = {
 
     	jKeys.timer = jKeys.timer - (timerUtils.intervalMs/1000);
 
-    	progressElem.update(jKeys.timer);
+    	progressElem.update();
     }
 
 };
@@ -251,10 +256,15 @@ var progressElem = {
     init: function(){
         elemUtils.addElem("body","div",0,progressElem.id);
         elemUtils.setAttribute(progressElem.id,"style","Z-INDEX: 102; color:#6cc322; POSITION: absolute;" +
-            	"font-size:100px; LEFT: 0px; TOP: 0px");
+            	"font-size:50px; LEFT: 0px; TOP: 0px");
     },
-    update: function(val){
-        elemUtils.setValue(progressElem.id,val.toFixed(1));
+    update: function(){
+        var val = jKeys.timer.toFixed(1);
+        val += '<br/>';
+        val += jKeys.keyCount;
+        val += '<br/>';
+        val += jKeys.totalResponseTime / jKeys.keyCount;
+        elemUtils.setValue(progressElem.id,val);
     }
 
 };
