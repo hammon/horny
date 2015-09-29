@@ -8,6 +8,7 @@ public class NGram {
     String txt = "";
     Map<String,List<Integer>> tokenPosNoSeps = new HashMap<String, List<Integer>>();
     Map<Integer,String> lowerTokensNoSeps = new HashMap<Integer, String>();
+    Map<Integer,String> offsets = new TreeMap<Integer,String>();
 
     public NGram(String text){
         txt = text;
@@ -47,9 +48,12 @@ public class NGram {
                 else{
                     if(word.length() > 0){
 
-                        addTokenPos(word.toLowerCase(),pos);
+                        addTokenPos(word.toLowerCase(), pos);
                         lowerTokensNoSeps.put(pos,word.toLowerCase());
                         pos +=1;
+
+                        offsets.put(i - word.length(),word);
+                        offsets.put(i,ch.toString());
 
                         //this.tokens.push(word);
                         //this.tokens.push(ch);
@@ -57,6 +61,9 @@ public class NGram {
                         //this.lowerTokens.push(word.toLowerCase());
                         //this.lowerTokens.push(ch.toLowerCase());
                         word = "";
+                    }
+                    else{
+                        offsets.put(i,ch.toString());
                     }
                 }
             }
@@ -106,5 +113,8 @@ public class NGram {
         return ngramCount;
     }
 
+    public Map<Integer,String> getOffsets(){
+        return offsets;
+    }
 
 }

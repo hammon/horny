@@ -33,7 +33,9 @@ public class ESIndexer {
     public static void main(String[] args){
         ESIndexer indexer = new ESIndexer();
 
-        indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULYCHEW"), new String[]{"txt"});
+        //indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULYCHEW"), new String[]{"txt"});
+
+        indexer.index(new File("c:\\eula.1028.txt"));
     }
 
     void indexDir(File dir,String[] extensions){
@@ -67,6 +69,8 @@ public class ESIndexer {
 
         NGram ngram = new NGram(text);
 
+        indexOffsets(ngram,file);
+
         //JSONObject bulk = new JSONObject();
 
         log.info("prepare es balk");
@@ -79,11 +83,7 @@ public class ESIndexer {
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
             bulkRequest.request().putHeader("charset", "UTF-8");
 
-
-            //final int finalN = n;
-
             int nCounter = 0;
-
             Iterator<Map.Entry<String,Integer>> itMapCount =  mapCount.entrySet().iterator();
             while (itMapCount.hasNext())
             //mapCount.forEach((k, v) ->
@@ -93,22 +93,18 @@ public class ESIndexer {
                 String k = kv.getKey();
                 Integer v = kv.getValue();
 
-
-//                    log.info("str: " + k + " count: " + v);
-
+//              log.info("str: " + k + " count: " + v);
                 try {
                     bulkRequest.add(esClient.prepareIndex("horny", "web" + n + "gram")
-                                    .setSource(jsonBuilder()
-                                                    .startObject()
-                                                    .field("str", k)
-                                                    .field("count", v)
-                                                    .field("date", new Date())
-                                                    .field("url", file.getAbsolutePath())
-                                                    .endObject()
-                                    )
+                        .setSource(jsonBuilder()
+                                        .startObject()
+                                        .field("str", k)
+                                        .field("count", v)
+                                        .field("date", new Date())
+                                        .field("url", file.getAbsolutePath())
+                                        .endObject()
+                        )
                     );
-
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -153,5 +149,77 @@ public class ESIndexer {
 
             log.info("finished " + n + "-gram balk");
         }
+    }
+
+    void indexOffsets(NGram ngram,File file){
+
+        BulkRequestBuilder bulkRequest = _es.getClient().prepareBulk();
+        bulkRequest.request().putHeader("charset", "UTF-8");
+
+        Map<Integer,String> offsets = ngram.getOffsets();
+
+        Iterator<Map.Entry<Integer,String>> itOffsets = offsets.entrySet().iterator();
+
+        int nCounter = 0;
+        while (itOffsets.hasNext()){
+            nCounter++;
+            Map.Entry<Integer,String> kv = itOffsets.next();
+
+            Integer k = kv.getKey();
+            String v = kv.getValue();
+
+            try {
+                bulkRequest.add(_es.getClient().prepareIndex("horny", "offsets")
+                    .setSource(jsonBuilder()
+                                    .startObject()
+                                    .field("offset", k)
+                                    .field("str", v)
+                                    .field("url", file.getAbsolutePath())
+                                    .field("date", new Date())
+                                    .endObject()
+                    )
+                );
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(nCounter % 1000 == 0){
+                log.info("send offsets balk counter:  " + nCounter);
+                BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+                if (bulkResponse.hasFailures()) {
+                    // process failures by iterating through each bulk response item
+                    Iterator<BulkItemResponse> it = bulkResponse.iterator();
+                    while (it.hasNext()){
+                        BulkItemResponse item = it.next();
+                        BulkItemResponse.Failure failure = item.getFailure();
+                        if(failure != null){
+                            log.error(failure.getMessage());
+                        }
+                    }
+                }
+                bulkRequest = _es.getClient().prepareBulk();
+                bulkRequest.request().putHeader("charset", "UTF-8");
+            }
+        }
+
+        log.info("send ngrams balk");
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if (bulkResponse.hasFailures()) {
+            // process failures by iterating through each bulk response item
+            Iterator<BulkItemResponse> it = bulkResponse.iterator();
+            while (it.hasNext()){
+                BulkItemResponse item = it.next();
+                BulkItemResponse.Failure failure = item.getFailure();
+                if(failure != null){
+                    log.error(failure.getMessage());
+                }
+            }
+        }
+
+        log.info("finished offsets balk");
     }
 }

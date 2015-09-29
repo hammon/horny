@@ -1,0 +1,10 @@
+{
+  "offsets": {
+    "properties": {
+      "offset": {"type": "long"},
+      "str": { "type": "string", "index" : "not_analyzed"},
+      "url": { "type": "string", "index" : "not_analyzed" },
+      "date": { "type": "date", "format": "dateOptionalTime" }
+    }
+  }
+}

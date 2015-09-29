@@ -55,10 +55,10 @@ Ext.define('Horny.FlowTreeAddMenu', {
                         http.get("/api/files?op=mkdir&path=" + path + "&name=" + text,function(res){
                             console.log(res);
                                 selectedNode.appendChild({
-                                    "text": text,
-                                  //  "type":"[object String]",
+                                    'text': text,
+                                    'type': 'directory',
                                   //  "value": "new string value",
-                                    "leaf":false,
+                                    'leaf':false,
                                    // "iconCls" : 'icon-jsonValue'
                                });
                         },
