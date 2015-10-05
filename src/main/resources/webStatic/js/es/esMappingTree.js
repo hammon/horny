@@ -241,8 +241,9 @@ Ext.define('Horny.EsMappingTree', {
                         }
 
                         var esTypesGrid = Ext.create('Horny.EsTypesGrid',{
-                            //region: 'center',
+                            region: 'center',
                             title : "Docs",
+                            collapsible: true,
                             //flex: 2,
                             store: typeGridStore,
                             columns: gridColumns
@@ -274,7 +275,7 @@ Ext.define('Horny.EsMappingTree', {
 
                         esCenter.add(esTypesGrid);
 
-                        esCenter.setActiveTab(esTypesGrid);
+                        //esCenter.setActiveTab(esTypesGrid);
 
                         esTypesGrid.update();
 

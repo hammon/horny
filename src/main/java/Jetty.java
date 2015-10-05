@@ -124,7 +124,7 @@ public class Jetty {
 
         apiContext.setAttribute("rootPath", _rootPath);
 
-        apiContext.setAttribute("es", new ESUtils());
+//        apiContext.setAttribute("es", new ESUtils());
         return apiContext;
     }
 

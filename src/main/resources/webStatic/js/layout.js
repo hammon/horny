@@ -154,8 +154,9 @@ Ext.onReady(function(){
                              flex: 3,
                              //width: 325,
                              items: [
-                                Ext.create('Horny.QueryView',{region:'north'}),
-                                 Ext.createWidget('tabpanel', {
+ //                               Ext.create('Horny.QueryView',{region:'north'}),
+ //                                Ext.createWidget('tabpanel', {
+                                     Ext.create('Horny.SplitView',{
                                             id: 'esCenterTabs',
                                             region: 'center',
                                             collapsible: false,

@@ -1,0 +1,45 @@
+
+
+.icon-add {
+    background-image: url(images/tree/drop-add.gif) !important;
+}
+
+.icon-jsonObject {
+    background-image: url(/images/object.gif) !important;
+}
+
+.icon-jsonArray {
+    background-image: url(/images/array.gif) !important;
+}
+
+.icon-jsonValue {
+    background-image: url(/images/green.gif) !important;
+}
+
+.icon-save {
+    background-image: url(/images/save.png) !important;
+}
+
+.icon-erase {
+    background-image: url(/images/erase.png) !important;
+}
+
+.icon-folder {
+    background-image: url(images/tree/folder.gif) !important;
+}
+
+.icon-file {
+    background-image: url(images/tree/leaf.gif) !important;
+}
+
+.icon-flow {
+    background-image: url(/images/flow.png) !important;
+}
+
+.icon-action {
+    background-image: url(/images/action.png) !important;
+}
+
+.icon-function {
+    background-image: url(/images/function.gif) !important;
+}

@@ -27,16 +27,7 @@ public class Horny {
         System.out.println("Default Charset=" + Charset.defaultCharset());
         //System.out.println("Default Charset in Use=" + getDefaultCharSet());
 
-        Properties p = new Properties();
-
-        try {
-            p.load(new FileInputStream("./conf/log4j.properties"));
-            PropertyConfigurator.configure(p);
-            log.info("Wow! I'm configured!");
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
+        configureLogger();
         HornyCmd cmd = new HornyCmd();
         new JCommander(cmd,args);
 
@@ -65,6 +56,19 @@ public class Horny {
             else{
                 jetty.start(cmd.port);
             }
+        }
+    }
+
+    public static void configureLogger() {
+        Properties p = new Properties();
+
+        try {
+            p.load(new FileInputStream("./conf/log4j.properties"));
+            PropertyConfigurator.configure(p);
+            log.info("Wow! I'm configured!");
+        } catch (IOException e) {
+            e.printStackTrace();
+
         }
     }
 }

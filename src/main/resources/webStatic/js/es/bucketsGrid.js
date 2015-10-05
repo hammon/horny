@@ -261,7 +261,7 @@ Ext.define('Horny.BucketsGrid', {
 
                 esBarChart = createEsBarChart();
                 esCenter.add(esBarChart);
-                esCenter.setActiveTab(esBarChart);
+//                esCenter.setActiveTab(esBarChart);
                 esBarChart.updateLayout();
             }
         });

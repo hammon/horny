@@ -10,13 +10,50 @@
             //alert("navigator.userAgent: " + navigator.userAgent);
 
         </script>
+
+
     </head>
 
     <body id=body style="background-color:white;"><h1></h1>
 
+    <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '835954473189876',
+      xfbml      : true,
+      version    : 'v2.4'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            console.log('Logged in.');
+          }
+          else {
+          console.log('Loggin.');
+            FB.login();
+          }
+        });
+</script>
+
         <input id=button1 type="button" value="Button" onclick=jKeys.init()>
 
         <!--<font id=res style="font-size:15pt;">Font</font>-->
+
+    <div
+            class="fb-like"
+            data-share="true"
+            data-width="450"
+            data-show-faces="true">
+    </div>
 
 
         <div align=center><table id=summary border=1 style="display:none;"/></div>

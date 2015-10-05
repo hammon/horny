@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <title>TextStats</title>
+
+    <script src="js/ext-all.js"></script>
+    <link href="css/ext-theme-classic-all.css" rel="stylesheet" />
+
+    <script src="js/common.js"></script>
+    <script src="js/splitView.js"></script>
+    <script src="js/layout.js"></script>
+
+    <script src="js/fbLikesGrid.js"></script>
+    <script src="js/fbFeedGrid.js"></script>
+
+    <script type="text/javascript">
+            console.log("navigator.userAgent: " + navigator.userAgent);
+    </script>
+</head>
+
+<body id="body">
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=835954473189876";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+</body>
+</html>

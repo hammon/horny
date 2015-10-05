@@ -19,6 +19,24 @@ var jKeys = {
     key: '?',
 
     init: function(){
+
+		console.log('init.');
+//    	FB.getLoginStatus(function(response) {
+//          if (response.status === 'connected') {
+//            console.log('Logged in.');
+//          }
+//          else {
+//          console.log('Loggin.');
+//            FB.login();
+//          }
+//        });
+
+        FB.api('/me', function(response) {
+              console.log('Successful login for: ' + JSON.stringify(response));
+//              document.getElementById('status').innerHTML =
+//                'Thanks for logging in, ' + response.name + '!';
+            });
+
         jKeys.key = jKeys.getRandomChar();
     	jKeys.keyCount = 0;
     	jKeys.totalResponseTime = 0;

@@ -1,6 +1,7 @@
 package text;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.PropertyConfigurator;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -12,12 +13,10 @@ import utils.ESUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -31,11 +30,27 @@ public class ESIndexer {
     ESUtils _es = new ESUtils("127.0.0.1");
 
     public static void main(String[] args){
+
+        configureLogger();
+
         ESIndexer indexer = new ESIndexer();
 
-        //indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULYCHEW"), new String[]{"txt"});
+        indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULGAKOW"), new String[]{"txt"});
 
-        indexer.index(new File("c:\\eula.1028.txt"));
+        //indexer.index(new File("c:\\eula.1028.txt"));
+    }
+
+    public static void configureLogger() {
+        Properties p = new Properties();
+
+        try {
+            p.load(new FileInputStream("./conf/log4j.properties"));
+            PropertyConfigurator.configure(p);
+            log.info("Wow! I'm configured!");
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
 
     void indexDir(File dir,String[] extensions){
@@ -77,7 +92,7 @@ public class ESIndexer {
         //ESUtils es = (ESUtils)getServletContext().getAttribute("es");
         Client esClient = _es.getClient();
 
-        for(int n = 1;n < 5;n++){
+        for(int n = 1;n < 6;n++){
             Map<String,Integer> mapCount =  ngram.getTokensCount(n);
 
             BulkRequestBuilder bulkRequest = esClient.prepareBulk();
@@ -113,7 +128,7 @@ public class ESIndexer {
                     e.printStackTrace();
                 }
 
-                if(nCounter % 1000 == 0){
+                if(nCounter % 5000 == 0){
                     log.info("send " + n + "grams balk counter:  " + nCounter);
                     BulkResponse bulkResponse = bulkRequest.execute().actionGet();
                     if (bulkResponse.hasFailures()) {
@@ -187,7 +202,7 @@ public class ESIndexer {
                 e.printStackTrace();
             }
 
-            if(nCounter % 1000 == 0){
+            if(nCounter % 5000 == 0){
                 log.info("send offsets balk counter:  " + nCounter);
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
                 if (bulkResponse.hasFailures()) {
