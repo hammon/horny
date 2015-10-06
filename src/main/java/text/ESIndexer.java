@@ -35,9 +35,9 @@ public class ESIndexer {
 
         ESIndexer indexer = new ESIndexer();
 
-        indexer.indexDir(new File("/home/michael/Documents/mashkovUtf8/BULGAKOW"), new String[]{"txt"});
+        //indexer.indexDir(new File("C:\\github\\horny\\src"), new String[]{"java","js"});
 
-        //indexer.index(new File("c:\\eula.1028.txt"));
+        indexer.index(new File("c:\\vasilisa.txt"));
     }
 
     public static void configureLogger() {

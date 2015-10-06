@@ -1,5 +1,9 @@
 package utils;
 
+import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,6 +23,35 @@ import java.util.logging.Logger;
 public class HttpUtils {
 
     private static final Logger log = Logger.getLogger(HttpUtils.class.getName());
+
+    public static void main(String[] args){
+        HttpUtils http = new HttpUtils();
+
+        String accessToken = "";
+
+        String txt = "";
+
+        String res = http.get("https://graph.facebook.com/v2.4/716169611845582?fields=feed.limit(100){id,message,name}&access_token=" + accessToken);
+
+        JSONObject obj = new JSONObject(res);
+
+        JSONArray arr = obj.getJSONObject("feed").getJSONArray("data");
+
+        for(int i = 0;i < arr.length();i++){
+            System.out.println("i: " + i);
+            txt += arr.getJSONObject(i).getString("message");
+            txt += "\n";
+        }
+
+        System.out.println("txt: " + txt);
+
+        try {
+            FileUtils.writeStringToFile(new java.io.File("c:\\vasilisa.txt"),txt,"UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 	public String get(String url){
 
