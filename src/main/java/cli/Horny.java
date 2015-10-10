@@ -1,7 +1,8 @@
+package cli;
+
 import com.beust.jcommander.JCommander;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.PropertyConfigurator;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class Horny {
         try {
             p.load(new FileInputStream("./conf/log4j.properties"));
             PropertyConfigurator.configure(p);
-            log.info("Wow! I'm configured!");
+            log.info("Logger configured!");
         } catch (IOException e) {
             e.printStackTrace();
 

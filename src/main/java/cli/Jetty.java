@@ -1,3 +1,5 @@
+package cli;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -87,7 +89,7 @@ public class Jetty {
             server.join();
         }
         catch(Exception e){
-            log.error("Jetty Oops...",e);
+            log.error("cli.Jetty Oops...",e);
         }
     }
 

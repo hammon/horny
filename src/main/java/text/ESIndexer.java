@@ -31,7 +31,7 @@ public class ESIndexer {
 
     public static void main(String[] args){
 
-        configureLogger();
+        cli.Horny.configureLogger();
 
         ESIndexer indexer = new ESIndexer();
 
