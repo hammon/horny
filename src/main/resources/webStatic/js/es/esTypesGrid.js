@@ -10,8 +10,6 @@ Ext.define('Horny.EsTypesGrid', {
     autoScroll: true,
     layout: 'fit',
 
-
-
     tbar: [
     {
         text: 'New',

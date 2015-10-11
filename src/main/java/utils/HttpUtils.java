@@ -50,7 +50,6 @@ public class HttpUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 	public String get(String url){

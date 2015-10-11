@@ -2,18 +2,18 @@
 
 
 Ext.define('Horny.PropertiesEditorGrid', {
-       extend: 'Ext.grid.Panel',
-       alias: 'widget.propertieseditorgrid',
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.propertieseditorgrid',
 
-       initComponent : function(){
-            console.log("Horny.PropertiesEditorGrid initComponent");
+    initComponent : function(){
+        //console.log("Horny.PropertiesEditorGrid initComponent");
 
-            this.store = Ext.create('Ext.data.JsonStore',{
-                                           fields:[{'name': 'name','type':'string'},{'name': 'value','type':'string'}]
-                                      });
+        this.store = Ext.create('Ext.data.JsonStore',{
+           fields:[{'name': 'name','type':'string'},{'name': 'value','type':'string'}]
+        });
 
-            this.callParent(arguments);
-       },
+        this.callParent(arguments);
+    },
 
        update : function(propsJson){
             var props = JSON.parse(propsJson);

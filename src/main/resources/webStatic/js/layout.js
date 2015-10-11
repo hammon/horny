@@ -166,17 +166,10 @@ Ext.onReady(function(){
                              ]
                           }),
                     ]
-                })
+                }),
 
+                Ext.create('Horny.EsQuery',{'id':'esQuery'})
 
-//                {
-//                    html: '<h2>Web</h2><p>Wellcome!</p>',
-//                    title: 'Web'
-//                }
-//                Ext.create('Ouroboros.JsonTree',{
-//                                                //    region:'center',
-//                                                //    minWidth: 100,
-//                                                })
                 ]
             })
         ]
