@@ -25,6 +25,7 @@ public class PropertiesSerlvet extends HttpServlet {
 
     protected void doGet(final HttpServletRequest req, final HttpServletResponse res) throws ServletException, IOException {
 
+        res.setCharacterEncoding("UTF-8");
 
         String op = req.getParameter("op");
         File root = new File(getServletContext().getAttribute("rootPath").toString());
@@ -34,15 +35,8 @@ public class PropertiesSerlvet extends HttpServlet {
             String path = req.getParameter("path");
 
 
-
-//            SshUtils ssh = new SshUtils();
-//
-//            ssh.connect(host,"ec2-user","C:\\Users\\michaela\\Downloads\\atlas-va.pem");
-//
-//            String result = ssh.exec("cat " + file);
-
             Properties props = new Properties();
-            props.load(new StringReader(FileUtils.readFileToString(new File(root,path))));
+            props.load(new StringReader(FileUtils.readFileToString(new File(root,path),"UTF-8")));
 
             JSONObject jsonObj = new JSONObject();
 

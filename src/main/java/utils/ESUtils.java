@@ -58,7 +58,7 @@ public class ESUtils {
 
     Client _client;
     Node _node = null;
-    String _clusterName = "horny";
+    String _clusterName = "horny1";
     String _hostname = "127.0.0.1";
     int _port = 9300;
 

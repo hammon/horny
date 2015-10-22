@@ -76,7 +76,7 @@ public class ESIndexer {
         try {
             text = FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Failed to read " + file.getAbsolutePath(),e);
         }
 
         //log.info("TEXT: " + text);

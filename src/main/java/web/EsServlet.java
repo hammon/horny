@@ -158,7 +158,7 @@ public class EsServlet extends HttpServlet {
                 obj.put("date",new Date());
                 obj.put("url",file.getAbsolutePath());
 
-                bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+                bulkRequest.add(esClient.prepareIndex("horny1", "web" + finalN + "gram")
                                 .setSource(obj.toString())
                 );
 
