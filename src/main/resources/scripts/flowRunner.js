@@ -6,8 +6,17 @@ var flowPath = System.getProperty("flowPath");
 
 runFlow(flowPath);
 
-function runFlow(path){
+function runFlow(path,props){
+
     var flow = horny.readFile(path);
+
+    if(props){
+        flow = runner.resolveVars(flow,props);
+    }
+    else{
+        props = new Properties();
+    }
+
     log('flow: ' + flow);
 
     flow = JSON.parse(flow);

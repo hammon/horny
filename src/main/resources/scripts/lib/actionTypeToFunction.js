@@ -5,10 +5,11 @@ var actionTypeToFunction = {
         //log(JSON.stringify(act));
 
         act['res'] = proc.exec(act.params.cmd);
-
-        //log(JSON.stringify(act));
+        log(JSON.stringify(act));
+        return act['res'];
     },
-    'html': function(act){
-        act['res'] = JSON.parse(proc.exec(act.params.url));
+    'html': function(act,outputVarName){
+        act['res'] = JSON.parse(html.getPageDetails(act.params.url));
+        return act['res'];
     }
 };

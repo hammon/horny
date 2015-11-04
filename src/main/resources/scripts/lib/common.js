@@ -5,6 +5,9 @@ var System = java.lang.System;
 var fileUtils = Packages.org.apache.commons.io.FileUtils;
 var base64 = Packages.org.apache.commons.codec.binary.Base64;
 
+var Runner = Java.type("cli.Runner");
+runner = new Runnable();
+
 
 function log(msg){
 //    print(msg + "\n");

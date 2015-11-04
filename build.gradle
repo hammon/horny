@@ -61,8 +61,8 @@ task buildJar(type: Jar) {
     }
 
     copy{
-        from 'src/main/resources/flow'
-        into 'build/libs/flow'
+        from 'src/main/resources/flows'
+        into 'build/libs/flows'
     }
 
 
