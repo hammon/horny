@@ -1,6 +1,172 @@
 
 
 var jsTypesHandlers = {
+    'BlockStatement' : function(treeNode,jsonNode){
+        if(jsonNode.body){
+            addJsTreeViewNode(treeNode,jsonNode.body);
+        }
+    },
+
+    'ExpressionStatement' : function(treeNode,jsonNode){
+        if(jsonNode.expression){
+            addJsTreeViewNode(treeNode,jsonNode.expression);
+        }
+    },
+    'FunctionDeclaration' : function(treeNode,jsonNode){
+        if(jsonNode.id && jsonNode.id.name){
+            var treeObj = {
+                "name" : jsonNode.id.name,
+                "type" : 'FunctionDeclaration',
+                "value" : '...',
+                "leaf" : false,
+                "iconCls" : 'icon-function',
+                "range" : jsonNode.range
+            };
+
+            if(jsonNode.params && jsonNode.params.length){
+                var args = "(";
+                for(var i = 0; i < jsonNode.params.length;i++){
+                    if(jsonNode.params[i].type === 'Identifier'){
+                        args += jsonNode.params[i].name + ",";
+                    }
+                    else if(jsonNode.params[i].type === 'Literal'){
+                        args += jsonNode.params[i].value + ",";
+                    }
+                }
+                args = args.substr(0,args.length - 1) + ")";
+                treeObj.name += args;
+            }
+
+            var childTreeNode = treeNode.appendChild(treeObj);
+            addJsTreeViewNode(childTreeNode,jsonNode.body);
+        }
+    },
+    'FunctionExpression' : function(treeNode,jsonNode){
+        var funcName = 'function';
+        if(jsonNode.id && jsonNode.id.name){
+            funcName = jsonNode.id.name;
+        }
+
+        var treeObj = {
+            "name" : funcName,
+            "type" : 'FunctionDeclaration',
+            "value" : '...',
+            "leaf" : false,
+            "iconCls" : 'icon-function',
+            "range" : jsonNode.range
+        };
+        var childTreeNode = treeNode.appendChild(treeObj);
+        addJsTreeViewNode(childTreeNode,jsonNode.body);
+    },
+
+    'Program' : function(treeNode,jsonNode){
+        addJsTreeViewNode(treeNode,jsonNode.body);
+    },
+    'Property' : function(treeNode,jsonNode){
+        if(!jsonNode.key){
+            return;
+        }
+
+        var treeObj = {
+            "name" : jsonNode.key.value,
+            "type" : jsonNode.key.type,
+            "value" : '...',
+            "leaf" : false,
+            "iconCls" : 'icon-jsonValue',
+            "range" : jsonNode.range
+        };
+
+        var childTreeNode = treeNode.appendChild(treeObj);
+        if(jsonNode.value){
+            addJsTreeViewNode(childTreeNode,jsonNode.value);
+        }
+    },
+
+//    'Identifier' : function(treeNode,jsonNode){
+//        addJsTreeViewNode(treeNode,jsonNode);
+//    },
+
+//    'Literal' : function(treeNode,jsonNode){
+//        addJsTreeViewNode(treeNode,jsonNode);
+//    },
+
+    'VariableDeclarator' : function(treeNode,jsonNode){
+        addJsTreeViewNode(treeNode,jsonNode);
+    },
+
+    'CallExpression' : function(treeNode,jsonNode){
+
+        var name = "";
+
+        if(jsonNode.callee){
+
+            if(jsonNode.callee.name){
+                name = jsonNode.callee.name;
+            }
+            else if(jsonNode.callee.object){
+                name = jsonNode.callee.object.name;
+
+                if(jsonNode.callee.property){
+                    name += "." + jsonNode.callee.property.name;
+                }
+            }
+
+            var treeObj = {
+                "name" : name,
+                "type" : 'CallExpression',
+                "value" : '...',
+                "leaf" : false,
+                "iconCls" : 'icon-action',
+                "range" : jsonNode.range
+            };
+
+
+            if(jsonNode.arguments && jsonNode.arguments.length){
+                var args = "(";
+                for(var i = 0; i < jsonNode.arguments.length;i++){
+                    if(jsonNode.arguments[i].type === 'Identifier'){
+                        args += jsonNode.arguments[i].name + ",";
+                    }
+                    else if(jsonNode.arguments[i].type === 'Literal'){
+                        args += jsonNode.arguments[i].value + ",";
+                    }
+
+                }
+                args = args.substr(0,args.length - 1) + ")";
+                treeObj.name += args;
+            }
+
+            var childTreeNode = treeNode.appendChild(treeObj);
+            //addJsTreeViewNode(childTreeNode,jsonNode.callee);
+        }
+    },
+
+//    'MemberExpression' : function(treeNode,jsonNode){
+//        addJsTreeViewNode(treeNode,jsonNode);
+//    },
+
+    'VariableDeclaration' : function(treeNode,jsonNode){
+        var decls = jsonNode.declarations;
+        for(var i = 0; i < decls.length;i++){
+            var decl = decls[i];
+            if(decl.type === 'VariableDeclarator'){
+                var treeObj = {
+                    "name" : decl.id.name,
+                    "type" : 'VariableDeclaration',
+                    "value" : '...',
+                    "leaf" : false,
+                    "iconCls" : 'icon-jsonValue',
+                    "range" : jsonNode.range
+                };
+
+                var childTreeNode = treeNode.appendChild(treeObj);
+
+                if(decl.init){
+                    addJsTreeViewNode(childTreeNode,decl.init);
+                }
+            }
+        }
+    }
 //    'AssignmentExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
@@ -16,20 +182,14 @@ var jsTypesHandlers = {
 //    'ArrowFunctionExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-    'BlockStatement' : function(treeNode,jsonNode){
-        if(jsonNode.body){
-            addJsTreeViewNode(treeNode,jsonNode.body);
-        }
-    },
+
 //    'BinaryExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
 //    'BreakStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-//    'CallExpression' : function(treeNode,jsonNode){
-//        addJsTreeViewNode(treeNode,jsonNode);
-//    },
+
 //    'CatchClause' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
@@ -57,99 +217,46 @@ var jsTypesHandlers = {
 //    'EmptyStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-    'ExpressionStatement' : function(treeNode,jsonNode){
-        if(jsonNode.expression){
-            addJsTreeViewNode(treeNode,jsonNode.expression);
-        }
-    },
+
 //    'ForStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
 //    'ForInStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-    'FunctionDeclaration' : function(treeNode,jsonNode){
-        if(jsonNode.id && jsonNode.id.name){
-            var treeObj = {
-                "name" : jsonNode.id.name,
-                "type" : 'FunctionDeclaration',
-                "value" : '...',
-                "leaf" : false,
-                "iconCls" : 'icon-function'
-            };
-            var childTreeNode = treeNode.appendChild(treeObj);
-            addJsTreeViewNode(childTreeNode,jsonNode.body);
-        }
-    },
-    'FunctionExpression' : function(treeNode,jsonNode){
-        var funcName = 'function';
-        if(jsonNode.id && jsonNode.id.name){
-            funcName = jsonNode.id.name;
-        }
 
-        var treeObj = {
-            "name" : funcName,
-            "type" : 'FunctionDeclaration',
-            "value" : '...',
-            "leaf" : false,
-            "iconCls" : 'icon-function'
-        };
-        var childTreeNode = treeNode.appendChild(treeObj);
-        addJsTreeViewNode(childTreeNode,jsonNode.body);
-    },
-//    'Identifier' : function(treeNode,jsonNode){
-//        addJsTreeViewNode(treeNode,jsonNode);
-//    },
+
 //    'IfStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-//    'Literal' : function(treeNode,jsonNode){
-//        addJsTreeViewNode(treeNode,jsonNode);
-//    },
+
 //    'LabeledStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
 //    'LogicalExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-//    'MemberExpression' : function(treeNode,jsonNode){
-//        addJsTreeViewNode(treeNode,jsonNode);
-//    },
+
 //    'MethodDefinition' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
 //    'NewExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-    'ObjectExpression' : function(treeNode,jsonNode){
-        if(jsonNode.properties){
-            addJsTreeViewNode(treeNode,jsonNode.properties);
-        }
-    },
+
+
+//    'ObjectExpression' : function(treeNode,jsonNode){
+//        if(jsonNode.properties){
+//            addJsTreeViewNode(treeNode,jsonNode.properties);
+//        }
+//    },
+
+
+
 //    'ObjectPattern' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //     },
-    'Program' : function(treeNode,jsonNode){
-        addJsTreeViewNode(treeNode,jsonNode.body);
-    },
-    'Property' : function(treeNode,jsonNode){
-        if(!jsonNode.key){
-            return;
-        }
 
-        var treeObj = {
-            "name" : jsonNode.key.value,
-            "type" : jsonNode.key.type,
-            "value" : '...',
-            "leaf" : false,
-            "iconCls" : 'icon-jsonValue'
-        };
-
-        var childTreeNode = treeNode.appendChild(treeObj);
-        if(jsonNode.value){
-            addJsTreeViewNode(childTreeNode,jsonNode.value);
-        }
-    },
 //    'RestElement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
@@ -183,30 +290,8 @@ var jsTypesHandlers = {
 //    'UpdateExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
-    'VariableDeclaration' : function(treeNode,jsonNode){
-        var decls = jsonNode.declarations;
-        for(var i = 0; i < decls.length;i++){
-            var decl = decls[i];
-            if(decl.type === 'VariableDeclarator'){
-                var treeObj = {
-                            "name" : decl.id.name,
-                            "type" : 'VariableDeclaration',
-                            "value" : '...',
-                            "leaf" : false,
-                            "iconCls" : 'icon-jsonValue'
-                };
 
-                var childTreeNode = treeNode.appendChild(treeObj);
 
-                if(decl.init){
-                    addJsTreeViewNode(childTreeNode,decl.init);
-                }
-            }
-        }
-    }
-//    'VariableDeclarator' : function(treeNode,jsonNode){
-//        addJsTreeViewNode(treeNode,jsonNode);
-//    },
 //    'WhileStatement' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
@@ -217,6 +302,8 @@ var jsTypesHandlers = {
 
 function addJsTreeViewNode(treeNode,jsonNode){
 
+    console.log("addJsTreeViewNode" + JSON.stringify(jsonNode));
+
     var nodeType = Object.prototype.toString.call(jsonNode);
 
     if(nodeType === "[object Object]"){
@@ -225,19 +312,30 @@ function addJsTreeViewNode(treeNode,jsonNode){
             jsTypesHandlers[jsonNode.type](treeNode,jsonNode);
         }
         else{
+           // return;
             for(var m in jsonNode){
 
                 if(!jsonNode.hasOwnProperty(m)){
                     continue;
                 }
 
+
+
                 var t = Object.prototype.toString.call(jsonNode[m]);
+
+                console.log("obj props name: " + m + " val: " + jsonNode[m]);
+
+                if(!jsTypesHandlers[jsonNode.type]){
+                    continue;
+                }
+
                 var treeObj = {
                     "name" : m,
                     "type" : t,
                     "value" : jsonNode[m],
-                    "leaf" : true,
-                    "iconCls" : 'icon-jsonValue'
+                    "leaf" : false,
+                    "iconCls" : 'icon-jsonValue',
+                    "range" : jsonNode.range
                 };
 
                 if(t === "[object Object]"){
@@ -319,25 +417,25 @@ function addJsProgramToTree(treeNode,jsonNode){
 
 }
 
-function addJsFunctionDeclarationToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'FunctionDeclaration'){
-        return;
-    }
-
-    if(jsonNode.id && jsonNode.id.name){
-        var treeObj = {
-            "name" : jsonNode.id.name,
-            "type" : 'FunctionDeclaration',
-            "value" : '...',
-            "leaf" : true,
-            "iconCls" : 'icon-function'
-        };
-        var childTreeNode = treeNode.appendChild(treeObj);
-
-        addJsTreeViewNode(childTreeNode,jsonNode.body);
-    }
-}
+//function addJsFunctionDeclarationToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'FunctionDeclaration'){
+//        return;
+//    }
+//
+//    if(jsonNode.id && jsonNode.id.name){
+//        var treeObj = {
+//            "name" : jsonNode.id.name,
+//            "type" : 'FunctionDeclaration',
+//            "value" : '...',
+//            "leaf" : true,
+//            "iconCls" : 'icon-function'
+//        };
+//        var childTreeNode = treeNode.appendChild(treeObj);
+//
+//        addJsTreeViewNode(childTreeNode,jsonNode.body);
+//    }
+//}
 
 function addJsFunctionExpressionToTree(treeNode,jsonNode){
     if(!jsonNode.type
@@ -779,6 +877,11 @@ Ext.define('Horny.JsTreeView', {
 //        },
         //itemclick: function( that, record, item, index, e, eOpts) {
         select : function( that, record, index, eOpts ){
+
+
+            console.log("on select " + record.data.name + " range: " + JSON.stringify(record.raw.range));
+
+            console.log(record.data.name + " js src: " + this.jsSrc.substring(record.raw.range[0],record.raw.range[1]));
 
 //            var path = "task.json";//record.getPath('text','/').replace('/Root/','');
 //

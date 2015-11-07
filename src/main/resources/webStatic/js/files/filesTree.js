@@ -467,8 +467,9 @@ Ext.define('Horny.FilesTree', {
                             http.get('/api/text?path=' + path,function(res){
 
                                 console.log('js: ' + res);
+                                jsTreeView.jsSrc = res;
                                 var ast = esprima.parse(res.replace('"','\"'), {range: true, loc: true});
-                                console.log(JSON.stringify(ast));
+                                console.log("esprima ast: " + JSON.stringify(ast));
                                 jsTreeView.filePath = path;
                                 jsTreeView.update(ast);
                                 jsTreeView.tab.show();
