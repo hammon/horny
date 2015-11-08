@@ -6,7 +6,7 @@ var fileUtils = Packages.org.apache.commons.io.FileUtils;
 var base64 = Packages.org.apache.commons.codec.binary.Base64;
 
 var Runner = Java.type("cli.Runner");
-runner = new Runnable();
+//runner = new Runnable();
 
 
 function log(msg){

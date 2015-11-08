@@ -413,11 +413,13 @@ Ext.define('Horny.FilesTree', {
                 var propsView = Ext.getCmp('propsView');
                 var jsonView = Ext.getCmp('jsonView');
 
+                var jsTab = Ext.getCmp('jsTab');
                 var jsTreeView = Ext.getCmp('jsTreeView');
+                var jsSrc = Ext.getCmp('jsSrc');
 
                 propsView.tab.hide();
                 jsonView.tab.hide();
-                jsTreeView.tab.hide();
+                jsTab.tab.hide();
 
 
                 http.get("/api/text?escapeHtml=true&path=" + path,function(res){
@@ -468,11 +470,12 @@ Ext.define('Horny.FilesTree', {
 
                                 console.log('js: ' + res);
                                 jsTreeView.jsSrc = res;
+                                jsSrc.update("<pre>" + res + "</pre>");
                                 var ast = esprima.parse(res.replace('"','\"'), {range: true, loc: true});
                                 console.log("esprima ast: " + JSON.stringify(ast));
                                 jsTreeView.filePath = path;
                                 jsTreeView.update(ast);
-                                jsTreeView.tab.show();
+                                jsTab.tab.show();
                                 jsTreeView.show();
                             });
                         }

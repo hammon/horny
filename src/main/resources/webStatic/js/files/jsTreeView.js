@@ -68,9 +68,9 @@ var jsTypesHandlers = {
         }
 
         var treeObj = {
-            "name" : jsonNode.key.value,
+            "name" : jsonNode.key.value || jsonNode.key.name,
             "type" : jsonNode.key.type,
-            "value" : '...',
+            "value" : jsonNode.value.value || '...',
             "leaf" : false,
             "iconCls" : 'icon-jsonValue',
             "range" : jsonNode.range
@@ -120,7 +120,7 @@ var jsTypesHandlers = {
                 "range" : jsonNode.range
             };
 
-
+            var complexArgs = [];
             if(jsonNode.arguments && jsonNode.arguments.length){
                 var args = "(";
                 for(var i = 0; i < jsonNode.arguments.length;i++){
@@ -130,13 +130,20 @@ var jsTypesHandlers = {
                     else if(jsonNode.arguments[i].type === 'Literal'){
                         args += jsonNode.arguments[i].value + ",";
                     }
-
+                    else if(jsonNode.arguments[i].type === 'ObjectExpression'){
+                        args += "...,";
+                        complexArgs.push(jsonNode.arguments[i]);
+                        //addJsTreeViewNode(treeObj,jsonNode.arguments[i]);
+                    }
                 }
                 args = args.substr(0,args.length - 1) + ")";
                 treeObj.name += args;
             }
 
             var childTreeNode = treeNode.appendChild(treeObj);
+            for(var i = 0; i < complexArgs.length;i++){
+                addJsTreeViewNode(childTreeNode,complexArgs[i]);
+            }
             //addJsTreeViewNode(childTreeNode,jsonNode.callee);
         }
     },
@@ -144,6 +151,12 @@ var jsTypesHandlers = {
 //    'MemberExpression' : function(treeNode,jsonNode){
 //        addJsTreeViewNode(treeNode,jsonNode);
 //    },
+
+    'ObjectExpression' : function(treeNode,jsonNode){
+        if(jsonNode.properties){
+            addJsTreeViewNode(treeNode,jsonNode.properties);
+        }
+    },
 
     'VariableDeclaration' : function(treeNode,jsonNode){
         var decls = jsonNode.declarations;
@@ -245,11 +258,7 @@ var jsTypesHandlers = {
 //    },
 
 
-//    'ObjectExpression' : function(treeNode,jsonNode){
-//        if(jsonNode.properties){
-//            addJsTreeViewNode(treeNode,jsonNode.properties);
-//        }
-//    },
+
 
 
 
@@ -302,7 +311,7 @@ var jsTypesHandlers = {
 
 function addJsTreeViewNode(treeNode,jsonNode){
 
-    console.log("addJsTreeViewNode" + JSON.stringify(jsonNode));
+    console.log("addJsTreeViewNode type: " + jsonNode.type + " json: " + JSON.stringify(jsonNode));
 
     var nodeType = Object.prototype.toString.call(jsonNode);
 
@@ -407,15 +416,15 @@ function castJsTreeValue(treeNode){
 }
 
 
-function addJsProgramToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'Program'){
-        return;
-    }
-
-    addJsTreeViewNode(treeNode,jsonNode.body);
-
-}
+//function addJsProgramToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'Program'){
+//        return;
+//    }
+//
+//    addJsTreeViewNode(treeNode,jsonNode.body);
+//
+//}
 
 //function addJsFunctionDeclarationToTree(treeNode,jsonNode){
 //    if(!jsonNode.type
@@ -437,111 +446,111 @@ function addJsProgramToTree(treeNode,jsonNode){
 //    }
 //}
 
-function addJsFunctionExpressionToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'FunctionExpression'){
-        return;
-    }
-
-    var funcName = 'function';
-    if(jsonNode.id && jsonNode.id.name){
-        funcName = jsonNode.id.name;
-    }
-
-    var treeObj = {
-        "name" : funcName,
-        "type" : 'FunctionDeclaration',
-        "value" : '...',
-        "leaf" : true,
-        "iconCls" : 'icon-function'
-    };
-    var childTreeNode = treeNode.appendChild(treeObj);
-    addJsTreeViewNode(childTreeNode,jsonNode.body);
-}
-
-function addJsVariableToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'VariableDeclaration'){
-        return;
-    }
-
-    var varNames = "";
-
-    var decls = jsonNode.declarations;
-    for(var i = 0; i < decls.length;i++){
-        var decl = decls[i];
-        if(decl.type === 'VariableDeclarator'){
-            //varNames += decl.id.name + ',';
-            var treeObj = {
-                        "name" : decl.id.name,
-                        "type" : 'VariableDeclaration',
-                        "value" : '...',
-                        "leaf" : false,
-                        "iconCls" : 'icon-jsonValue'
-            };
-
-            var childTreeNode = treeNode.appendChild(treeObj);
-
-            if(decl.init){
-                addJsTreeViewNode(childTreeNode,decl.init);
-            }
-        }
-    }
-
-//    var varNames = varNames.substring(0,varNames.length - 1);
-
-    if(varNames){
-
-
- //       addJsTreeViewNode(childTreeNode,jsonNode);
-    }
-}
-
-function addJsObjectExpressionToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'ObjectExpression'){
-        return;
-    }
-
-    if(!jsonNode.properties){
-        return;
-    }
-
-    addJsTreeViewNode(treeNode,jsonNode.properties);
-//    jsonNode.properties.forEach(function(prop){
+//function addJsFunctionExpressionToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'FunctionExpression'){
+//        return;
+//    }
 //
-//    });
-}
-
-function addJsPropertyToTree(treeNode,jsonNode){
-    if(!jsonNode.type
-        || jsonNode.type !== 'Property'){
-        return;
-    }
-
-    if(!jsonNode.key){
-        return;
-    }
-
-    var treeObj = {
-        "name" : jsonNode.key.value,
-        "type" : jsonNode.key.type,
-        "value" : '...',
-        "leaf" : false,
-        "iconCls" : 'icon-jsonValue'
-    };
-
-    var childTreeNode = treeNode.appendChild(treeObj);
-
-    if(jsonNode.value){
-        addJsTreeViewNode(childTreeNode,jsonNode.value);
-    }
-
-
-//    jsonNode.properties.forEach(function(prop){
+//    var funcName = 'function';
+//    if(jsonNode.id && jsonNode.id.name){
+//        funcName = jsonNode.id.name;
+//    }
 //
-//    });
-}
+//    var treeObj = {
+//        "name" : funcName,
+//        "type" : 'FunctionDeclaration',
+//        "value" : '...',
+//        "leaf" : true,
+//        "iconCls" : 'icon-function'
+//    };
+//    var childTreeNode = treeNode.appendChild(treeObj);
+//    addJsTreeViewNode(childTreeNode,jsonNode.body);
+//}
+
+//function addJsVariableToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'VariableDeclaration'){
+//        return;
+//    }
+//
+//    var varNames = "";
+//
+//    var decls = jsonNode.declarations;
+//    for(var i = 0; i < decls.length;i++){
+//        var decl = decls[i];
+//        if(decl.type === 'VariableDeclarator'){
+//            //varNames += decl.id.name + ',';
+//            var treeObj = {
+//                        "name" : decl.id.name,
+//                        "type" : 'VariableDeclaration',
+//                        "value" : '...',
+//                        "leaf" : false,
+//                        "iconCls" : 'icon-jsonValue'
+//            };
+//
+//            var childTreeNode = treeNode.appendChild(treeObj);
+//
+//            if(decl.init){
+//                addJsTreeViewNode(childTreeNode,decl.init);
+//            }
+//        }
+//    }
+//
+////    var varNames = varNames.substring(0,varNames.length - 1);
+//
+//    if(varNames){
+//
+//
+// //       addJsTreeViewNode(childTreeNode,jsonNode);
+//    }
+//}
+
+//function addJsObjectExpressionToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'ObjectExpression'){
+//        return;
+//    }
+//
+//    if(!jsonNode.properties){
+//        return;
+//    }
+//
+//    addJsTreeViewNode(treeNode,jsonNode.properties);
+////    jsonNode.properties.forEach(function(prop){
+////
+////    });
+//}
+
+//function addJsPropertyToTree(treeNode,jsonNode){
+//    if(!jsonNode.type
+//        || jsonNode.type !== 'Property'){
+//        return;
+//    }
+//
+//    if(!jsonNode.key){
+//        return;
+//    }
+//
+//    var treeObj = {
+//        "name" : jsonNode.key.value,
+//        "type" : jsonNode.key.type,
+//        "value" : '...',
+//        "leaf" : false,
+//        "iconCls" : 'icon-jsonValue'
+//    };
+//
+//    var childTreeNode = treeNode.appendChild(treeObj);
+//
+//    if(jsonNode.value){
+//        addJsTreeViewNode(childTreeNode,jsonNode.value);
+//    }
+//
+//
+////    jsonNode.properties.forEach(function(prop){
+////
+////    });
+//}
 
 Ext.define('Horny.JsTreeViewAddMenu', {
     extend: 'Ext.menu.Menu',
@@ -883,6 +892,9 @@ Ext.define('Horny.JsTreeView', {
 
             console.log(record.data.name + " js src: " + this.jsSrc.substring(record.raw.range[0],record.raw.range[1]));
 
+            var jsSrc = Ext.getCmp('jsSrc');
+
+            jsSrc.update("<pre>" + this.jsSrc.substring(record.raw.range[0],record.raw.range[1]) + "</pre>");
 //            var path = "task.json";//record.getPath('text','/').replace('/Root/','');
 //
 //            if(record.data.leaf === false){

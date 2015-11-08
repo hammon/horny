@@ -84,10 +84,25 @@ Ext.onReady(function(){
                                         //    region:'center',
                                         //    minWidth: 100,
                                         }),
-                                        Ext.create('Horny.JsTreeView',{
-                                            id: 'jsTreeView'
-                                        //    region:'center',
-                                        //    minWidth: 100,
+
+                                        Ext.create('Horny.SplitView',{
+                                            id: 'jsTab',
+                                            region:'center',
+                                            title: 'Javascript',
+                                            items: [
+                                                Ext.create('Horny.JsTreeView',{
+                                                    id: 'jsTreeView',
+                                                    region:'center',
+                                                    flex: 1,
+                                                //    minWidth: 100,
+                                                }),
+                                                Ext.create('Horny.TextView',{
+                                                    region:'east',
+                                                    id:'jsSrc',
+                                                    flex: 2
+                                                //    title: 'Text',
+                                                })
+                                            ]
                                         }),
                                         Ext.create('Horny.PropertiesEditorGrid',{
                                             id:'propsView',

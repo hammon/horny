@@ -330,56 +330,56 @@ public class ESUtils {
                 .actionGet().getId();
     }
 
-    public static void testEncoding(String testString) {
-
-        //String testString = "формат";
-        HttpUtils http = new HttpUtils();
-
-        Map<String,Charset> charsetsMap =  Charset.availableCharsets();
-
-        Iterator<String> it =  charsetsMap.keySet().iterator();
-
-        while(it.hasNext()){
-            String fromCharset = it.next();
-
-            Charset.availableCharsets().forEach((charsetName, toCharset) -> {
-                //log.info("charsetName: " + charsetName + " charset: " + toCharset.displayName());
-
-                String encodedString = "";
-                try{
-                    encodedString = new String(testString.getBytes(fromCharset),toCharset);
-                }
-                catch(Exception e){
-                    System.out.println("Error getBytes for charset: " + charsetName + " " + e.toString());
-                    //log.error("Error getBytes for charset: " + charsetName,e);
-                }
-
-                if(encodedString.equalsIgnoreCase(testString)){
-                    System.out.println("encodedString: " + encodedString + " fromCharset: " + fromCharset + " toCharset: " + toCharset);
-
-                    JSONObject obj = new JSONObject();
-
-                    obj.put("fromCharset",fromCharset);
-                    obj.put("toCharset", charsetName);
-                    obj.put("encodedString",encodedString);
-
-                    Map<String,String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application/json");
-                    headers.put("Accept", "application/json");
-
-                    String result = http.post("http://127.0.0.1:9200/horny/encodingTest",headers,obj.toString());
-
-                    System.out.println("result: " + result);
-                }
-
-
-
-                //log.info(result);
-
-            });
-        }
-
-    }
+//    public static void testEncoding(String testString) {
+//
+//        //String testString = "формат";
+//        HttpUtils http = new HttpUtils();
+//
+//        Map<String,Charset> charsetsMap =  Charset.availableCharsets();
+//
+//        Iterator<String> it =  charsetsMap.keySet().iterator();
+//
+//        while(it.hasNext()){
+//            String fromCharset = it.next();
+//
+//            Charset.availableCharsets().forEach((charsetName, toCharset) -> {
+//                //log.info("charsetName: " + charsetName + " charset: " + toCharset.displayName());
+//
+//                String encodedString = "";
+//                try{
+//                    encodedString = new String(testString.getBytes(fromCharset),toCharset);
+//                }
+//                catch(Exception e){
+//                    System.out.println("Error getBytes for charset: " + charsetName + " " + e.toString());
+//                    //log.error("Error getBytes for charset: " + charsetName,e);
+//                }
+//
+//                if(encodedString.equalsIgnoreCase(testString)){
+//                    System.out.println("encodedString: " + encodedString + " fromCharset: " + fromCharset + " toCharset: " + toCharset);
+//
+//                    JSONObject obj = new JSONObject();
+//
+//                    obj.put("fromCharset",fromCharset);
+//                    obj.put("toCharset", charsetName);
+//                    obj.put("encodedString",encodedString);
+//
+//                    Map<String,String> headers = new HashMap<>();
+//                    headers.put("Content-Type", "application/json");
+//                    headers.put("Accept", "application/json");
+//
+//                    String result = http.post("http://127.0.0.1:9200/horny/encodingTest",headers,obj.toString());
+//
+//                    System.out.println("result: " + result);
+//                }
+//
+//
+//
+//                //log.info(result);
+//
+//            });
+//        }
+//
+//    }
 
 //    // convert from UTF-8 -> internal Java String format
 //    public static String convertFromUTF8(String s) {

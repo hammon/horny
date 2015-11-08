@@ -1,12 +1,13 @@
 horny.load('scripts/lib/common.js');
 horny.load('scripts/lib/esprima.js');
 
-var jsFile = "/home/michael/dev/horny/src/main/resources/scripts/lib/common.js";
+//scripts/lib/actionTypeToFunction.js
+var jsFile = "C:/github/horny/src/main/resources/scripts/lib/actionTypeToFunction.js";
 
 
 var ast = esprima.parse(horny.readFile(jsFile), {range: true, loc: true});
 
-log(JSON.stringify(ast));
+//log(JSON.stringify(ast));
 
 var filter = {
     'type' : 'FunctionDeclaration'
@@ -17,7 +18,7 @@ var countMap = {};
 var result = [];
 
 
-//printJsonTree(ast);
+printJsonTree(ast);
 
 print('result: ' + JSON.stringify(result));
 
@@ -33,7 +34,7 @@ function printJsonTree(jsonNode){
         printJsonArr(jsonNode);
     }
     else{
-        print(jsonNode);
+        //print(jsonNode);
     }
 }
 
@@ -49,7 +50,7 @@ function printJsonObj(obj){
 
     for(var m in obj){
         if(obj.hasOwnProperty(m)){
-            print(m + ' - ' + getType(obj[m]));
+            //print(m + ' - ' + getType(obj[m]));
             //print('obj[m]' + ' - ' + getType(obj[m]));
             count(obj[m]);
             printJsonTree(obj[m]);

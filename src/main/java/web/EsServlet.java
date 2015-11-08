@@ -143,52 +143,52 @@ public class EsServlet extends HttpServlet {
         ESUtils es = (ESUtils)getServletContext().getAttribute("es");
         Client esClient = es.getClient();
 
-        for(int n = 1;n < 6;n++){
-            Map<String,Integer> nCount =  ngram.getTokensCount(n);
-            BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-
-            final int finalN = n;
-            nCount.forEach((k,v) ->{
-
-                log.info("str: " + k + " count: " + v);
-
-                JSONObject obj = new JSONObject();
-                obj.put("str",k);
-                obj.put("count",v);
-                obj.put("date",new Date());
-                obj.put("url",file.getAbsolutePath());
-
-                bulkRequest.add(esClient.prepareIndex("horny1", "web" + finalN + "gram")
-                                .setSource(obj.toString())
-                );
-
-//                    bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
-//                                    .setSource(jsonBuilder()
-//                                                    .startObject()
-//                                                    .field("str", k)
-//                                                    .field("count", v)
-//                                                    .field("date", new Date())
-//                                                    .field("url", file.getAbsolutePath())
-//                                                    .endObject()
-//                                    )
-//                    );
-            });
-
-            log.info("send ngrams balk");
-            BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-            if (bulkResponse.hasFailures()) {
-                // process failures by iterating through each bulk response item
-                Iterator<BulkItemResponse> it = bulkResponse.iterator();
-                while (it.hasNext()){
-                    BulkItemResponse item = it.next();
-                    BulkItemResponse.Failure failure = item.getFailure();
-                    if(failure != null){
-                        log.error(failure.getMessage());
-                    }
-                }
-            }
-            log.info("finished " + n + "-gram balk");
-        }
+//        for(int n = 1;n < 6;n++){
+//            Map<String,Integer> nCount =  ngram.getTokensCount(n);
+//            BulkRequestBuilder bulkRequest = esClient.prepareBulk();
+//
+//            final int finalN = n;
+//            nCount.forEach((k,v) ->{
+//
+//                log.info("str: " + k + " count: " + v);
+//
+//                JSONObject obj = new JSONObject();
+//                obj.put("str",k);
+//                obj.put("count",v);
+//                obj.put("date",new Date());
+//                obj.put("url",file.getAbsolutePath());
+//
+//                bulkRequest.add(esClient.prepareIndex("horny", "web" + finalN + "gram")
+//                                .setSource(obj.toString())
+//                );
+//
+////                    bulkRequest.add(esClient.prepareIndex("horny","web" + finalN + "gram")
+////                                    .setSource(jsonBuilder()
+////                                                    .startObject()
+////                                                    .field("str", k)
+////                                                    .field("count", v)
+////                                                    .field("date", new Date())
+////                                                    .field("url", file.getAbsolutePath())
+////                                                    .endObject()
+////                                    )
+////                    );
+//            });
+//
+//            log.info("send ngrams balk");
+//            BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+//            if (bulkResponse.hasFailures()) {
+//                // process failures by iterating through each bulk response item
+//                Iterator<BulkItemResponse> it = bulkResponse.iterator();
+//                while (it.hasNext()){
+//                    BulkItemResponse item = it.next();
+//                    BulkItemResponse.Failure failure = item.getFailure();
+//                    if(failure != null){
+//                        log.error(failure.getMessage());
+//                    }
+//                }
+//            }
+//            log.info("finished " + n + "-gram balk");
+//        }
     }
 
     void update(HttpServletRequest request, HttpServletResponse response){
