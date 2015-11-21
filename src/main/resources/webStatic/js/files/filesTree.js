@@ -470,7 +470,26 @@ Ext.define('Horny.FilesTree', {
 
                                 console.log('js: ' + res);
                                 jsTreeView.jsSrc = res;
-                                jsSrc.update("<pre>" + res + "</pre>");
+                                //jsSrc.update("<pre>" + res + "</pre>");
+
+                                jsSrc.update("<textarea id='jscode'>" + res + "</textarea>");
+
+//                                CodeMirror.fromTextArea(document.getElementById("jscode"), {
+//                                    lineNumbers: true,
+//                                    extraKeys: {"Ctrl-Space": "autocomplete"},
+//                                    mode: {name: "javascript", globalVars: true}
+//                                });
+//                                var textarea = document.getElementById('jscode');
+//                                var editor = new MirrorFrame(CodeMirror.replace(textarea), {
+//                                    //height: "350px",
+//                                    content: textarea.value,
+//                                    //parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
+//                                    stylesheet: "css/jscolors.css",
+//                                    //path: "js/",
+//                                    autoMatchParens: true
+//                                });
+
+
                                 var ast = esprima.parse(res.replace('"','\"'), {range: true, loc: true});
                                 console.log("esprima ast: " + JSON.stringify(ast));
                                 jsTreeView.filePath = path;

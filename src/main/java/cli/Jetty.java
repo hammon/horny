@@ -42,7 +42,7 @@ public class Jetty {
         }
 
         Jetty jetty = new Jetty();
-        jetty.start(8081,"/home/michael/dev/horny/build/libs");///scripts/lib
+        jetty.start(8081,"/home/michael/dev/horny");///scripts/lib
     }
 
     public void start(int port){

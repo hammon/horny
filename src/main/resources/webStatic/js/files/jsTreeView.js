@@ -311,7 +311,7 @@ var jsTypesHandlers = {
 
 function addJsTreeViewNode(treeNode,jsonNode){
 
-    console.log("addJsTreeViewNode type: " + jsonNode.type + " json: " + JSON.stringify(jsonNode));
+//    console.log("addJsTreeViewNode type: " + jsonNode.type + " json: " + JSON.stringify(jsonNode));
 
     var nodeType = Object.prototype.toString.call(jsonNode);
 

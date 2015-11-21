@@ -6,7 +6,18 @@ Ext.define('Horny.TextView', {
     border: true,
     html: '<p>Text Content</p>',
 
-    tbar:[
+    listeners:{
+             render:function(){
+                console.log("TextView render");
+                 CodeMirror.fromTextArea(document.getElementById("jscode"),{
+                     lineNumbers:true,
+                     //fullScreen:true,
+                     mode:{name:'javascript',globalVars:true}
+                 });
+             }
+          }
+
+//    tbar:[
 //            {
 //               text: 'Add',
 //               'iconCls' : 'icon-add',
@@ -30,6 +41,6 @@ Ext.define('Horny.TextView', {
 //                    //jsonView.show();
 //                 }
 //            }
-        ]
+//        ]
 
 });
