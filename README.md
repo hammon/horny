@@ -8,7 +8,7 @@ gradle buildJar
 ### Run 
 ```
 cd build\libs
-java -jar horny-1.0.jar -p &lt;PORT&gt; -r &lt;ROOT_PATH&gt;
+java -jar horny-1.0.jar -p <PORT> -r <ROOT_PATH>
 ````
 
 ### File browser
